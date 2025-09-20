@@ -48,12 +48,12 @@ handle_cast(_Msg, State) ->
 
 handle_info(tick, State) ->
     RootWidget = State#state.root_widget,
-    io:format("ROOT WIDGET RENDERING: ~p~n", [RootWidget]),
     ?TERMBOX:tb_clear(),
     widgets:render(RootWidget),
     ?TERMBOX:tb_present(),
-                                                % Schedule next tick
-erlang:send_after(?TICK_INTERVAL, self(), tick),
+    % Schedule next tick
+    erlang:send_after(?TICK_INTERVAL, self(), tick),
+    init:stop(),
     {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.
