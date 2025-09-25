@@ -53,7 +53,6 @@ handle_info(tick, State) ->
     ?TERMBOX:tb_present(),
     % Schedule next tick
     erlang:send_after(?TICK_INTERVAL, self(), tick),
-    init:stop(),
     {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.

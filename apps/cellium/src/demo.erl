@@ -1,64 +1,108 @@
 -module(demo).
 
--export([test/0,simple/0]).
+-export([simple/0]).
 
 -include_lib("cellium.hrl").
 
 %% Black Red Green Yellow Blue Magenta Cyan White ?
 
-simple() ->
-        LayoutData = #{
-                       type => container,
-                       id => main_container,
-                       orientation => horizontal,
-                       children => [ #{ type => widget,
-                                        widget_type => box,
-                                        id => input_field,
-                                        color => 2,
-                                        flex => 10 }
-                                   ] },
 
-    Rendered = layout_engine:calculate_layout(LayoutData, 100, 5),
-    io:format("RENDERED: ~p~n", [Rendered]),
-    init:stop().
-    %%   cellium_renderer_server:start_link(),
-    %%   cellium_renderer_server:set_root_widget(Rendered).
-
-test() ->
-    LayoutData = #{
+% Example provided data (adapted for Erlang maps)
+layout_data() ->
+    #{
         type => container,
         id => main_container,
-        orientation => vertical,
+        x => 0,
+        y => 0,
+        width => 80,
+        height => 24,
+        orientation => horizontal,
         children => [
-            #{ type => container,
-               id => input_container,
-               orientation => horizontal,
-               children => [ #{ type => widget,
-                                widget_type => text_input,
-                                id => input_field,
-                                flex => 1},
-                             #{ type => widget,
-                                id => button_ok,
-                                widget_type => button,
-                                width => 10,
-                                height => 3} ] },
-            #{ type => container,
-               id => content_container,
-               orientation => horizontal,
-               children => [ #{ type => widget,
-                                widget_type => text_area,
-                                id => text_area,
-                                flex => 1 },
-                             #{ type => widget,
-                                id => status_bar,
-                                widget_type => status_bar,
-                                width => 80,
-                                height => 1 } ] }
+            #{
+                type => widget,
+                widget_type => box,
+                id => box1,
+                color => 2,
+                size => 5
+            },
+            #{
+                type => widget,
+                widget_type => box,
+                id => box4,
+                expand => true
+            }
         ]
-    },
+    }.
 
-    RootWidget = layout_engine:calculate_layout(LayoutData, 80, 24),
-    io:format("LAYOUT IS: ~p~n", [RootWidget]),
-    
+% Example with nested vertical container
+nested_layout_data() ->
+    #{
+        type => container,
+        id => main_container,
+        x => 0,
+        y => 0,
+        width => 80,
+        height => 24,
+        orientation => horizontal,
+        children => [
+            #{
+                type => widget,
+                widget_type => box,
+                id => fixed_box_left,
+                size => 20
+            },
+            #{
+                type => container,
+                id => nested_vertical_container,
+                expand => true,
+                orientation => vertical,
+                children => [
+                    #{
+                        type => widget,
+                        widget_type => box,
+                        id => top_box,
+                        size => 5
+                    },
+                    #{
+                        type => widget,
+                        widget_type => box,
+                        id => middle_box,
+                        expand => true
+                    },
+                    #{
+                        type => widget,
+                        widget_type => box,
+                        id => bottom_box,
+                        expand => true
+                    },
+                    #{
+                        type => widget,
+                        widget_type => box,
+                        id => fixed_box_bottom,
+                        size => 3
+                    }
+                ]
+            }
+        ]
+    }.
+
+
+simple() ->
+    W = tui_layout:realize(tui_layout:nested_layout_data()),
     cellium_renderer_server:start_link(),
-    cellium_renderer_server:set_root_widget(RootWidget).
+    cellium_renderer_server:set_root_widget(W).
+%    tui_layout:realize(tui_layout:layout_data()).
+
+% To run this, compile the module: c(tui_layout_realizer).
+% Then call: io:format("~p~n",
+% Or for the nested example: io:format("~p~n", [tui_layout_realizer:realize(tui_layout_realizer:nested_layout_data())]).
+
+
+
+%% position_test() ->
+%%     io:format("GO"),
+%%     ?TERMBOX:tb_init(),
+%%     ?TERMBOX:tb_clear(),
+%%     ?TERMBOX:tb_set_cell(0,0,$A, 0,0),
+%%     ?TERMBOX:tb_present(),
+%%     ok.
