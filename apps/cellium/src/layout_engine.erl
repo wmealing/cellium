@@ -7,8 +7,8 @@
 calculate_layout(Container) ->
     Children = maps:get(children, Container, []),
     Orientation = maps:get(orientation, Container),
-    X = maps:get(x, Container),
-    Y = maps:get(y, Container),
+    X = maps:get(x, Container, 0),
+    Y = maps:get(y, Container, 0),
     Width = maps:get(width, Container),
     Height = maps:get(height, Container),
 

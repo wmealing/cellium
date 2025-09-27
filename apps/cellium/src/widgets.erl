@@ -9,6 +9,7 @@ render(Widgets) when is_list(Widgets), length(Widgets) == 0 ->
 render(Widget) ->
     case maps:get(type, Widget) of
         container ->
+            container:render(Widget),
             [render(Child) || Child <- maps:get(children, Widget, [])];
         widget ->
             Mod = maps:get(widget_type, Widget),
