@@ -17,8 +17,10 @@ calculate_layout(Container) ->
             Container;
         true ->
             % Calculate fixed and expand children
-            FixedChildren = [Child || Child <- Children, maps:is_key(size, Child)],
+            % Note: expand takes priority over size
             ExpandChildren = [Child || Child <- Children, maps:is_key(expand, Child)],
+            FixedChildren = [Child || Child <- Children, 
+                           maps:is_key(size, Child) andalso not maps:is_key(expand, Child)],
 
             % Calculate available space based on orientation, accounting for gaps
             NumGaps = length(Children) - 1,

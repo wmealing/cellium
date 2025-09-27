@@ -1,6 +1,6 @@
 -module(demo).
 
--export([simple/0]).
+-export([simple/0, position_test/0, go/0]).
 
 -include_lib("cellium.hrl").
 
@@ -75,34 +75,54 @@ nested_layout_data() ->
                         id => bottom_box,
                         expand => true
                     },
-                    #{
-                        type => widget,
-                        widget_type => box,
-                        id => fixed_box_bottom,
-                        size => 3
-                    }
+                    (container:new(horizontal, container1))#{id => something,
+                                                             x => 0,
+                                                             y => 0,
+                                                             width => 80,
+                                                             height => 24,
+                                                             children => [
+                                                                          (button:new(<<"HELLO">>, foo1))#{id => button1, expand => true},
+                                                                          (button:new(<<"THERE">>, foo2))#{id => button2, expand => true}]}
                 ]
             }
         ]
     }.
 
+broken_layout_data() ->
+    (container:new(horizontal, container1))#{
+                                             id => something,
+                                             x => 0,
+                                             y => 0,
+                                             width => 80,
+                                             height => 10,
+                                             children => [
+                        (button:new(<<"HELLO">>, foo1))#{id => box1,
+                                                         size => 20
+                                                        },
+                        (button:new(<<"THERE">>, foo2))#{id => box2,
+                                                         expand => true
+                                                        }
+                                                         ]}.
+
 
 simple() ->
-    W = tui_layout:realize(tui_layout:nested_layout_data()),
+    W = layout_engine:calculate_layout(nested_layout_data()),
     cellium_renderer_server:start_link(),
     cellium_renderer_server:set_root_widget(W).
-%    tui_layout:realize(tui_layout:layout_data()).
 
-% To run this, compile the module: c(tui_layout_realizer).
-% Then call: io:format("~p~n",
-% Or for the nested example: io:format("~p~n", [tui_layout_realizer:realize(tui_layout_realizer:nested_layout_data())]).
+go() ->
+    io:format("Demo function is running!~n", []),
+    cellium_event_manager:start_link(),
+    % Force stdout to be sent immediately before stopping
+    timer:sleep(3000),
+    init:stop().
 
 
-
-%% position_test() ->
-%%     io:format("GO"),
-%%     ?TERMBOX:tb_init(),
-%%     ?TERMBOX:tb_clear(),
-%%     ?TERMBOX:tb_set_cell(0,0,$A, 0,0),
-%%     ?TERMBOX:tb_present(),
-%%     ok.
+position_test() ->
+    io:format("GO"),
+    ?TERMBOX:tb_init(),
+    ?TERMBOX:tb_clear(),
+    ?TERMBOX:tb_set_cell(0,0,$A,0,0),
+    ?TERMBOX:tb_set_cell(1,1,$B,0,0),
+    ?TERMBOX:tb_present(),
+    ok.
