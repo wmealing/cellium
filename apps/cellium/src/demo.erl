@@ -1,38 +1,20 @@
 -module(demo).
 
--export([simple/0, position_test/0, go/0]).
+-export([simple/0, position_test/0, nested_layout_data/0, go/0]).
 
 -include_lib("cellium.hrl").
 
-%% Black Red Green Yellow Blue Magenta Cyan White ?
+simple_button(Label, Id) ->
+    (button:new(Label, foo1))#{id => Id,
+                               color => 3,
+                               expand => true}.
 
-
-% Example provided data (adapted for Erlang maps)
-layout_data() ->
-    #{
-        type => container,
-        id => main_container,
-        x => 0,
-        y => 0,
-        width => 80,
-        height => 24,
-        orientation => horizontal,
-        children => [
-            #{
-                type => widget,
-                widget_type => box,
-                id => box1,
-                color => 2,
-                size => 5
-            },
-            #{
-                type => widget,
-                widget_type => box,
-                id => box4,
-                expand => true
-            }
-        ]
-    }.
+two_buttons_horizontal() ->
+    (container:new(horizontal, container1))#{id => something,
+                                             size => 4,
+                                             children => [
+                                                          simple_button (<<"HI">> , button1),
+                                                          simple_button (<<"HELLO">> , button2)]}.
 
 % Example with nested vertical container
 nested_layout_data() ->
@@ -41,15 +23,16 @@ nested_layout_data() ->
         id => main_container,
         x => 0,
         y => 0,
-        width => 80,
-        height => 24,
+        width => ?TERMBOX:tb_width(),
+        height => ?TERMBOX:tb_height(),
         orientation => horizontal,
         children => [
             #{
-                type => widget,
-                widget_type => box,
-                id => fixed_box_left,
-                size => 20
+              type => widget,
+              widget_type => box,
+              id => fixed_box_left,
+              color => 6,
+              size => 20
             },
             #{
                 type => container,
@@ -58,71 +41,42 @@ nested_layout_data() ->
                 orientation => vertical,
                 children => [
                     #{
-                        type => widget,
-                        widget_type => box,
-                        id => top_box,
-                        size => 5
+                      type => widget,
+                      color => 3,
+                      widget_type => box,
+                      id => middle_box,
+                      expand => true
                     },
                     #{
-                        type => widget,
-                        widget_type => box,
-                        id => middle_box,
-                        expand => true
+                      type => widget,
+                      widget_type => box,
+                      id => bottom_box,
+                      color => 7,
+                      expand => true
                     },
-                    #{
-                        type => widget,
-                        widget_type => box,
-                        id => bottom_box,
-                        expand => true
-                    },
-                    (container:new(horizontal, container1))#{id => something,
-                                                             x => 0,
-                                                             y => 0,
-                                                             width => 80,
-                                                             height => 24,
-                                                             children => [
-                                                                          (button:new(<<"HELLO">>, foo1))#{id => button1, expand => true},
-                                                                          (button:new(<<"THERE">>, foo2))#{id => button2, expand => true}]}
+                    two_buttons_horizontal()
                 ]
             }
         ]
     }.
 
-broken_layout_data() ->
-    (container:new(horizontal, container1))#{
-                                             id => something,
-                                             x => 0,
-                                             y => 0,
-                                             width => 80,
-                                             height => 10,
-                                             children => [
-                        (button:new(<<"HELLO">>, foo1))#{id => box1,
-                                                         size => 20
-                                                        },
-                        (button:new(<<"THERE">>, foo2))#{id => box2,
-                                                         expand => true
-                                                        }
-                                                         ]}.
-
-
 simple() ->
-    W = layout_engine:calculate_layout(nested_layout_data()),
-    cellium_renderer_server:start_link(),
-    cellium_renderer_server:set_root_widget(W).
-
-go() ->
-    io:format("Demo function is running!~n", []),
+    W = nested_layout_data(),
+    io:format("NESTED LAYOUT DATA IS: ~p~n", [W]),
+    view:start_link(),
     cellium_event_manager:start_link(),
-    % Force stdout to be sent immediately before stopping
-    timer:sleep(3000),
-    init:stop().
+    cellium_state:start_link_local(W).
 
 
 position_test() ->
-    io:format("GO"),
     ?TERMBOX:tb_init(),
     ?TERMBOX:tb_clear(),
     ?TERMBOX:tb_set_cell(0,0,$A,0,0),
     ?TERMBOX:tb_set_cell(1,1,$B,0,0),
     ?TERMBOX:tb_present(),
     ok.
+
+
+go() ->
+    X = demo:nested_layout_data(),
+    cellium_state:set_model(X).

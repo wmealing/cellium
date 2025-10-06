@@ -1,4 +1,3 @@
-
 -module(input_handler).
 -export([start/1]).
 

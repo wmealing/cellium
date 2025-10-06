@@ -10,12 +10,14 @@
 
 -behaviour(gen_server).
 
+-include_lib("eunit/include/eunit.hrl").
+
 %% API
 -export([start_link/0]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
-         terminate/2, code_change/3, format_status/2]).
+         terminate/2, code_change/3]).
 
 
 -include("cellium.hrl").
@@ -23,9 +25,10 @@
 -define(SERVER, ?MODULE).
 -define(TICK_INTERVAL, 1). % ms
 
-
--record(state, {}).
-
+-record(state, {event_queue=[],
+                key_subs=[],
+                mouse_subs=[],
+                resize_subs=[]}).
 %%%===================================================================
 %%% API
 %%%===================================================================
@@ -59,12 +62,11 @@ start_link() ->
           ignore.
 init([]) ->
     process_flag(trap_exit, true),
-    %% terrmbox init should have already been run
-    ?TERMBOX:tb_init(),
-    erlang:send_after(100, self(), tick),
 
-    %% Result = ?TERMBOX:tb_peek_event(100),
-{ok, #state{}}.
+    erlang:send_after(100, self(), tick),
+    NewState = #state{},
+    
+{ok, NewState}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -81,9 +83,10 @@ init([]) ->
           {noreply, NewState :: term(), hibernate} |
           {stop, Reason :: term(), Reply :: term(), NewState :: term()} |
           {stop, Reason :: term(), NewState :: term()}.
-handle_call(_Request, _From, State) ->
-    Reply = ok,
-    {reply, Reply, State}.
+
+handle_call(Msg, _From, State) ->
+    io:format("Wierd msg: ~p~n", [Msg]),
+    {reply, ok, State}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -110,10 +113,11 @@ handle_cast(_Request, State) ->
           {noreply, NewState :: term(), Timeout :: timeout()} |
           {noreply, NewState :: term(), hibernate} |
           {stop, Reason :: normal | term(), NewState :: term()}.
+
 handle_info(_Info, State) ->
-    Things = ?TERMBOX:tb_poll_event(),
-    io:format("THINGS: ~p~n", [Things]),
+    Event = ?TERMBOX:tb_poll_event(),
     erlang:send_after(?TICK_INTERVAL, self(), tick),
+    cellium_state:event_input(Event),
     {noreply, State}.
 
 %%--------------------------------------------------------------------
@@ -142,27 +146,5 @@ terminate(_Reason, _State) ->
           {error, Reason :: term()}.
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
-
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% This function is called for changing the form and appearance
-%% of gen_server status when it is returned from sys:get_status/1,2
-%% or when it appears in termination error logs.
-%% @end
-%%--------------------------------------------------------------------
--spec format_status(Opt :: normal | terminate,
-                    Status :: list()) -> Status :: term().
-format_status(_Opt, Status) ->
-    Status.
-
-%%%===================================================================
-%%% Internal functions
-%%%===================================================================
-
-
-
-
-
 
 
