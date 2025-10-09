@@ -1,6 +1,6 @@
 -module(demo).
 
--export([simple/0, position_test/0, nested_layout_data/0, go/0]).
+-export([simple/0, position_test/0, nested_model/0, go/0]).
 
 -include_lib("cellium.hrl").
 
@@ -17,10 +17,11 @@ two_buttons_horizontal() ->
                                                           simple_button (<<"HELLO">> , button2)]}.
 
 % Example with nested vertical container
-nested_layout_data() ->
+nested_model() ->
     #{
         type => container,
         id => main_container,
+        class => container_box,
         x => 0,
         y => 0,
         width => ?TERMBOX:tb_width(),
@@ -49,7 +50,7 @@ nested_layout_data() ->
                     },
                     #{
                       type => widget,
-                      widget_type => box,
+                      widget_type => time,
                       id => bottom_box,
                       color => 7,
                       expand => true
@@ -61,11 +62,10 @@ nested_layout_data() ->
     }.
 
 simple() ->
-    W = nested_layout_data(),
-    io:format("NESTED LAYOUT DATA IS: ~p~n", [W]),
+    W = nested_model(),
     view:start_link(),
     cellium_event_manager:start_link(),
-    cellium_state:start_link_local(W).
+    app_event_manager:start_link_local(W).
 
 
 position_test() ->
@@ -78,5 +78,5 @@ position_test() ->
 
 
 go() ->
-    X = demo:nested_layout_data(),
+    X = nested_model(),
     cellium_state:set_model(X).
