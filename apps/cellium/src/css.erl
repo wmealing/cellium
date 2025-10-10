@@ -35,7 +35,9 @@ load_stylesheet(Filename) ->
 %% .button { color: 2; expand: true; }
 %% #my_widget { color: 5; width: 100; }
 parse_stylesheet(Content) ->
-    Lines = string:tokens(Content, "\n"),
+    %% Remove line breaks and collapse multi-line rules into single lines
+    Collapsed = collapse_multiline_rules(Content),
+    Lines = string:tokens(Collapsed, "\n"),
     CleanLines = lists:map(fun string:strip/1, Lines),
     parse_rules(CleanLines, #{}).
 
@@ -92,6 +94,29 @@ parse_rules([Line | Rest], Acc) ->
         skip ->
             parse_rules(Rest, Acc)
     end.
+
+%% Collapse multi-line CSS rules into single lines
+%% Converts:
+%%   .button {
+%%     color: 2;
+%%   }
+%% To: .button { color: 2; }
+collapse_multiline_rules(Content) ->
+    %% Replace newlines within braces with spaces
+    collapse_between_braces(Content, [], false).
+
+collapse_between_braces([], Acc, _InBraces) ->
+    lists:reverse(Acc);
+collapse_between_braces([${ | Rest], Acc, _InBraces) ->
+    collapse_between_braces(Rest, [${ | Acc], true);
+collapse_between_braces([$} | Rest], Acc, _InBraces) ->
+    %% Add closing brace and newline to separate rules
+    collapse_between_braces(Rest, [$\n, $} | Acc], false);
+collapse_between_braces([$\n | Rest], Acc, true) ->
+    %% Inside braces: replace newline with space
+    collapse_between_braces(Rest, [$\s | Acc], true);
+collapse_between_braces([C | Rest], Acc, InBraces) ->
+    collapse_between_braces(Rest, [C | Acc], InBraces).
 
 parse_selector_line(Line) ->
     Stripped = string:strip(Line),

@@ -1,6 +1,7 @@
 -module(container).
 
 -compile(export_all).
+-export([render/1, new/2]).
 
 -include("cellium.hrl").
 

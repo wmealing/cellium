@@ -26,10 +26,10 @@ walk_layout_nested_test() ->
 apply_class_style_test() ->
     Widget = #{id => test1, class => primary_button},
     Stylesheet = #{
-        {class, primary_button} => #{color => 5, expand => true}
+        {class, primary_button} => #{color => "red", expand => true}
     },
     Result = css:style(Widget, Stylesheet),
-    ?assertEqual(5, maps:get(color, Result)),
+    ?assertEqual("red", maps:get(color, Result)),
     ?assertEqual(true, maps:get(expand, Result)).
 
 apply_id_style_test() ->

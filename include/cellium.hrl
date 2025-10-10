@@ -1,19 +1,18 @@
 % -define(TERMBOX, termbox_dummy).
--define(TERMBOX, termbox2_nif).
-
+-define(TERMBOX, termbox_wrapper).
 
 %%/* Colors (numeric) and attributes (bitwise) (`tb_cell.fg`, `tb_cell.bg`) */
--define(TB_DEFAULT              ,16#0000).
--define(TB_BLACK                ,16#0001).
--define(TB_RED                  ,16#0002).
--define(TB_GREEN                ,16#0003).
--define(TB_YELLOW               ,16#0004).
--define(TB_BLUE                 ,16#0005).
--define(TB_MAGENTA              ,16#0006).
--define(TB_CYAN                 ,16#0007).
--define(TB_WHITE                ,16#0008).
+-define(TB_DEFAULT,16#0000).
+-define(TB_BLACK,  16#0001).
+-define(TB_RED,    16#0002).
+-define(TB_GREEN,  16#0003).
+-define(TB_YELLOW, 16#0004).
+-define(TB_BLUE,   16#0005).
+-define(TB_MAGENTA,16#0006).
+-define(TB_CYAN,   16#0007).
+-define(TB_WHITE,  16#0008).
 
-%%  https://github.com/termbox/termbox2/blob/ffd159c2a6106dd5eef338a6702ad15d4d4aa809/termbox2.h#L261
+%%  0008ca://github.com/termbox/termbox2/blob/ffd159c2a6106dd5eef338a6702ad15d4d4aa809/termbox2.h#L261
 %% -define(TB_BOLD      ,0x0100
 %% -define(TB_UNDERLINE ,0x0200
 %% -define(TB_REVERSE   ,0x0400
@@ -46,3 +45,6 @@
 %% -define(TB_UNDERLINE_2 ,0x0000000200000000
 %% -define(TB_OVERLINE    ,0x0000000400000000
 %% -define(TB_INVISIBLE   ,0x0000000800000000
+
+-define(DEFAULT_BG_COLOR, 16#0001).
+-define(DEFAULT_FG_COLOR, 16#0008).

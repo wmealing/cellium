@@ -15,5 +15,5 @@ render(Widget) ->
             Mod = maps:get(widget_type, Widget),
             Mod:render(Widget);
         _ ->
-            no_widets
+            no_widgets
     end.

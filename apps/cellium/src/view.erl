@@ -53,14 +53,19 @@ handle_info(tick, State) ->
 
     RootWidget = State#state.root_widget,
 
-    Realised = layout_manager:calculate_layout(RootWidget,
-                                     ?TERMBOX:tb_width()  - 1,
-                                     ?TERMBOX:tb_height() - 1),
+    Layout = layout_manager:calculate_layout(RootWidget,
+                                             ?TERMBOX:tb_width() - 1,
+                                             ?TERMBOX:tb_height() - 1),
 
-    Themed = css:style(Realised),
+    Style = css:load_stylesheet("priv/default_theme.css"),
+
+    StyledLayout = css:style(Layout, Style),
+
+    io:format("STYLED LAYOUT: ~p~n", [StyledLayout]),
+
 
     ?TERMBOX:tb_clear(),
-    widgets:render(Themed),
+    widgets:render(StyledLayout),
     ?TERMBOX:tb_present(),
     {noreply, State};
 

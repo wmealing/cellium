@@ -6,7 +6,7 @@
 
 simple_button(Label, Id) ->
     (button:new(Label, foo1))#{id => Id,
-                               color => 3,
+                               class => button,
                                expand => true}.
 
 two_buttons_horizontal() ->
@@ -31,8 +31,8 @@ nested_model() ->
             #{
               type => widget,
               widget_type => box,
+              class => box,
               id => fixed_box_left,
-              color => 6,
               size => 20
             },
             #{
@@ -43,8 +43,8 @@ nested_model() ->
                 children => [
                     #{
                       type => widget,
-                      color => 3,
                       widget_type => box,
+                      class => box,
                       id => middle_box,
                       expand => true
                     },
@@ -52,7 +52,7 @@ nested_model() ->
                       type => widget,
                       widget_type => time,
                       id => bottom_box,
-                      color => 7,
+                      class => clock,
                       expand => true
                     },
                     two_buttons_horizontal()
