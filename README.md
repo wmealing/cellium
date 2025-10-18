@@ -48,7 +48,7 @@ update(#{count := Count} = Model, Msg) ->
             #{count => Count + 1};
         {tb_event, key, _, {keydata, _, $-}} ->
             #{count => Count - 1};
-        {tb_event, key, _ , {keydata, _ , 113}} ->
+        {tb_event, key, _ , {keydata, _ , $q}} ->
             init:stop();
         _Other ->
             Model
@@ -135,6 +135,8 @@ Start the application by calling:
 ```sh
 $ erl -noshell -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'counter:start()'
 ```
+
+Using the -noinput parameter so that the erlang runtime doesn't 'steal' keyboard input that is intended for your application.
 
 ```erlang
 counter:start().
