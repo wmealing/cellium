@@ -272,7 +272,7 @@ render_details(Model) ->
 Attributes control the appearance of widgets:
 
 I have basic CSS 'like' engine that will be documented at some point.  The CSS styles
-overrides code specific widget attributes as its applied later.
+overrides code specific widget attributes.
 
 ```erlang
 #{
