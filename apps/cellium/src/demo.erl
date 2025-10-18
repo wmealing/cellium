@@ -10,11 +10,11 @@ simple_button(Label, Id) ->
                                expand => true}.
 
 two_buttons_horizontal() ->
-    (container:new(horizontal, container1))#{id => something,
+    (container:new(container1, horizontal))#{id => something,
                                              size => 4,
                                              children => [
-                                                          simple_button (<<"HI">> , button1),
-                                                          simple_button (<<"HELLO">> , button2)]}.
+                                                          simple_button ([<<"HI">>] , button1),
+                                                          simple_button ([<<"HELLO">>] , button2)]}.
 
 % Example with nested vertical container
 nested_model() ->
@@ -22,51 +22,25 @@ nested_model() ->
         type => container,
         id => main_container,
         class => container_box,
-        x => 0,
-        y => 0,
         width => ?TERMBOX:tb_width(),
         height => ?TERMBOX:tb_height(),
         orientation => horizontal,
         children => [
-            #{
-              type => widget,
-              widget_type => box,
-              class => box,
-              id => fixed_box_left,
-              size => 20
-            },
-            #{
-                type => container,
-                id => nested_vertical_container,
-                expand => true,
-                orientation => vertical,
-                children => [
                     #{
                       type => widget,
-                      widget_type => box,
+                      widget_type => table,
                       class => box,
-                      id => middle_box,
+                      id => table_demo, 
                       expand => true
-                    },
-                    #{
-                      type => widget,
-                      widget_type => time,
-                      id => bottom_box,
-                      class => clock,
-                      expand => true
-                    },
-                    two_buttons_horizontal()
+                    }
                 ]
-            }
-        ]
-    }.
+            }.
+      
 
 simple() ->
     W = nested_model(),
-    view:start_link(),
     cellium_event_manager:start_link(),
     app_event_manager:start_link_local(W).
-
 
 position_test() ->
     ?TERMBOX:tb_init(),
@@ -78,5 +52,5 @@ position_test() ->
 
 
 go() ->
-    X = nested_model(),
-    cellium_state:set_model(X).
+    X = nested_model().
+

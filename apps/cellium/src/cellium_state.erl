@@ -61,9 +61,7 @@ handle_call({get_model}, _From, #state{model=Model} = State) ->
     Return = {ok, Model},
     {reply, Return, State};
 
-handle_call(Msg, _From, #state{model=Model} = State) ->
-%    io:format("[CS] MESSAGE IS: ~p~n", [Msg]),
-%    io:format("[CS] MODEL IS: ~p~n", [Model]),
+handle_call(_Msg, _From, State) ->
     {reply, ok, State}.
 
 handle_cast(_Msg, State) ->

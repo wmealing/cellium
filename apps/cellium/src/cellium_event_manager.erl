@@ -13,22 +13,18 @@
 -include_lib("eunit/include/eunit.hrl").
 
 %% API
--export([start_link/0]).
+-export([start_link/0, start_link/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
-
 
 -include("cellium.hrl").
 
 -define(SERVER, ?MODULE).
 -define(TICK_INTERVAL, 1). % ms
 
--record(state, {event_queue=[],
-                key_subs=[],
-                mouse_subs=[],
-                resize_subs=[]}).
+-record(state, {event_target=[]}).
 %%%===================================================================
 %%% API
 %%%===================================================================
@@ -45,6 +41,10 @@
 start_link() ->
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
+start_link(CallBackModule) ->
+    gen_server:start_link({local, ?SERVER}, 
+                          ?MODULE, CallBackModule, []).
+
 %%%===================================================================
 %%% gen_server callbacks
 %%%===================================================================
@@ -60,13 +60,16 @@ start_link() ->
           {ok, State :: term(), hibernate} |
           {stop, Reason :: term()} |
           ignore.
-init([]) ->
-    process_flag(trap_exit, true),
 
+init([]) ->
+    init(foo);
+
+init(Target) ->
+    logger:info("Cellium event manager - init/1 ~n"),
+    process_flag(trap_exit, true),
     erlang:send_after(100, self(), tick),
-    NewState = #state{},
-    
-{ok, NewState}.
+    NewState = #state{event_target = Target},
+    {ok, NewState}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -85,7 +88,7 @@ init([]) ->
           {stop, Reason :: term(), NewState :: term()}.
 
 handle_call(Msg, _From, State) ->
-    io:format("Wierd msg: ~p~n", [Msg]),
+    logger:info("Wierd msg: ~p~n", [Msg]),
     {reply, ok, State}.
 
 %%--------------------------------------------------------------------
@@ -114,10 +117,13 @@ handle_cast(_Request, State) ->
           {noreply, NewState :: term(), hibernate} |
           {stop, Reason :: normal | term(), NewState :: term()}.
 
-handle_info(_Info, State) ->
+handle_info(_Info, #state{event_target=EventTarget} = State) ->
     Event = ?TERMBOX:tb_poll_event(),
     erlang:send_after(?TICK_INTERVAL, self(), tick),
-    cellium_state:event_input(Event),
+    logger:info("POLL EVENT IS: ~p~n", [Event]),
+
+    % not sure i like this.
+    some_behavior:handle_event(Event),
     {noreply, State}.
 
 %%--------------------------------------------------------------------

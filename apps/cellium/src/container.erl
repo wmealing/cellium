@@ -1,21 +1,12 @@
 -module(container).
 
--compile(export_all).
+
 -export([render/1, new/2]).
 
 -include("cellium.hrl").
 
 
-range(From, To) when From =< To ->
-    range(From, To, 1).
-
-range(From, To, Step) when From =< To ->
-    [From | range(From + Step, To, Step)];
-range(_, _, _) ->
-    [].
-
-
-new(Orientation, Id) ->
+new(Id, Orientation) ->
     (widget:new())#{orientation => Orientation,
                     id => Id,
                     widget_type => non_visible_container,

@@ -44,31 +44,31 @@ init([]) ->
 
     %% Child 1: cellium_state
     %% NOTE: This specification explicitly calls the custom start function: cellium_state:start_link_local/0
-    StateWorker = #{
-        id => cellium_state,
-        start => {cellium_state, start_link_local, []}, %% The specified function call
-        restart => permanent,                          %% Always restart if it dies
-        type => worker,
-        shutdown => 5000                               %% Max time in ms for a graceful shutdown
-    },
+    %% StateWorker = #{
+    %%     id => cellium_state,
+    %%     start => {cellium_state, start_link_local, []}, %% The specified function call
+    %%     restart => permanent,                          %% Always restart if it dies
+    %%     type => worker,
+    %%     shutdown => 5000                               %% Max time in ms for a graceful shutdown
+    %% },
 
-    %% Child 2: cellium_event_manager
-    EventManager = #{
-        id => cellium_event_manager,
-        start => {cellium_event_manager, start_link, []},
-        restart => permanent,
-        type => worker,
-        shutdown => 5000
-    },
+    %% %% Child 2: cellium_event_manager
+    %% EventManager = #{
+    %%     id => cellium_event_manager,
+    %%     start => {cellium_event_manager, start_link, []},
+    %%     restart => permanent,
+    %%     type => worker,
+    %%     shutdown => 5000
+    %% },
 
-    %% %% Child 3: cellium_render_server
-    RenderServer = #{
-        id => cellium_render_server,
-        start => {cellium_renderer_server, start_link, []},
-        restart => permanent,
-        type => worker,
-        shutdown => 5000
-    },
+    %% %% %% Child 3: cellium_render_server
+    %% RenderServer = #{
+    %%     id => cellium_render_server,
+    %%     start => {cellium_renderer_server, start_link, []},
+    %%     restart => permanent,
+    %%     type => worker,
+    %%     shutdown => 5000
+    %% },
 
     ChildSpecs = [
 %                  RenderServer,

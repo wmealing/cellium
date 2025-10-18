@@ -45,9 +45,16 @@ start_link(Args) ->
 start_link(Args, Opts) ->
     gen_server:start_link(?MODULE, Args, Opts).
 
-% Callbacks
+setup_logging() ->
+    logger:remove_handler(default),
+    logger:set_primary_config(level, debug),
+    Config = #{config => #{file => "./logs/debug"}, level => debug},
+    logger:add_handler(to_file_handler, logger_std_h, Config),
+    logger:info("App Event Manager logging started.").
 
+% Callbacks
 init(Model) ->
+    setup_logging(),
     view:start_link(),
     view:set_root_widget(Model),
     {ok, #state{model=Model}}.
@@ -61,10 +68,23 @@ handle_call({get_model}, _From, #state{model=Model} = State) ->
     Return = {ok, Model},
     {reply, Return, State};
 
-handle_call(Msg, _From, #state{model=Model} = State) ->
-%    io:format("[CS] MESSAGE IS: ~p~n", [Msg]),
-%    io:format("[CS] MODEL IS: ~p~n", [Model]),
-    {reply, ok, State}.
+handle_call(Msg, _From, State) ->
+    logger:info("Unknown event: ~p~n", [Msg]),
+
+    %% get the Model
+    #state{model=Model} = State,
+
+    %% find the table, change an attribute
+    {ok,Table} = model:find(table_demo, Model),
+    logger:info("Found Table: ~p~n", [Table]),
+
+    %% this doesn't seem to take.
+    {ok, NewModel} = model:update(table_demo, #{style => rounded}, Model),
+
+
+    NewState = #state{model=NewModel},
+
+    {reply, ok, NewState}.
 
 handle_cast(_Msg, State) ->
     {noreply, State}.

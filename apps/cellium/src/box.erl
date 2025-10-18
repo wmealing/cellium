@@ -3,9 +3,16 @@
 -module(box).
 
 % API
--export([render/1,  draw_box/6]).
+-export([render/1, new/3, draw_box/6]).
 
 -include("cellium.hrl").
+
+new(Id, Width, Height) ->
+    (widget:new())#{id => Id,
+                    widget_type => box,
+                    width => Width,
+                    height => Height,
+                    type => box }.
 
 render(Widget) ->
     Bg = maps:get('background-color', Widget, ?DEFAULT_BG_COLOR),
@@ -41,29 +48,3 @@ draw_box(X1, Y1, X2, Y2, Bg, Fg) ->
     ?TERMBOX:tb_set_cell(X2, Y1, $┐, Bg, Fg),
     ?TERMBOX:tb_set_cell(X1, Y2, $└, Bg, Fg),
     ?TERMBOX:tb_set_cell(X2, Y2, $┘, Bg, Fg).
-
-
-draw_words(_, Y, _, Y, _Bg, _Fg, []) ->
-    ok;
-
-draw_words(_, _, _, _, _Bg, _Fg, []) ->
-    ok;
-
-draw_words(X1, Y1, X2, Y2, Bg, Fg, Words) ->
-
-    [FirstWord | Rest] =  Words,
-
-    ?TERMBOX:tb_print(X1 +1,
-                          Y1 +1,
-                          Bg,
-                          Fg, FirstWord),
-
-    draw_words(X1,
-               Y1 + 1,
-               X2,
-               Y2, Bg, Fg, Rest),
-    ok.
-
-lines_in_box(X1, Y1, X2, Y2, Bg, Fg, Lines) when is_list(Lines) ->
-    draw_box(X1, Y1, X2, Y2, Bg, Fg),
-    draw_words(X1, Y1, X2, Y2, Bg, Fg, Lines).

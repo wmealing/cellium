@@ -1,6 +1,7 @@
 -module(text_input).
 
--compile(export_all). 
+
+-export([render/1]).
 
 render(_A) ->
 	io:format("RENDERING ~p~n", [?MODULE]).
