@@ -4,7 +4,7 @@
 
 -include_lib("cellium.hrl").
 
-simple_button(Label, Id) ->
+simple_button(Id, Label) ->
     (button:new(Label, foo1))#{id => Id,
                                class => button,
                                expand => true}.
@@ -13,8 +13,8 @@ two_buttons_horizontal() ->
     (container:new(container1, horizontal))#{id => something,
                                              size => 4,
                                              children => [
-                                                          simple_button ([<<"HI">>] , button1),
-                                                          simple_button ([<<"HELLO">>] , button2)]}.
+                                                          simple_button (button1, [<<"HI">>]),
+                                                          simple_button (button2, [<<"HELLO">>])]}.
 
 % Example with nested vertical container
 nested_model() ->
@@ -32,15 +32,17 @@ nested_model() ->
                       class => box,
                       id => table_demo, 
                       expand => true
-                    }
+                    },
+		    two_buttons_horizontal()
                 ]
             }.
       
 
 simple() ->
-    W = nested_model(),
-    cellium_event_manager:start_link(),
-    app_event_manager:start_link_local(W).
+    _W = nested_model(),
+	
+    cellium_event_manager:start_link(), 
+    ok. 
 
 position_test() ->
     ?TERMBOX:tb_init(),

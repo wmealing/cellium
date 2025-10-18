@@ -33,6 +33,7 @@ render_caller(Module, Model) ->
 %%%===================================================================
 
 init(Module) ->
+    logging:setup(), 
     ?TERMBOX:tb_init(),
     init(Module, []).
 
