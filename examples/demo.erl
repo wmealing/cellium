@@ -52,5 +52,6 @@ position_test() ->
 
 
 go() ->
-    X = nested_model().
+    X = nested_model(), 
+    io:format("X: ~p~n", [X]). 
 

@@ -12,7 +12,7 @@
 
 -export([init/1, render/1, update/2, start/0]).
 
--behavior(some_behavior).
+-behavior(cellium).
 
 -include("cellium.hrl").
 
