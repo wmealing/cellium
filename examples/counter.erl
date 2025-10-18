@@ -37,7 +37,7 @@ update(#{count := Count} = Model, Msg) ->
 
 
 render(#{count := Count}) ->
-    CounterLabel = io_lib:bformat("Count: ~p", [Count]),
+    CounterLabel = io_lib:bformat("Counter: ~p (+/-)", [Count]),
     #{type => container,
       id => main_container,
       orientation => horizontal,
