@@ -123,7 +123,7 @@ handle_info(_Info, #state{event_target=EventTarget} = State) ->
     logger:info("POLL EVENT IS: ~p~n", [Event]),
 
     % not sure i like this.
-    some_behavior:handle_event(Event),
+    cellium:handle_event(Event),
     {noreply, State}.
 
 %%--------------------------------------------------------------------

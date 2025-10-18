@@ -22,7 +22,7 @@
 %%%===================================================================
 
 start(Args) ->
-    gen_server:start_link({local, some_behavior_server}, ?MODULE, Args, [] ).
+    gen_server:start_link({local, cellium_server}, ?MODULE, Args, [] ).
 
 render_caller(Module, Model) ->
     Layout = Module:render(Model),
@@ -63,7 +63,7 @@ handle_cast(_Msg, State) ->
 
 handle_event(Event) ->
     logger:info("some behavior - handle_event/1 param: ~p~n", [Event]),
-    gen_server:call(some_behavior_server, Event).
+    gen_server:call(cellium_server, Event).
 
 
 render_immediately(Module, Model) ->
