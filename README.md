@@ -159,6 +159,8 @@ Then from the Erlang shell:
 
 You'll see the counter, be able to change it with `+` and `-`, and quit with `q`.
 
+If you're running the code from within rebar, expect some keystrokes are consumed by the erlang shell.
+
 ## The Model
 
 Views in Cellium are trees of components describing your terminal interface. They're built from containers that organize layout and widgets that display content.
