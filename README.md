@@ -138,8 +138,10 @@ $ erl -noshell -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/def
 
 Using the -noinput parameter so that the erlang runtime doesn't 'steal' keyboard input that is intended for your application.
 
-```erlang
-counter:start().
+Or you can use the makefile target, 'make count', which sets the -noshell flag and paths appropriately.
+
+```sh
+make count
 ```
 
 Or, compile and run from the shell:
