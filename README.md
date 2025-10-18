@@ -93,11 +93,13 @@ The `update/2` callback transforms the model when a message is received. The fra
 ```erlang
 update(#{count := Count} = Model, Msg) ->
     case Msg of
-        {tb_event, key, _, {keydata, _, $+}} ->
+        {tb_event, key, _ ,{keydata, _ ,$+}} ->
             #{count => Count + 1};
-        {tb_event, key, _, {keydata, _, $-}} ->
+        {tb_event, key, _ ,{keydata, _ ,$-}} ->
             #{count => Count - 1};
-        _Other ->
+        {tb_event, key, _ ,{keydata, _ ,$q}} ->
+            init:stop();
+        _AnythingElse ->
             Model
     end.
 ```
