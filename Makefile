@@ -15,5 +15,5 @@ test:
 go:
 	erl --sname node1 --setcookie mysecretcookie -noinput -pa _build/default/lib/*/ebin -pa _checkouts/termbox2_nif/_build/default/lib/termbox2_nif/ebin  
 
-funky:
+counter:
 	erl -sname node1 -setcookie mysecretcookie -noshell  -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'counter:start()'
