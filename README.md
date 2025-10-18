@@ -34,7 +34,7 @@ First, here's the complete example:
 ```erlang
 -module(counter).
 
--behavior(some_behavior).
+-behavior(cellium).
 
 -export([init/1, render/1, update/2, start/0]).
 
@@ -69,10 +69,10 @@ render(#{count := Count}) ->
     }.
 
 start() ->
-    some_behavior:start(?MODULE).
+    cellium:start(?MODULE).
 ```
 
-The application declares itself as implementing the `some_behavior` behavior, which ensures it provides the required callbacks.
+The application declares itself as implementing the `cellium` behavior, which ensures it provides the required callbacks.
 
 #### `init/1`
 
