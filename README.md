@@ -157,7 +157,7 @@ Then from the Erlang shell:
 
 You'll see the counter, be able to change it with `+` and `-`, and quit with `q`.
 
-## Views
+## The Model
 
 Views in Cellium are trees of components describing your terminal interface. They're built from containers that organize layout and widgets that display content.
 
@@ -242,12 +242,10 @@ render(Model) ->
 
 header(Model) ->
     #{
-        type => container,
-        orientation => horizontal,
-        children => [
-            left_header(Model),
-            right_header(Model)
-        ]
+        type => widget,
+        id => header_text,
+        class => header,
+        value => <<"HEADER WORDING">>
     }.
 
 main_content(Model) ->
