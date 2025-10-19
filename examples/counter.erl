@@ -30,7 +30,8 @@ update(#{count := Count} = Model, Msg) ->
         {tb_event, key, _ ,{keydata, _ ,$-}} ->
             #{count => Count - 1};
         {tb_event, key, _ ,{keydata, _ ,$q}} ->
-            init:stop();
+            cellium:stop(),
+            Model;
         _AnythingElse ->
             Model
     end.

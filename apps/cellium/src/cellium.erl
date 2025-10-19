@@ -4,7 +4,7 @@
 
 %% API
 -export([init/1, init/2, handle_call/3, handle_cast/2, render_caller/2]).
--export([start/1, handle_event/1]).
+-export([start/1, stop/0, handle_event/1, terminate/2]).
 
 -behaviour(gen_server).
 
@@ -23,6 +23,10 @@
 
 start(Args) ->
     gen_server:start_link({local, cellium_server}, ?MODULE, Args, [] ).
+
+stop() ->
+    logging:info("STOP() called", []),
+    gen_server:cast(?MODULE, stop).
 
 render_caller(Module, Model) ->
     Layout = Module:render(Model),
@@ -49,7 +53,6 @@ init(Module, Args) ->
 
 % Wraps update in the callback module.
 handle_call(Msg, _From, State) ->
-    logger:info("SOME BEHAVIOUR HANDLING CALL"),
     #{module := Module, model := Model} = State,
 
     % update return the model.
@@ -59,13 +62,15 @@ handle_call(Msg, _From, State) ->
     NewState = State#{model := NewModel},
     {reply, {ok, done}, NewState}.
 
+handle_cast(stop, State) ->
+    logging:info("CAST STOP - CELLIUM"),
+    {stop, normal, State};
+
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
 handle_event(Event) ->
-    logger:info("some behavior - handle_event/1 param: ~p~n", [Event]),
     gen_server:call(cellium_server, Event).
-
 
 render_immediately(Module, Model) ->
     Layout = Module:render(Model),
@@ -74,5 +79,10 @@ render_immediately(Module, Model) ->
     ok.
 
 terminate(_Reason, _State) ->
+
     ?TERMBOX:tb_shutdown(),
+    logging:teardown(),
+
+    % set this as on option in a future verrsion.
+    init:stop(),
     ok.
