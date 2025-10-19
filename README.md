@@ -4,6 +4,9 @@ A declarative terminal UI framework for Erlang for building rich text-based term
 
 Cellium implements the Elm Architecture pattern as a way to structure application logic, adapted for Erlang's concurrent execution model. This fits naturally with OTP patterns and makes terminal applications composable and testable.
 
+If you think that this is similar to [Ratatouille][https://github.com/ndreynolds/ratatouille], You'd be right, I haven't stolen code
+but I do love their concepts.  I found out about this after This great project already committed a bunch of work.
+
 **Table of Contents**
 
 * [Cellium](#cellium)

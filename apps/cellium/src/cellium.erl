@@ -33,7 +33,7 @@ render_caller(Module, Model) ->
 %%%===================================================================
 
 init(Module) ->
-    logging:setup(), 
+    logging:setup(),
     ?TERMBOX:tb_init(),
     init(Module, []).
 
@@ -71,4 +71,8 @@ render_immediately(Module, Model) ->
     Layout = Module:render(Model),
     NewLayout = layout:calculate_layout(Layout),
     view:set_root_widget(NewLayout),
+    ok.
+
+terminate(_Reason, _State) ->
+    ?TERMBOX:tb_shutdown(),
     ok.
