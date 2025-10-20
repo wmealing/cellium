@@ -42,7 +42,8 @@ init(Module) ->
     init(Module, []).
 
 init(Module, Args) ->
-    view:start_link(),
+    view:start_link(), 
+    focus_manager:start_link(), 
     cellium_event_manager:start_link(?MODULE),
 
     {ok, Model} = Module:init(Args),

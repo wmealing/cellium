@@ -41,6 +41,9 @@ render(Widget) ->
 %% @end
 %%--------------------------------------------------------------------
 
+draw_word(_X, _Y, _Fg, _Bg, []) ->
+    ok;
+
 draw_word(X,Y, Bg, Fg, Word) ->
     ?TERMBOX:tb_print(X,
                       Y,
