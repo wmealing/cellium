@@ -3,7 +3,7 @@
 -include("cellium.hrl").
 
 %% API
--export([init/1, init/2, handle_call/3, handle_cast/2, render_caller/2]).
+-export([init/1, handle_call/3, handle_cast/2, render_caller/2]).
 -export([start/1, stop/0, handle_event/1, terminate/2]).
 
 -behaviour(gen_server).
@@ -21,6 +21,8 @@
 %%% API
 %%%===================================================================
 
+
+
 start(Args) ->
     gen_server:start_link({local, cellium_server}, ?MODULE, Args, [] ).
 
@@ -36,25 +38,31 @@ render_caller(Module, Model) ->
 %%% Internal functions
 %%%===================================================================
 
-init(Module) ->
+init(#{module := Module}= Args) ->
     logging:setup(),
     ?TERMBOX:tb_init(),
-    init(Module, []).
+    view:start_link(),
 
-init(Module, Args) ->
-    view:start_link(), 
-    focus_manager:start_link(), 
+    AutoFocus = maps:get(auto_widget_focus, Args, true),
+
+    focus_manager:start_link(),
     cellium_event_manager:start_link(?MODULE),
 
-    {ok, Model} = Module:init(Args),
+    {ok, Model} = Module:init([]),
 
     render_immediately(Module, Model),
-    State = #{module => Module, model => Model},
+
+    State = #{module => Module,
+              model => Model,
+              auto_focus => AutoFocus },
+
     {ok, State}.
 
 % Wraps update in the callback module.
 handle_call(Msg, _From, State) ->
     #{module := Module, model := Model} = State,
+
+    process_focus_event(State, Msg),
 
     % update return the model.
     NewModel = Module:update(Model, Msg),
@@ -87,3 +95,25 @@ terminate(_Reason, _State) ->
     % set this as on option in a future verrsion.
     init:stop(),
     ok.
+
+%% Internal functions
+keycodes({tb_event, key, _, {keydata, Code1, Code2}}) ->
+    {Code1, Code2};
+keycodes(_AnythingElse) ->
+    %% probably not a focus event
+    ignore.
+
+process_focus_event(#{auto_focus := true}, Event) ->
+   case keycodes(Event) of
+       %% tab
+       {9,0} ->
+           focus_manager:move_focus_forward();
+       %% shift tab
+       {65513,0} ->
+           focus_manager:move_focus_backward();
+       _Other ->
+           ok
+   end;
+
+process_focus_event(_State, _Event) ->
+    ignore.

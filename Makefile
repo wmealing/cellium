@@ -25,8 +25,6 @@ dual_editor:
 	rebar3 compile 
 	erl -sname node1 -setcookie mysecretcookie -noshell  -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'dual_editor:start()'
 
-
-
-
-
-
+dual_editor_nofocus:
+	rebar3 compile 
+	erl -sname node1 -setcookie mysecretcookie -noshell  -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'dual_editor_nofocus:start()'

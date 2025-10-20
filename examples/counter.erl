@@ -49,4 +49,4 @@ render(#{count := Count}) ->
                      value => CounterLabel }]}.
 
 start() ->
-   cellium:start(?MODULE).
+   cellium:start(#{module => ?MODULE}).
