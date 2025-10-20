@@ -46,8 +46,8 @@ init(_Context) ->
 
 %% Register both editors with the focus_manager
 register_editors() ->
-    focus_manager:register_widget(editor1, editor1),
-    focus_manager:register_widget(editor2, editor2).
+    focus_manager:register_widget(editor1),
+    focus_manager:register_widget(editor2).
 
 %% Extract the key code from the keyboard event
 get_key_code({tb_event, key, _, {keydata, Code1, Code2}}) ->
@@ -63,7 +63,7 @@ update_based_on_key({9, 0}, Model) ->
     move_focus_forward(Model);
 update_based_on_key({65513,0}, Model) ->
     move_focus_backward(Model);
-update_based_on_key({4,0}, Model) ->
+update_based_on_key({4,0}, _Model) ->
     cellium:stop(),
     init:stop();
 update_based_on_key(KeyCode, Model) ->

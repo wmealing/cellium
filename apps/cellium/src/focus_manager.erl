@@ -5,7 +5,7 @@
 
 %% API
 -export([start_link/0, start_link/1]).
--export([register_widget/2, unregister_widget/1]).
+-export([register_widget/1, unregister_widget/1]).
 -export([set_focused/1, get_focused/0]).
 -export([move_focus_forward/0, move_focus_backward/0]).
 -export([can_focus/1]).
@@ -19,7 +19,7 @@
 -define(SERVER, ?MODULE).
 
 %% Internal state record
-%% focusable_widgets: list of {WidgetId, WidgetRef} tuples in tab order
+%% focusable_widgets: list of WidgetId atoms in tab order
 %% current_focus: the widget id that currently has focus
 -record(state, {
     focusable_widgets = [],
@@ -54,10 +54,10 @@ start_link(Config) ->
 %%
 %% Widgets are registered in the order they can be focused (tab order).
 %% @end
--spec register_widget(WidgetId :: term(), WidgetRef :: term()) ->
+-spec register_widget(WidgetId :: term()) ->
     ok | {error, already_registered | invalid_widget}.
-register_widget(WidgetId, WidgetRef) ->
-    gen_server:call(?SERVER, {register_widget, WidgetId, WidgetRef}).
+register_widget(WidgetId) ->
+    gen_server:call(?SERVER, {register_widget, WidgetId}).
 
 %% @doc
 %% Unregisters a widget from the focusable widget list.
@@ -139,8 +139,8 @@ init(_Config) ->
 -spec handle_call(Request :: term(), From :: {pid(), term()}, State :: #state{}) ->
     {reply, Reply :: term(), NewState :: #state{}}.
 
-handle_call({register_widget, WidgetId, WidgetRef}, _From, State) ->
-    handle_register_widget(WidgetId, WidgetRef, State);
+handle_call({register_widget, WidgetId}, _From, State) ->
+    handle_register_widget(WidgetId, State);
 
 handle_call({unregister_widget, WidgetId}, _From, State) ->
     handle_unregister_widget(WidgetId, State);
@@ -198,10 +198,9 @@ code_change(_OldVsn, State, _Extra) ->
 %% Appends widget to the focusable widgets list if not already present.
 %% If this is the first widget, automatically sets it as focused.
 %% @end
--spec handle_register_widget(WidgetId :: term(), WidgetRef :: term(), 
-                             State :: #state{}) ->
+-spec handle_register_widget(WidgetId :: term(), State :: #state{}) ->
     {reply, Reply :: ok | {error, term()}, NewState :: #state{}}.
-handle_register_widget(WidgetId, _WidgetRef, #state{focusable_widgets = Widgets} = State) ->
+handle_register_widget(WidgetId, #state{focusable_widgets = Widgets} = State) ->
     case is_focusable(WidgetId, State) of
         true ->
             {reply, {error, already_registered}, State};
