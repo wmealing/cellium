@@ -33,7 +33,7 @@
 
 
 start() ->
-   cellium:start(?MODULE).
+   cellium:start(#{module => ?MODULE}).
 
 get_code({tb_event,key,_,{keydata, Code1, Code2}}) ->
     {Code1, Code2}.

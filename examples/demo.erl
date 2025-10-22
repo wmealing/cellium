@@ -1,6 +1,7 @@
 -module(demo).
 
--export([simple/0, position_test/0, nested_model/0, go/0]).
+-export([nested_layout/0, start/0]).
+-export([init/1, update/2, render/1]).
 
 -include_lib("cellium.hrl").
 
@@ -17,7 +18,7 @@ two_buttons_horizontal() ->
                                                           simple_button (button2, [<<"HELLO">>])]}.
 
 % Example with nested vertical container
-nested_model() ->
+nested_layout() ->
     #{
         type => container,
         id => main_container,
@@ -36,24 +37,18 @@ nested_model() ->
 		    two_buttons_horizontal()
                 ]
             }.
-      
-
-simple() ->
-    _W = nested_model(),
-	
-    cellium_event_manager:start_link(), 
-    ok. 
-
-position_test() ->
-    ?TERMBOX:tb_init(),
-    ?TERMBOX:tb_clear(),
-    ?TERMBOX:tb_set_cell(0,0,$A,0,0),
-    ?TERMBOX:tb_set_cell(1,1,$B,0,0),
-    ?TERMBOX:tb_present(),
-    ok.
 
 
-go() ->
-    X = nested_model(), 
-    io:format("X: ~p~n", [X]). 
+
+start() ->
+   cellium:start(#{module => ?MODULE}).    
+
+init(_Ignored) ->
+    {ok, ""}.
+
+update(Model, Event) ->
+    Model.
+
+render(Model) ->
+    M = nested_layout().
 

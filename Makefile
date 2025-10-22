@@ -4,7 +4,7 @@ boo:
 	rebar3 shell --sname node1 --setcookie mysecretcookie 
 
 sh:
-	rebar3 shell --sname node1 --setcookie mysecretcookie  --eval 'demo:simple().'
+	rebar3 shell --sname node1 --setcookie mysecretcookie  --eval 'demo:start().'
 
 remsh:
 	erl -sname node2 -setcookie mysecretcookie -remsh node1
@@ -28,3 +28,7 @@ dual_editor:
 dual_editor_nofocus:
 	rebar3 compile 
 	erl -sname node1 -setcookie mysecretcookie -noshell  -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'dual_editor_nofocus:start()'
+
+boxes:
+	rebar3 compile 
+	erl -sname node1 -setcookie mysecretcookie -noshell  -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'boxes:start()'

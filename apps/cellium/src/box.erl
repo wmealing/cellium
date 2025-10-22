@@ -12,7 +12,7 @@ new(Id, Width, Height) ->
                     widget_type => box,
                     width => Width,
                     height => Height,
-                    type => box }.
+                    type => widget }.
 
 render(Widget) ->
     Bg = maps:get('background-color', Widget, ?DEFAULT_BG_COLOR),
@@ -24,26 +24,11 @@ render(Widget) ->
     Y2 = Y1 + maps:get(height, Widget, 0),
     draw_box(X1, Y1, X2, Y2, Bg, Fg).
 
-draw_horizontal_line(Point, _, Point, _Bg, _Fg) ->
-    ok;
-
-draw_horizontal_line(X1,Y, X2, Bg, Fg) ->
-    ?TERMBOX:tb_set_cell(X1, Y,  $─ , Bg, Fg),
-    draw_horizontal_line(X1 + 1, Y, X2, Bg, Fg).
-
-draw_vertical_line(Point, _, Point, _Bg, _Fg) ->
-    ok;
-
-draw_vertical_line(Y1, X, Y2, Bg, Fg) ->
-    ?TERMBOX:tb_set_cell(X, Y1 + 1,  $│, Bg, Fg),
-    draw_vertical_line(Y1 + 1, X, Y2, Bg, Fg).
-
-
 draw_box(X1, Y1, X2, Y2, Bg, Fg) ->
-    draw_vertical_line(Y1, X2, Y2, Bg, Fg),
-    draw_horizontal_line(X1 + 1, Y1, X2, Bg, Fg),
-    draw_vertical_line(Y1, X1, Y2, Bg, Fg),
-    draw_horizontal_line(X1 + 1, Y2, X2, Bg, Fg),
+    box_styles:draw_vertical_line(Y1, X2, Y2, Bg, Fg),
+    box_styles:draw_horizontal_line(X1 + 1, Y1, X2, Bg, Fg),
+    box_styles:draw_vertical_line(Y1, X1, Y2, Bg, Fg),
+    box_styles:draw_horizontal_line(X1 + 1, Y2, X2, Bg, Fg),
     ?TERMBOX:tb_set_cell(X1, Y1, $┌, Bg, Fg),
     ?TERMBOX:tb_set_cell(X2, Y1, $┐, Bg, Fg),
     ?TERMBOX:tb_set_cell(X1, Y2, $└, Bg, Fg),

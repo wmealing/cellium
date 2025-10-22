@@ -17,10 +17,15 @@ tb_present() ->
 tb_shutdown() ->
     termbox2_nif:tb_shutdown().
 
-tb_set_cell(X,Y,C,FG,BG) ->
-    TermboxFg = lookup(FG),
-    TermboxBg = lookup(BG),
-    termbox2_nif:tb_set_cell(X,Y,C,TermboxFg,TermboxBg).
+tb_set_cell(X,Y,Ch,Bg,Fg) ->
+    logger:info("FOREGROUND: ~p", [Fg]),
+    logger:info("BACKGROUND: ~p", [Bg]),
+    logger:info("CH        : ~p",  [Ch]),
+
+    TermboxBg = lookup(Bg),
+    TermboxFg = lookup(Fg),
+
+    termbox2_nif:tb_set_cell(X, Y, Ch, TermboxFg, TermboxBg).
 
 tb_print(X, Y, Fg, Bg, Str) when is_integer(Bg) and is_integer(Fg) ->
     TermboxBg = ?TB_BLACK,
@@ -41,7 +46,9 @@ tb_height() ->
 tb_poll_event() ->
     termbox2_nif:tb_poll_event().
 
-lookup(black) ->
+lookup(8) ->
+    ?TB_WHITE;
+lookup('black') ->
     ?TB_BLACK;
 lookup('red') ->
     ?TB_RED;
@@ -55,10 +62,18 @@ lookup('magenta') ->
     ?TB_MAGENTA;
 lookup('cyan') ->
     ?TB_CYAN;
-lookup(white) ->
-    ?TB_WHITE.
+lookup('white') ->
+    ?TB_WHITE;
+lookup(1) ->
+    logger:info("BUG IN LOOKUP!"),
+    1;
 
-
+lookup("\b") ->
+    logger:info("SLASH B"),
+    1;
+lookup(What) ->
+    logger:info("THIS IS HORSEHIT: ~p", [What]),
+    1.
 
 
 

@@ -48,3 +48,15 @@
 
 -define(DEFAULT_BG_COLOR, 16#0001).
 -define(DEFAULT_FG_COLOR, 16#0008).
+
+-record(box, {
+    top_left, top, top_divider, top_right,
+    head_left, head_vertical, head_right,
+    head_row_left, head_row_horizontal, head_row_cross, head_row_right,
+    mid_left, mid_vertical, mid_right,
+    row_left, row_horizontal, row_cross, row_right,
+    foot_row_left, foot_row_horizontal, foot_row_cross, foot_row_right,
+    foot_left, foot_vertical, foot_right,
+    bottom_left, bottom, bottom_divider, bottom_right,
+    is_ascii = false
+}).
