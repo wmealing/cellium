@@ -340,8 +340,6 @@ render(Widget) ->
 
     ColumnWidths = maps:get(column_widths, Widget, [Width -1]),
 
-    %% Box = table:ascii(),
-    %%Box = table:square(),
     Box = table:double(),
 
     draw_header( X, Y, Fg, Bg, Box, ColumnWidths),

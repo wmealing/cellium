@@ -43,7 +43,7 @@ init(#{module := Module}= Args) ->
     ?TERMBOX:tb_init(),
     view:start_link(),
 
-    AutoFocus = maps:get(auto_widget_focus, Args, true),
+    AutoFocus = maps:get(auto_focus, Args, true),
 
     focus_manager:start_link(),
     cellium_event_manager:start_link(?MODULE),
@@ -102,6 +102,7 @@ keycodes({tb_event, key, _, {keydata, Code1, Code2}}) ->
 keycodes(_AnythingElse) ->
     %% probably not a focus event
     ignore.
+
 
 process_focus_event(#{auto_focus := true}, Event) ->
    case keycodes(Event) of

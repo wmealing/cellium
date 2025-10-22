@@ -33,7 +33,7 @@
 -export([init/1, update/2, render/1, start/0]).
 
 start() ->
-    cellium:start(#{module=>?MODULE, auto_widget_focus => false }).
+    cellium:start(#{module=>?MODULE, auto_focus => false }).
 
 %% Initialize with two empty editors and focus on the first
 init(_Context) ->
