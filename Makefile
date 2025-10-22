@@ -1,10 +1,20 @@
 .PHONY: test go funky
 
-boo:
+EXTRAS_EBIN = -pa ./_build/default/extras/examples/
+export EXTRAS_EBIN
+
+LIB_EBIN = -pa _build/default/lib/*/ebin
+export LIB_EBIN
+
+TERMBOX_EBIN = -pa _checkouts/termbox2_nif/_build/default/lib/termbox2_nif/ebin
+export TERMBOX_EBIN
+
+rebar-shell:
 	rebar3 shell --sname node1 --setcookie mysecretcookie 
 
-sh:
-	rebar3 shell --sname node1 --setcookie mysecretcookie  --eval 'demo:start().'
+demo:
+	erl --sname node1 --setcookie mysecretcookie -noinput \
+	$(LIB_EBIN) $(TERMBOX_EBIN) $(EXTRAS_EBIN) -eval 'demo:start()'
 
 remsh:
 	erl -sname node2 -setcookie mysecretcookie -remsh node1
