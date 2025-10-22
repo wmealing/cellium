@@ -7,7 +7,8 @@
     delete/2,
     update/3,
     get_parent/2,
-    find_path/2
+    find_path/2,
+    maybe_set_focus/1
 ]).
 
 %% @doc Find a widget or container by ID in the layout tree.
@@ -258,3 +259,16 @@ is_container(Item) ->
 append_to_children(Container, Item) ->
     Children = maps:get(children, Container, []),
     Container#{children => Children ++ [Item]}.
+
+
+maybe_set_focus(Widget) ->
+    {ok, FocusedWidgetId} = focus_manager:get_focused(),
+    MyWidgetID = maps:get(id, Widget, no_id),
+    case FocusedWidgetId == MyWidgetID of
+        true ->
+            %% set the focused attribute
+            Widget#{ has_focus => true };
+        _ ->
+            Widget
+    end.
+

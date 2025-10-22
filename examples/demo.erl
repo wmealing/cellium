@@ -1,54 +1,51 @@
 -module(demo).
 
--export([nested_layout/0, start/0]).
+-export([start/0]).
 -export([init/1, update/2, render/1]).
 
 -include_lib("cellium.hrl").
 
-simple_button(Id, Label) ->
-    (button:new(Label, foo1))#{id => Id,
-                               class => button,
-                               expand => true}.
-
-two_buttons_horizontal() ->
-    (container:new(container1, horizontal))#{id => something,
-                                             size => 4,
-                                             children => [
-                                                          simple_button (button1, [<<"HI">>]),
-                                                          simple_button (button2, [<<"HELLO">>])]}.
-
 % Example with nested vertical container
-nested_layout() ->
+nested_layout(Model) ->
     #{
         type => container,
         id => main_container,
         class => container_box,
-        width => ?TERMBOX:tb_width(),
-        height => ?TERMBOX:tb_height(),
         orientation => horizontal,
-        children => [
-                    #{
-                      type => widget,
-                      widget_type => table,
-                      class => box,
-                      id => table_demo, 
-                      expand => true
-                    },
-		    two_buttons_horizontal()
+        children => [ model:maybe_set_focus(
+
+                       #{type => widget,
+                         widget_type => table,
+                         class => box,
+                         id => table_demo1,
+                         size => 20
+                        } ),
+
+                      model:maybe_set_focus(
+
+                        #{type => widget,
+                          widget_type => table,
+                          class => box,
+                          id => table_demo2,
+                          expand => true } )
+
                 ]
             }.
 
 
-
 start() ->
-   cellium:start(#{module => ?MODULE}).    
+   cellium:start(#{module => ?MODULE,
+                   auto_focus => true}).
 
 init(_Ignored) ->
+    focus_manager:register_widget(table_demo1),
+    focus_manager:register_widget(table_demo2),
     {ok, ""}.
 
-update(Model, Event) ->
+update(Model, _Event) ->
+    focus_manager:set_focused(table_demo2),
     Model.
 
 render(Model) ->
-    M = nested_layout().
+    nested_layout(Model).
 
