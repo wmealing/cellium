@@ -18,13 +18,8 @@ tb_shutdown() ->
     termbox2_nif:tb_shutdown().
 
 tb_set_cell(X,Y,Ch,Bg,Fg) ->
-    logger:info("FOREGROUND: ~p", [Fg]),
-    logger:info("BACKGROUND: ~p", [Bg]),
-    logger:info("CH        : ~p",  [Ch]),
-
     TermboxBg = lookup(Bg),
     TermboxFg = lookup(Fg),
-
     termbox2_nif:tb_set_cell(X, Y, Ch, TermboxFg, TermboxBg).
 
 tb_print(X, Y, Fg, Bg, Str) when is_integer(Bg) and is_integer(Fg) ->

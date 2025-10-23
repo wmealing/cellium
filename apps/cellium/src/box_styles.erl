@@ -2,6 +2,8 @@
 %% ex: ts=4 sw=4 et
 -module(box_styles).
 
+-include("cellium.hrl").
+
 -export([
     ascii/0,
     ascii2/0,
@@ -27,7 +29,7 @@
     draw_vertical_line/5
 ]).
 
--include("cellium.hrl").
+
 
 
 ascii() ->
