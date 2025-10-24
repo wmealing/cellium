@@ -26,7 +26,6 @@ start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 init([]) ->
-    logger:info("view init/1~n"),
     _Initiated = ?TERMBOX:tb_init(),
     _Cleared = ?TERMBOX:tb_clear(),
     _Presented = ?TERMBOX:tb_present(),

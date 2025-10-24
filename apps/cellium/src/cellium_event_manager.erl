@@ -65,7 +65,7 @@ init([]) ->
     init(foo);
 
 init(Target) ->
-    logger:info("Cellium event manager - init/1 ~n"),
+    logger:info("Cellium event manager - init/1"),
     process_flag(trap_exit, true),
     erlang:send_after(100, self(), tick),
     NewState = #state{event_target = Target},
@@ -88,7 +88,7 @@ init(Target) ->
           {stop, Reason :: term(), NewState :: term()}.
 
 handle_call(Msg, _From, State) ->
-    logger:info("Wierd msg: ~p~n", [Msg]),
+    logger:info("Wierd msg: ~p", [Msg]),
     {reply, ok, State}.
 
 %%--------------------------------------------------------------------
@@ -120,7 +120,7 @@ handle_cast(_Request, State) ->
 handle_info(_Info, #state{event_target=EventTarget} = State) ->
     Event = ?TERMBOX:tb_poll_event(),
     erlang:send_after(?TICK_INTERVAL, self(), tick),
-    logger:info("POLL EVENT IS: ~p~n", [Event]),
+    logger:info("POLL EVENT IS: ~p", [Event]),
 
     % not sure i like this.
     cellium:handle_event(Event),

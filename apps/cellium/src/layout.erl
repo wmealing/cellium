@@ -12,12 +12,23 @@ calculate_layout(Widget, Width, Height) ->
 %% and height for all its children.
 -spec calculate_layout(map()) -> map().
 calculate_layout(Container) ->
-    Children = maps:get(children, Container, []),
+    Children = maps:get(children, Container, []), 
     Orientation = maps:get(orientation, Container, horizontal),
-    X = maps:get(x, Container, 0),
-    Y = maps:get(y, Container, 0),
-    Width = maps:get(width, Container, ?TERMBOX:tb_width()),
-    Height = maps:get(height, Container, ?TERMBOX:tb_height()),
+
+    DefaultPadding = case maps:get(widget_type, Container, undefined) of
+        frame -> #{top => 1, right => 1, bottom => 1, left => 1};
+        _ -> #{top => 0, right => 0, bottom => 0, left => 0}
+    end,
+    Padding = maps:get(padding, Container, DefaultPadding),
+    PaddingTop = maps:get(top, Padding, 0),
+    PaddingRight = maps:get(right, Padding, 0),
+    PaddingBottom = maps:get(bottom, Padding, 0),
+    PaddingLeft = maps:get(left, Padding, 0),
+
+    X = maps:get(x, Container, 0) + PaddingLeft,
+    Y = maps:get(y, Container, 0) + PaddingTop,
+    Width = maps:get(width, Container, ?TERMBOX:tb_width()) - PaddingLeft - PaddingRight,
+    Height = maps:get(height, Container, ?TERMBOX:tb_height()) - PaddingTop - PaddingBottom,
 
     if
         Children == [] ->

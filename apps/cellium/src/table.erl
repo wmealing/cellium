@@ -4,6 +4,7 @@
     get_top/2,
     get_row/3,
     get_bottom/2,
+    draw_table/7,
     render/1
 ]).
 
@@ -51,6 +52,13 @@ draw_bottom(X, Y, Fg, Bg, Box, [ColumnWidths]) ->
     box_styles:drawline(X, Y, Fg, Bg, Line),
     ok.
 
+draw_table(X,Y, Height,Fg,Bg,Box,ColumnWidths) ->
+
+    draw_header(X, Y,          Fg, Bg, Box,         ColumnWidths),
+    draw_rows(X,   Y + 1,      Fg, Bg, Box, Height, ColumnWidths),
+    draw_bottom(X, Y + Height, Fg, Bg, Box,         [ColumnWidths]).
+
+
 render(Widget) ->
     Bg = maps:get('background-color', Widget, black),
     Fg = maps:get(color, Widget, white),
@@ -64,8 +72,8 @@ render(Widget) ->
     ColumnWidths = maps:get(column_widths, Widget, [Width -1]),
 
     Box = box_styles:double(),
-
-    draw_header(X, Y, Fg, Bg, Box, ColumnWidths),
-    draw_rows(X, Y + 1, Fg, Bg, Box, Height, ColumnWidths),
-    draw_bottom(X, Y + Height, Fg, Bg, Box, [ColumnWidths]),
+    draw_table(X,Y, Height,Fg,Bg,Box,ColumnWidths),
+    %% draw_header(X, Y, Fg, Bg, Box, ColumnWidths),
+    %% draw_rows(X, Y + 1, Fg, Bg, Box, Height, ColumnWidths),
+    %% draw_bottom(X, Y + Height, Fg, Bg, Box, [ColumnWidths]),
     ok.

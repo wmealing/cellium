@@ -5,33 +5,21 @@
 
 -include_lib("cellium.hrl").
 
+
+
 % Example with nested vertical container
-nested_layout(Model) ->
-    #{
-        type => container,
-        id => main_container,
-        class => container_box,
-        orientation => horizontal,
-        children => [ model:maybe_set_focus(
-
-                       #{type => widget,
-                         widget_type => table,
-                         class => box,
-                         id => table_demo1,
-                         size => 20
-                        } ),
-
-                      model:maybe_set_focus(
-
-                        #{type => widget,
-                          widget_type => table,
-                          class => box,
-                          id => table_demo2,
-                          expand => true } )
-
-                ]
-            }.
-
+nested_layout(_Model) ->
+      #{type => container,
+        widget_type => frame,
+        class => frame,
+	width => 20,
+	height => 15,
+        id => frame1,
+        size => 10,
+        children => [
+                (box:new(foo1, 10, 10))#{ expand => true },
+                (box:new(foo2, 10, 10))#{ expand => true }]
+       }.
 
 start() ->
    cellium:start(#{module => ?MODULE,
