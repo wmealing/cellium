@@ -13,7 +13,7 @@ rebar-shell:
 	rebar3 shell --sname node1 --setcookie mysecretcookie 
 
 demo:
-	erl --sname node1 --setcookie mysecretcookie -noinput \
+	erl -sname node1 -setcookie mysecretcookie -noinput \
 	$(LIB_EBIN) $(TERMBOX_EBIN) $(EXTRAS_EBIN) -eval 'demo:start()'
 
 remsh:
@@ -42,3 +42,7 @@ dual_editor_nofocus:
 boxes:
 	rebar3 compile 
 	erl -sname node1 -setcookie mysecretcookie -noshell  -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'boxes:start()'
+
+progress:
+	rebar3 compile
+	erl -sname node2 -setcookie mysecretcookie -noshell  -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'progress_demo:start()'

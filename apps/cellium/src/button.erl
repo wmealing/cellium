@@ -25,6 +25,6 @@ render(Widget) ->
     YOffset = trunc( (Y2 - Y1) / 2) -1 ,
 
     text:draw_words(X1 + XOffset , Y1 + YOffset, X2, Y2, Bg, Fg , Label),
-    box:draw_box(X1, Y1, X2, Y2, Fg, Bg).
+    table:draw_box(X1, Y1, X2, Y2, Fg, Bg).
 
 

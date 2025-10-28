@@ -8,8 +8,9 @@
 
 new(Id, Orientation) ->
     (widget:new())#{orientation => Orientation,
+                    padding => #{top => 0, bottom => 0, left => 0, right => 0},
                     id => Id,
-                    widget_type => non_visible_container,
+                    widget_type => container,
                     type => container }.
 
 render(Container) ->

@@ -273,6 +273,9 @@ drawline(X, Y, Fg, Bg, Line) ->
                       BinLine
                       ).
 
+
+
+
 draw_horizontal_line(X1, _Y, X2, _Bg, _Fg) when X1 > X2 ->
     ok;
 
