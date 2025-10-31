@@ -1,0 +1,3 @@
+#{id => a_box,type => widget,expand => true,width => 10,
+  widget_type => box,height => 10,
+  padding => #{left => 0,right => 0,top => 0,bottom => 0}}. 

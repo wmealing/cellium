@@ -1,0 +1,77 @@
+#{type => container,
+  id => foo,
+  orientation => vertical,
+  children => [
+
+    #{type => widget,
+      widget_type => text,
+      id => demo1,
+      'background-color' => white,
+      color => black,
+      size => 2,
+      value => <<"BLACK">>},
+
+    #{type => widget,
+      widget_type => text,
+      id => demo2,
+      'background-color' => black,
+      color => red,
+      size => 2,
+      value => <<"RED">>},
+
+    #{type => widget,
+      widget_type => text,
+      id => green_widget,
+      'background-color' => black,
+      color => green,
+      size => 2,
+      value => <<"GREEN">>},
+
+    #{type => widget,
+      widget_type => text,
+      id => demo3,
+      'background-color' => black,
+      color => yellow,
+      size => 2,
+      value => <<"YELLOW">>},
+
+    #{type => widget,
+      widget_type => text,
+      id => demo3,
+      'background-color' => black,
+      color => blue,
+      size => 2,
+      value => <<"BLUE">>},
+
+    #{type => widget,
+      widget_type => text,
+      id => demo3,
+      'background-color' => black,
+      color => magenta,
+      size => 2,
+      value => <<"MAGENTA">>},
+
+    #{type => widget,
+      widget_type => text,
+      id => demo3,
+      'background-color' => black,
+      color => cyan,
+      size => 2,
+      value => <<"CYAN">>},
+
+    #{type => widget,
+      widget_type => text,
+      id => demo3,
+      'background-color' => black,
+      color => white,
+      size => 2,
+      value => <<"WHITE">>}
+
+]}.
+
+
+
+%% %%/* Colors (numeric) and attributes (bitwise) (`tb_cell.fg`, `tb_cell.bg`) */
+
+
+%% -define(TB_WHITE,  16#0008).

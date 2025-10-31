@@ -1,0 +1,5 @@
+#{type => widget,
+  widget_type => text,
+  id => demo1,
+  expand => true,
+  value => <<"HELLO THERE WORLD">> }.
