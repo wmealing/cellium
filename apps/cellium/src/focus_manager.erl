@@ -129,6 +129,7 @@ can_focus(WidgetId) ->
 -spec init(Config :: map() | []) ->
     {ok, State :: #state{}}.
 init(_Config) ->
+    logger:info("Starting focus manager"),
     {ok, #state{focusable_widgets = [], current_focus = none}}.
 
 %% @private

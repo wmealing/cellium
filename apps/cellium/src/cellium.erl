@@ -39,37 +39,23 @@ render_caller(Module, Model) ->
 %%%===================================================================
 
 init(#{module := Module}= Args) ->
-    logging:setup(),
-    ?TERMBOX:tb_init(),
     view:start_link(),
 
     AutoFocus = maps:get(auto_focus, Args, true),
-    ReportMouse = maps:get(report_mouse, Args, true),
-
-    case AutoFocus of
-         false ->
-            ok;
-         _ ->
-            focus_manager:start_link()
-    end,
-
-    case ReportMouse of
-        true ->
-            ?TERMBOX:tb_set_input_mode(4);
-        _ ->
-            % no mouse reporting.
-            ok
-    end,
 
     cellium_event_manager:start_link(?MODULE),
+
+    case AutoFocus of
+        true ->  focus_manager:start_link();
+        _ -> ok
+    end,
 
     {ok, Model} = Module:init([]),
 
     render_immediately(Module, Model),
 
     State = #{module => Module,
-              model => Model,
-              auto_focus => AutoFocus },
+              model => Model},
 
     {ok, State}.
 
@@ -119,7 +105,7 @@ keycodes(_AnythingElse) ->
     ignore.
 
 
-process_focus_event(#{auto_focus := true}, Event) ->
+process_focus_event(_State, Event) ->
    case keycodes(Event) of
        %% tab
        {9,0} ->
@@ -129,7 +115,4 @@ process_focus_event(#{auto_focus := true}, Event) ->
            focus_manager:move_focus_backward();
        _Other ->
            ok
-   end;
-
-process_focus_event(_State, _Event) ->
-    ignore.
+   end.

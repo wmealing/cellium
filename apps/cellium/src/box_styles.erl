@@ -179,6 +179,7 @@ horizontals() ->
         bottom_left = " ", bottom = "─", bottom_divider = "─", bottom_right = " "
     }.
 
+
 rounded() ->
     #box{
         top_left = "╭", top = "─", top_divider = "┬", top_right = "╮",

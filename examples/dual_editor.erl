@@ -49,21 +49,23 @@ register_editors() ->
     focus_manager:register_widget(editor1),
     focus_manager:register_widget(editor2).
 
-%% Extract the key code from the keyboard event
-get_key_code({tb_event, key, _, {keydata, Code1, Code2}}) ->
-    {Code1, Code2}.
+%% Extract the key code and modifiers from the keyboard event
+get_key_code({tb_event, key, {mod, Modifiers}, {keydata, Code1, Code2}}) ->
+    {Code1, Code2, Modifiers}.
 
 %% Update the model based on user input or focus changes
 update(Model, Msg) ->
-    KeyCode = get_key_code(Msg),
-    logger:info("CHECKING FOR SHIFT TAB: ~p~n", [KeyCode]),
-    update_based_on_key(KeyCode, Model).
+    {Code1, Code2, Modifiers} = get_key_code(Msg),
+    logger:info("*********** ~p ~p ~p", [Code1, Code2, Modifiers]),
+    update_based_on_key({Code1, Code2, Modifiers}, Model).
 
-update_based_on_key({9, 0}, Model) ->
-    move_focus_forward(Model);
-update_based_on_key({65513,0}, Model) ->
-    move_focus_backward(Model);
-update_based_on_key({4,0}, _Model) ->
+update_based_on_key({9, 0, 2}, Model) -> %% Tab without modifiers
+    {ok, NewFocused} = focus_manager:get_focused(),
+    Model#{focused := NewFocused};
+update_based_on_key({65513, 0, 0}, Model) -> %% Shift+Tab (TB_KEY_BACK_TAB) without modifiers
+    {ok, NewFocused} = focus_manager:get_focused(),
+    Model#{focused := NewFocused};
+update_based_on_key({4, 0, 0}, _Model) -> %% Ctrl+D without modifiers
     cellium:stop(),
     init:stop();
 update_based_on_key(KeyCode, Model) ->
@@ -82,10 +84,10 @@ move_focus_backward(Model) ->
     Model#{focused := NewFocused}.
 
 %% Update the currently focused editor with the key input
-update_focused_editor(KeyCode, #{focused := Focused} = Model) ->
+update_focused_editor({Code1, Code2, _Modifiers}, #{focused := Focused} = Model) ->
     logger:info("UFE DEBUG 1: ~p~n", [Focused]),
     EditorContent = maps:get(Focused, Model),
-    UpdatedContent = apply_key_to_text(KeyCode, EditorContent),
+    UpdatedContent = apply_key_to_text({Code1, Code2}, EditorContent),
     logger:info("UFE DEBUG 2: ~p~n", [UpdatedContent]),
     Model#{Focused := UpdatedContent}.
 

@@ -27,8 +27,8 @@ calculate_layout(Container) ->
 
     X = maps:get(x, Container, 0) + PaddingLeft,
     Y = maps:get(y, Container, 0) + PaddingTop,
-    Width = maps:get(width, Container, ?TERMBOX:tb_width()) - PaddingLeft - PaddingRight,
-    Height = maps:get(height, Container, ?TERMBOX:tb_height()) - PaddingTop - PaddingBottom,
+    Width = max(0, maps:get(width, Container, ?TERMBOX:tb_width()) - PaddingLeft - PaddingRight),
+    Height = max(0, maps:get(height, Container, ?TERMBOX:tb_height()) - PaddingTop - PaddingBottom),
 
 
     if

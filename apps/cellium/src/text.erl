@@ -35,7 +35,7 @@ render(Widget) ->
     Words = maps:get(value, Widget, <<"NO TEXT">>),
 
     WrappedWords = greedy_wrap:word_wrap(Words, Width),
-    draw_lines_of_text(X,Y,Fg,Bg, Height - 1, WrappedWords),
+    draw_lines_of_text(X,Y,Fg,Bg, Height, WrappedWords),
     ok.
 
 
