@@ -43,9 +43,26 @@ init(#{module := Module}= Args) ->
     ?TERMBOX:tb_init(),
     view:start_link(),
 
-    AutoFocus = maps:get(auto_focus, Args, true),
 
-    focus_manager:start_link(),
+    AutoFocus = maps:get(auto_focus, Args, true),
+    ReportMouse = maps:get(report_mouse, Args, true),
+
+    case AutoFocus of
+        true ->
+            focus_manager:start_link();
+        _ ->
+           % we're not starting auto focus.
+            ok
+    end,
+
+    case ReportMouse of
+        true ->
+            ?TERMBOX:tb_set_input_mode(4);
+        _ ->
+            % no mouse reporting.
+            ok
+    end,
+
     cellium_event_manager:start_link(?MODULE),
 
     {ok, Model} = Module:init([]),
