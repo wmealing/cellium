@@ -3,6 +3,7 @@
 -export([new/2, render/1, set_percentage/2]).
 
 -include("cellium.hrl").
+-import(widget, [get_common_props/1]).
 
 new(Id, Percentage) ->
     (widget:new())#{
@@ -15,11 +16,8 @@ new(Id, Percentage) ->
     }.
 
 render(Widget) ->
-    Bg = maps:get('background-color', Widget, ?DEFAULT_BG_COLOR),
-    Fg = maps:get(color, Widget, ?DEFAULT_FG_COLOR),
+    #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
     
-    X = maps:get(x, Widget, 0),
-    Y = maps:get(y, Widget, 0),
     Percentage = maps:get(value, Widget, 0),
     
     Bar = build_bar(Percentage),

@@ -2,6 +2,7 @@
 -export([new/2, render/1, toggle/1]).
 
 -include("cellium.hrl").
+-import(widget, [get_common_props/1]).
 
 -spec new(term(), binary()) -> map().
 new(Id, Label) ->
@@ -18,14 +19,10 @@ new(Id, Label) ->
                     }.
 
 render(Widget) ->
-    X = maps:get(x, Widget, 0),
-    Y = maps:get(y, Widget, 0),
     Checked = maps:get(checked, Widget),
     Label = maps:get(label, Widget),
 
-    %% what ?
-    Bg = maps:get('background-color', Widget, ?DEFAULT_BG_COLOR),
-    Fg = maps:get(color, Widget, ?DEFAULT_FG_COLOR),
+    #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     case Checked of
         true ->

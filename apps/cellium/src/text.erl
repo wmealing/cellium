@@ -12,6 +12,7 @@
 -export([draw_lines_of_text/6, render/1, new/2]).
 
 -include("cellium.hrl").
+-import(widget, [get_common_props/1]).
 
 %%%===================================================================
 %%% API
@@ -26,11 +27,7 @@ new(Id, Words) ->
 }.
 
 render(Widget) ->
-    Bg = maps:get('background-color', Widget, ?DEFAULT_BG_COLOR),
-    Fg = maps:get(color, Widget, ?DEFAULT_FG_COLOR),
-
-    X = maps:get(x, Widget, 0),
-    Y = maps:get(y, Widget, 0),
+    #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     Width = maps:get(width, Widget, 0),
     Height = maps:get(height, Widget, 0),
@@ -51,7 +48,7 @@ render(Widget) ->
 draw_word(_X, _Y, _Fg, _Bg, []) ->
     ok;
 
-draw_word(X,Y, Bg, Fg, Word) ->
+draw_word(X,Y, Fg, Bg, Word) ->
     ?TERMBOX:tb_print(X,
                       Y,
                       Fg,
@@ -72,9 +69,9 @@ draw_lines_of_text(X, Y, Bg, Fg, Space, WordList) ->
     [FirstLine | Rest] = WordList,
     case FirstLine of
         <<"">> ->
-            draw_word(X, Y, Fg, Bg, <<"\n">>);
+            draw_word(X, Y, Bg, Fg, <<"\n">>);
         _ ->
-            draw_word(X, Y, Fg, Bg, FirstLine)
+            draw_word(X, Y, Bg, Fg, FirstLine)
     end,
 
     draw_lines_of_text(X, Y + 1, Fg, Bg, Space - 1 , Rest).

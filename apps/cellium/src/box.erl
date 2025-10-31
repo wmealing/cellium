@@ -6,6 +6,7 @@
 -export([render/1, new/3]).
 
 -include("cellium.hrl").
+-import(widget, [get_common_props/1]).
 
 new(Id, Width, Height) ->
     (widget:new())#{id => Id,
@@ -15,10 +16,9 @@ new(Id, Width, Height) ->
                     type => widget }.
 
 render(Widget) ->
-    Id = maps:get(id, Widget, undefined),
-    Bg = maps:get('background-color', Widget, ?DEFAULT_BG_COLOR),
-    Fg = maps:get(color, Widget, ?DEFAULT_FG_COLOR),
     HasFocus = maps:get(has_focus, Widget, false),
+
+    #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     BoxStyle =
         case HasFocus of
@@ -27,9 +27,6 @@ render(Widget) ->
             false ->
                 box_styles:square()
         end,
-
-    X = maps:get(x, Widget, 0),
-    Y = maps:get(y, Widget, 0),
 
     Height = maps:get(height,Widget, 0),
     Width = maps:get(width, Widget, 0),

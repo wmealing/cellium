@@ -3,24 +3,20 @@
 -export([render/1, new/1]).
 
 -include("cellium.hrl").
+-import(widget, [get_common_props/1]).
 
 new(Id) ->
     (widget:new())#{id => Id,
-                    type => container,
                     widget_type => visible_container,
                     padding => #{top => 1, bottom => 1, left => 1, right => 1},
                     type => container }.
 
 render(Widget) ->
 
-    X = maps:get(x, Widget, 0),
-    Y = maps:get(y, Widget, 0),
+    #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     Width = maps:get(width, Widget, 0),
     Height = maps:get(height, Widget, 0),
-
-    Bg = maps:get('background-color', Widget, ?DEFAULT_BG_COLOR),
-    Fg = maps:get(color, Widget, ?DEFAULT_FG_COLOR),
 
     FrameTitle = maps:get(text, Widget, <<"Untitled">>),
 

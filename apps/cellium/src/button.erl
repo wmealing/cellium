@@ -3,6 +3,7 @@
 -export([render/1, new/2]).
 
 -include("cellium.hrl").
+-import(widget, [get_common_props/1]).
 
 new(Text, Callback) ->
     (widget:new())#{label => Text,
@@ -10,12 +11,9 @@ new(Text, Callback) ->
                     callback => Callback}.
 
 render(Widget) ->
-    Bg = maps:get('background-color', Widget, black),
-    Fg = maps:get(color, Widget, white),
+    #{x := X1, y := Y1, fg := Fg, bg := Bg} = get_common_props(Widget),
 
-    X1 = maps:get(x, Widget),
     X2 = X1 + maps:get(width, Widget, 0),
-    Y1 = maps:get(y, Widget),
     Y2 = Y1 + maps:get(height, Widget, 0),
     Label = maps:get(label, Widget, [<<"NO TEXT">>]),
 

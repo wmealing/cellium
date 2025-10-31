@@ -9,6 +9,7 @@
 ]).
 
 -include("cellium.hrl").
+-import(widget, [get_common_props/1]).
 
 build_line(_Box, [], Left, _Horizontal, _Divider, Right) ->
     [Left, Right];
@@ -60,11 +61,7 @@ draw_table(X,Y, Height,Fg,Bg,Box,ColumnWidths) ->
 
 
 render(Widget) ->
-    Bg = maps:get('background-color', Widget, black),
-    Fg = maps:get(color, Widget, white),
-
-    X = maps:get(x, Widget),
-    Y = maps:get(y, Widget),
+    #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     Width = maps:get(width, Widget, 0),
     Height = maps:get(height, Widget, 0),

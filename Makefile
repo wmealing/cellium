@@ -17,6 +17,10 @@ table_demo:
 	erl -sname node1 -setcookie mysecretcookie -noshell  -noinput \
 	$(LIB_EBIN) $(TERMBOX_EBIN) $(EXTRAS_EBIN) -eval 'table_demo:start()'
 
+advanced_table_demo:
+	erl -sname node1 -setcookie mysecretcookie -noshell  -noinput \
+	$(LIB_EBIN) $(TERMBOX_EBIN) $(EXTRAS_EBIN) -eval 'advanced_table_demo:start()'
+
 
 
 
