@@ -27,7 +27,7 @@ get_row(Box, Level, Widths) ->
     {Left, Horizontal, Cross, Right} = case Level of
         head -> {Box#box.head_row_left, Box#box.head_row_horizontal, Box#box.head_row_cross, Box#box.head_row_right};
         row ->  {Box#box.row_left,      Box#box.row_horizontal,      Box#box.row_cross,      Box#box.row_right};
-        mid ->  {Box#box.mid_left,      " ",                         Box#box.mid_vertical,   Box#box.mid_right};
+        mid ->  {Box#box.mid_left,      "-",                         Box#box.mid_vertical,   Box#box.mid_right};
         foot -> {Box#box.foot_row_left, Box#box.foot_row_horizontal, Box#box.foot_row_cross, Box#box.foot_row_right}
     end,
     lists:flatten(build_line(Box, Widths, Left, Horizontal, Cross, Right)).

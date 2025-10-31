@@ -30,6 +30,7 @@ calculate_layout(Container) ->
     Width = maps:get(width, Container, ?TERMBOX:tb_width()) - PaddingLeft - PaddingRight,
     Height = maps:get(height, Container, ?TERMBOX:tb_height()) - PaddingTop - PaddingBottom,
 
+
     if
         Children == [] ->
             Container;
