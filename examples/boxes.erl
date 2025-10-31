@@ -36,13 +36,13 @@ init(_Ignored) ->
     focus_manager:register_widget(box4),
     {ok, box1}.
 
-update(Model, Event) ->
+update(_Model, _Event) ->
     L = [box1, box2, box3, box4],
     NextFor = lists:zip(L, tl(L) ++ [hd(L)]),
     Next = proplists:get_value(box3, NextFor),
     Next.
 
-render(Model) ->
+render(_Model) ->
     M = simple(),
     M.
 

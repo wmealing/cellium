@@ -2,6 +2,7 @@
 
 -export([tb_init/0, tb_clear/0, tb_present/0, tb_shutdown/0, tb_set_cell/5]).
 -export([tb_width/0, tb_height/0, tb_poll_event/0, tb_print/5]).
+-export([tb_set_input_mode/1, tb_set_output_mode/1]).
 
 -include("cellium.hrl").
 
@@ -22,14 +23,14 @@ tb_set_cell(X,Y,Ch,Bg,Fg) ->
     TermboxFg = lookup(Fg),
     termbox2_nif:tb_set_cell(X, Y, Ch, TermboxFg, TermboxBg).
 
-tb_print(X, Y, Fg, Bg, Str) when is_integer(Bg) and is_integer(Fg) ->
-    TermboxBg = ?TB_BLACK,
-    TermboxFg = ?TB_WHITE,
-    termbox2_nif:tb_print(X, Y, TermboxFg, TermboxBg, Str);
+%% tb_print(X, Y, Fg, Bg, Str) when is_integer(Bg) and is_integer(Fg) ->
+%%     TermboxBg = lookup(Bg), 
+%%     TermboxFg = lookup(Fg),
+%%     termbox2_nif:tb_print(X, Y, TermboxFg, TermboxBg, Str);
 
-tb_print(X, Y, _Fg, _Bg, Str) ->
-    TermboxBg = ?TB_BLACK,
-    TermboxFg = ?TB_WHITE,
+tb_print(X, Y, Fg, Bg, Str) ->
+    TermboxBg = lookup(Bg),
+    TermboxFg = lookup(Fg),
     termbox2_nif:tb_print(X, Y, TermboxFg, TermboxBg, Str).
 
 tb_width() ->
@@ -40,6 +41,27 @@ tb_height() ->
 
 tb_poll_event() ->
     termbox2_nif:tb_poll_event().
+
+%% #define TB_INPUT_CURRENT    0
+%% #define TB_INPUT_ESC        1
+%% #define TB_INPUT_ALT        2
+%% #define TB_INPUT_MOUSE      4
+tb_set_input_mode(Modes) ->
+    logger:info("Setting input mode: ~p", [Modes]),
+    termbox2_nif:tb_set_input_mode(Modes).
+
+%% #define TB_OUTPUT_CURRENT   0
+%% #define TB_OUTPUT_NORMAL    1
+%% #define TB_OUTPUT_256       2
+%% #define TB_OUTPUT_216       3
+%% #define TB_OUTPUT_GRAYSCALE 4
+%% #if TB_OPT_ATTR_W >= 32
+%% #define TB_OUTPUT_TRUECOLOR 5
+%% #endif
+
+tb_set_output_mode(Mode) ->
+    logger:info("Setting output mode: ~p", [Mode]),
+    termbox2_nif:tb_set_output_mode(Mode).
 
 %% #define TB_DEFAULT              0x0000
 %% #define TB_BLACK                0x0001
@@ -69,9 +91,8 @@ lookup('black') ->
     ?TB_BLACK;
 lookup('default') ->
     ?TB_DEFAULT;
-
-lookup(What) ->
-    1.
+lookup(_What) ->
+    ?TB_DEFAULT.
 
 
 

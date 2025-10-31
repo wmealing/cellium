@@ -69,11 +69,12 @@ render(Widget) ->
     Width =  maps:get(width, Widget, 0),
     Height = maps:get(height, Widget, 0),
 
+    Style = maps:get(style, Widget, double),
+    Box = box_styles:Style(),
+
+    %% Box = box_styles:double(),
+
     ColumnWidths = maps:get(column_widths, Widget, [Width -1]),
 
-    Box = box_styles:double(),
     draw_table(X,Y, Height,Fg,Bg,Box,ColumnWidths),
-    %% draw_header(X, Y, Fg, Bg, Box, ColumnWidths),
-    %% draw_rows(X, Y + 1, Fg, Bg, Box, Height, ColumnWidths),
-    %% draw_bottom(X, Y + Height, Fg, Bg, Box, [ColumnWidths]),
     ok.

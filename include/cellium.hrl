@@ -12,14 +12,21 @@
 -define(TB_CYAN,   16#0007).
 -define(TB_WHITE,  16#0008).
 
+-define(TB_OUTPUT_CURRENT,   0).
+-define(TB_OUTPUT_NORMAL,    1).
+-define(TB_OUTPUT_256,       2).
+-define(TB_OUTPUT_216,       3).
+-define(TB_OUTPUT_GRAYSCALE, 4).
+-define(TB_OUTPUT_TRUECOLOR, 5).
+
 %%  0008ca://github.com/termbox/termbox2/blob/ffd159c2a6106dd5eef338a6702ad15d4d4aa809/termbox2.h#L261
 %% -define(TB_BOLD      ,0x0100
 %% -define(TB_UNDERLINE ,0x0200
 %% -define(TB_REVERSE   ,0x0400
 %% -define(TB_ITALIC    ,0x0800
 %% -define(TB_BLINK     ,0x1000
-%% -define(TB_HI_BLACK  ,0x2000
-%% -define(TB_BRIGHT    ,0x4000
+%% -define(TB_HI_BLACK  ,0x2000).
+%% -define(TB_BRIGHT,   ,16#4000).
 %% -define(TB_DIM       ,0x8000
 %% -define(TB_256_BLACK TB_HI_BLACK // `TB_256_BLACK` is deprecated
 
@@ -40,11 +47,16 @@
 %% -define(TB_TRUECOLOR_BLACK     TB_HI_BLACK
 
 
-
 %% -define(TB_STRIKEOUT   ,0x0000000100000000
 %% -define(TB_UNDERLINE_2 ,0x0000000200000000
 %% -define(TB_OVERLINE    ,0x0000000400000000
 %% -define(TB_INVISIBLE   ,0x0000000800000000
+
+
+-define(TB_INPUT_CURRENT,    0).
+-define(TB_INPUT_ESC,        1).
+-define(TB_INPUT_ALT,        2).
+-define(TB_INPUT_MOUSE,      4).
 
 -define(DEFAULT_BG_COLOR, 16#0001).
 -define(DEFAULT_FG_COLOR, 16#0008).
