@@ -29,9 +29,7 @@ update(#{x := X, y := Y, blocks := ExistingBlocks} = Model, Msg) ->
             cellium:stop(),
             Model;
         {tb_event, mouse, {buttons, _B}, {pos, {MouseX, MouseY}}} ->
-            AdjustedX = MouseX - 3,
-            logger:info("Mouse: ~p:~p, Adjusted: ~p:~p", [MouseX, MouseY, AdjustedX, MouseY]),
-            NewBlocks = ExistingBlocks ++ [#{x => AdjustedX, y => MouseY}],
+            NewBlocks = ExistingBlocks ++ [#{x => MouseX, y => MouseY}],
             #{x => MouseX, y => MouseY, blocks => NewBlocks };
         _AnythingElse ->
 	    logger:info("unknown event: ~p", [Msg]),
