@@ -80,8 +80,8 @@ update(State) ->
     RootWidget = State#state.root_widget,
 
     Layout = layout:calculate_layout(RootWidget,
-                                     ?TERMBOX:tb_width() - 1,
-                                     ?TERMBOX:tb_height() - 1),
+                                     ?TERMBOX:tb_width(),
+                                     ?TERMBOX:tb_height()),
 
     Style = css:load_stylesheet("priv/default_theme.css"),
 
