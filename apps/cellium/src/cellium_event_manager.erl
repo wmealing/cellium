@@ -117,7 +117,7 @@ handle_cast(_Request, State) ->
           {noreply, NewState :: term(), hibernate} |
           {stop, Reason :: normal | term(), NewState :: term()}.
 
-handle_info(_Info, #state{event_target=EventTarget} = State) ->
+handle_info(_Info, State) ->
     Event = ?TERMBOX:tb_poll_event(),
     erlang:send_after(?TICK_INTERVAL, self(), tick),
     logger:info("POLL EVENT IS: ~p", [Event]),

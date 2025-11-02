@@ -10,8 +10,14 @@ calculate_layout(Widget, Width, Height) ->
 
 %% @doc Recursively realizes the layout of a container by calculating the x, y, width,
 %% and height for all its children.
+
 -spec calculate_layout(map()) -> map().
+calculate_layout(#{position := absolute} = Widget) ->
+    logger:debug("IGNORING LAYOUT FOR WIDGET ~p", [Widget]),
+    Widget;
+
 calculate_layout(Container) ->
+
     Children = maps:get(children, Container, []), 
     Orientation = maps:get(orientation, Container, horizontal),
 
@@ -19,6 +25,7 @@ calculate_layout(Container) ->
         frame -> #{top => 1, right => 1, bottom => 1, left => 1};
         _ -> #{top => 0, right => 0, bottom => 0, left => 0}
     end,
+
     Padding = maps:get(padding, Container, DefaultPadding),
     PaddingTop = maps:get(top, Padding, 0),
     PaddingRight = maps:get(right, Padding, 0),
@@ -31,10 +38,9 @@ calculate_layout(Container) ->
     Height = max(0, maps:get(height, Container, ?TERMBOX:tb_height()) - PaddingTop - PaddingBottom),
 
 
-    if
-        Children == [] ->
+    if Children == [] ->
             Container;
-        true ->
+       true ->
             % Calculate fixed and expand children
             % Note: expand takes priority over size
             ExpandChildren = [Child || Child <- Children, maps:is_key(expand, Child)],
@@ -83,15 +89,25 @@ calculate_layout(Container) ->
 
             % Assign final coordinates and dimensions, including gaps
             {RealizedChildren, _} =
-                lists:foldl(fun({Index, Child}, {Acc, CurrentOffset}) ->
+                lists:foldl(fun({Index, Child}, {Acc, CurrentOffset}) ->                    
+                    % Check if child has absolute positioning
+                    IsAbsolute = maps:get(position, Child, relative) =:= absolute,
+                    
                     ChildSize = maps:get(size, Child, 0),
                     Gap = 0,
 
-                    RealizedChild = case Orientation of
-                        horizontal ->
-                            Child#{x => X + CurrentOffset + Gap, y => Y, width => ChildSize, height => Height};
-                        vertical ->
-                            Child#{x => X, y => Y + CurrentOffset + Gap, width => Width, height => ChildSize}
+                    RealizedChild = case IsAbsolute of
+                        true ->
+                            % Keep original x,y for absolute positioned widgets
+                            Child;
+                        false ->
+                            % Apply layout positioning for relative widgets
+                            case Orientation of
+                                horizontal ->
+                                    Child#{x => X + CurrentOffset + Gap, y => Y, width => ChildSize, height => Height};
+                                vertical ->
+                                    Child#{x => X, y => Y + CurrentOffset + Gap, width => Width, height => ChildSize}
+                            end
                     end,
                     % Recursively realize child containers
                     RealizedChildContainer = 
