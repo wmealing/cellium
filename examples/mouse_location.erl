@@ -37,16 +37,16 @@ update(#{x := X, y := Y} = Model, Msg) ->
 
 render(#{x := X, y := Y}) ->
     CounterLabel = io_lib:bformat("Location: ~p:~p ", [X,Y]),
-    #{type => floating_container,
+    #{type => container,
       id => main_container,
+      size => 10,
       orientation => horizontal,
       children => [
                    #{type => widget,
                      widget_type => text,
+	             size => 3,
                      id => demo1,
-                     value => CounterLabel,
-		     x => X,
-		     y => Y }]}.
+                     value => CounterLabel }]}.
 
 start() ->
    cellium:start(#{module => ?MODULE, report_mouse => true }).

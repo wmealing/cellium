@@ -42,12 +42,21 @@ init(#{module := Module}= Args) ->
     view:start_link(),
 
     AutoFocus = maps:get(auto_focus, Args, true),
+    ReportMouse = maps:get(report_mouse, Args, false),
 
     cellium_event_manager:start_link(?MODULE),
 
     case AutoFocus of
         true ->  focus_manager:start_link();
         _ -> ok
+    end,
+
+    case ReportMouse of
+        true ->
+            logger:debug("ENABLED MOUSE REPORTING"),
+            ?TERMBOX:tb_set_input_mode(4);
+        _ ->
+            logger:debug("NO MOUSE REPORTING")
     end,
 
     {ok, Model} = Module:init([]),
