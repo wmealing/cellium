@@ -107,5 +107,3 @@ calculate_layout(Container) ->
 
             Container#{children => RealizedChildren}
     end.
-
-
