@@ -22,8 +22,7 @@ update(#{checkbox :=  S} = Model, Msg) ->
           Model
     end.
 
-render(Model) ->
-    #{checkbox := S} = Model,
+render(_Model) ->
     W1 = (checkbox:new(one, <<"CHECKBOX1">>))#{checked => true,
                                                color => ?TB_WHITE,
                                                expand => true},

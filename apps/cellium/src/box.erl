@@ -31,5 +31,5 @@ render(Widget) ->
     Height = maps:get(height,Widget, 0),
     Width = maps:get(width, Widget, 0),
 
-    table:draw_table(X, Y, Height, Fg,Bg, BoxStyle, [Width -1]),
+    table:draw_table(X, Y, Height - 1, Fg,Bg, BoxStyle, [Width - 2]),
     ok.

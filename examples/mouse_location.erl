@@ -49,4 +49,4 @@ render(#{x := X, y := Y}) ->
 		     y => Y }]}.
 
 start() ->
-   cellium:start(#{module => ?MODULE, mouse => true }).
+   cellium:start(#{module => ?MODULE, report_mouse => true }).

@@ -41,17 +41,16 @@ calculate_layout(Container) ->
             FixedChildren = [Child || Child <- Children, 
                            maps:is_key(size, Child) andalso not maps:is_key(expand, Child)],
 
-            % Calculate available space based on orientation, accounting for gaps
-            NumGaps = length(Children) - 1,
+            % Calculate available space based on orientation
             case Orientation of
                 horizontal ->
                     ParentSize = Width,
                     FixedSizeSum = lists:sum([maps:get(size, Child) || Child <- FixedChildren]),
-                    AvailableSpace = ParentSize - FixedSizeSum - NumGaps;
+                    AvailableSpace = ParentSize - FixedSizeSum;
                 vertical ->
                     ParentSize = Height,
                     FixedSizeSum = lists:sum([maps:get(size, Child) || Child <- FixedChildren]),
-                    AvailableSpace = ParentSize - FixedSizeSum - NumGaps
+                    AvailableSpace = ParentSize - FixedSizeSum
             end,
 
             ExpandCount = length(ExpandChildren),
@@ -86,7 +85,7 @@ calculate_layout(Container) ->
             {RealizedChildren, _} =
                 lists:foldl(fun({Index, Child}, {Acc, CurrentOffset}) ->
                     ChildSize = maps:get(size, Child, 0),
-                    Gap = if Index == 0 -> 0; true -> 1 end,
+                    Gap = 0,
 
                     RealizedChild = case Orientation of
                         horizontal ->

@@ -5,7 +5,10 @@
     get_row/3,
     get_bottom/2,
     draw_table/7,
-    render/1
+    render/1,
+    draw_header/6,
+    draw_bottom/6
+
 ]).
 
 -include("cellium.hrl").

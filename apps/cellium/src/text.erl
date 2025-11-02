@@ -63,19 +63,15 @@ draw_lines_of_text(_X, _Y,  _Bg, _Fg, 0, _l) ->
 draw_lines_of_text(_X, _Y,  _Bg, _Fg, _Space, []) ->
     ok;
 
-
-%% otherwise draw the lines.
 draw_lines_of_text(X, Y, Bg, Fg, Space, WordList) ->
     [FirstLine | Rest] = WordList,
     case FirstLine of
         <<"">> ->
-            draw_word(X, Y, Bg, Fg, <<"\n">>);
+            ok;  %% Just skip empty lines, don't draw anything
         _ ->
             draw_word(X, Y, Bg, Fg, FirstLine)
     end,
-
     draw_lines_of_text(X, Y + 1, Fg, Bg, Space - 1 , Rest).
-
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================

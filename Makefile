@@ -21,8 +21,8 @@ advanced_table_demo:
 	erl -sname node1 -setcookie mysecretcookie -noshell  -noinput \
 	$(LIB_EBIN) $(TERMBOX_EBIN) $(EXTRAS_EBIN) -eval 'advanced_table_demo:start()'
 
-
-
+node1:
+	erl -sname node1 -setcookie mysecretcookie -noshell  -noinput $(LIB_EBIN) $(TERMBOX_EBIN) $(EXTRAS_EBIN)
 
 rebar-shell:
 	rebar3 shell --sname node1 --setcookie mysecretcookie 
@@ -37,14 +37,8 @@ remsh:
 test:
 	rebar3 shell --eval "demo:simple()."
 
-go:
-	erl --sname node1 --setcookie mysecretcookie -noinput -pa _build/default/lib/*/ebin -pa _checkouts/termbox2_nif/_build/default/lib/termbox2_nif/ebin  
-
-counter:
-	erl -sname node1 -setcookie mysecretcookie -noshell  -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'counter:start()'
-
 editor:
-	erl -sname node1 -setcookie mysecretcookie -noshell  -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'editor:start()'
+	erl -sname node1 -setcookie mysecretcookie -noshell  -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin $(EXTRAS_EBIN) -eval 'editor:start()'
 
 dual_editor:
 	rebar3 compile 
@@ -76,6 +70,10 @@ floating:
 checkbox_demo:
 	rebar3 compile
 	erl -sname node1 -setcookie mysecretcookie -noshell -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'checkbox_demo:start()'
+
+editable_table_demo:
+	rebar3 compile
+	erl -sname node1 -setcookie mysecretcookie -noshell -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'editable_table_demo:start()'
 
 
 

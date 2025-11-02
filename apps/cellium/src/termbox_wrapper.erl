@@ -91,8 +91,34 @@ lookup('black') ->
     ?TB_BLACK;
 lookup('default') ->
     ?TB_DEFAULT;
-lookup(_What) ->
+lookup('bright_white') ->
+    ?TB_BRIGHT bor ?TB_WHITE;
+lookup('bright_cyan') ->
+    ?TB_BRIGHT bor ?TB_CYAN;
+lookup('bright_magenta') ->
+    ?TB_BRIGHT bor ?TB_MAGENTA;
+lookup('bright_blue') ->
+    ?TB_BRIGHT bor ?TB_BLUE;
+lookup('bright_yellow') ->
+    ?TB_BRIGHT bor ?TB_YELLOW;
+lookup(bright_green) ->
+    logger:info("BRIGHT GREEN", []),
+    ?TB_BRIGHT bor ?TB_GREEN;
+lookup('bright_red') ->
+    ?TB_BRIGHT bor ?TB_RED;
+lookup('bright_black') ->
+    ?TB_BRIGHT bor ?TB_BLACK;
+lookup(67108872) ->
+    ?TB_BRIGHT bor ?TB_RED;
+lookup(8) ->
+    ?TB_DEFAULT;
+lookup(2) ->
+    ?TB_DEFAULT;
+lookup(1) ->
     ?TB_DEFAULT.
+
+
+
 
 
 
