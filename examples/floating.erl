@@ -22,25 +22,72 @@ init(_Args) ->
     Model = #{},
     {ok, Model}.
 
-update(_Model, _Msg) ->
-    #{}.
+update(Model, Msg) ->
+    case Msg of
+        {tb_event, key, _ ,{keydata, _ ,$q}} ->
+            cellium:stop(),
+            Model;
+        _AnythingElse ->
+            Model
+    end.
+
 
 render(_Model) ->
+    Boxes = boxes(),
     FloatingBox = floating_container:new(float_box, horizontal, 5, 5, 30, 8),
     FloatingBoxWithChildren =
         FloatingBox#{
         children => [
             #{type => widget,
               widget_type => frame,
+              position => absolute,
+              text => <<"float">>,
               id => content,
               value => <<"This is a floating box!">>,
-              x => 2,
-              y => 3,
-              width => 26,
+              x => 10,
+              y => 20,
+              width => 10,
               height => 5}
         ]
     },
-    FloatingBoxWithChildren.
+
+    #{type => container,
+      id => main_container,
+      orientation => horizontal,
+      children => [
+                   Boxes,
+                   FloatingBoxWithChildren
+                  ]}.
+
+
 
 start() ->
     cellium:start(#{module => ?MODULE}).
+
+
+%% internal
+boxes() ->
+    (container:new(container1, vertical))#{id => outer,
+                                           expand => true,
+                                           children => [
+
+    (container:new(container2, horizontal))#{id => inner1,
+                                             expand => true,
+                                             children => [
+                                                          model:maybe_set_focus((box:new(box1, 10, 10))#{ expand => true })
+                                                          ]},
+
+     (container:new(container2, horizontal))#{id => inner2,
+                                             expand => true,
+                                             children => [
+                                                          model:maybe_set_focus((box:new(box2, 10, 10))#{ expand => true }),
+                                                          model:maybe_set_focus((box:new(box3, 10, 10))#{ expand => true }),
+                                                          model:maybe_set_focus((box:new(box4, 10, 10))#{ expand => true })
+                                                          ]},
+     (container:new(container2, horizontal))#{id => inner3,
+                                             expand => true,
+                                             children => [
+                                                          model:maybe_set_focus((box:new(box5, 10, 10))#{ size => 20 }),
+                                                          model:maybe_set_focus((box:new(box6, 10, 10))#{ expand => true })
+                                                          ]}
+                                                       ]}.
