@@ -43,6 +43,9 @@ init(#{module := Module}= Args) ->
 
     AutoFocus = maps:get(auto_focus, Args, true),
     ReportMouse = maps:get(report_mouse, Args, false),
+    ColorType = maps:get(color_type, Args, output_normal),
+
+
 
     cellium_event_manager:start_link(?MODULE),
 
@@ -57,6 +60,15 @@ init(#{module := Module}= Args) ->
             ?TERMBOX:tb_set_input_mode(4);
         _ ->
             logger:debug("NO MOUSE REPORTING")
+    end,
+
+    case ColorType of
+        none ->
+            ?TERMBOX:tb_set_output_mode(4);
+        truecolor ->
+            ?TERMBOX:tb_set_output_mode(5);
+        256  ->
+            ?TERMBOX:tb_set_output_mode(2)
     end,
 
     {ok, Model} = Module:init([]),
