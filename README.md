@@ -344,4 +344,4 @@ $ rebar3 compile
 
 ## License
 
-This software is released under the MIT License.
+This software is released under the Apache 2.0 license. 
