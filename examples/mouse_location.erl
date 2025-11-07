@@ -23,7 +23,7 @@ init(_Args) ->
     {ok, Model}.
 
 %% this function mutates the model.
-update(#{x := X, y := Y, blocks := ExistingBlocks} = Model, Msg) ->
+update(#{blocks := ExistingBlocks} = Model, Msg) ->
     case Msg of
         {tb_event, key, _ ,{keydata, _ ,$q}} ->
             cellium:stop(),

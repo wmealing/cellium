@@ -35,15 +35,17 @@ render(Widget) ->
     Words = maps:get(value, Widget, <<"NO TEXT">>),
 
     WrappedWords = greedy_wrap:word_wrap(Words, Width),
+    logger:info("Wrapping at width: ~p", [Width]),
     draw_lines_of_text(X,Y,Fg,Bg, Height, WrappedWords),
     ok.
 
 
-
-draw_word(_X, _Y, _Fg, _Bg, []) ->
+draw_line(_X, _Y, _Fg, _Bg, []) ->
+    logger:info("EOF"),
     ok;
 
-draw_word(X,Y, Fg, Bg, Word) ->
+draw_line(X,Y, Fg, Bg, Word) ->
+    logger:info("TEXT: X:~p Y:~p ", [X,Y]),
     ?TERMBOX:tb_print(X,
                       Y,
                       Fg,
@@ -58,15 +60,14 @@ draw_lines_of_text(_X, _Y,  _Bg, _Fg, 0, _l) ->
 draw_lines_of_text(_X, _Y,  _Bg, _Fg, _Space, []) ->
     ok;
 
-draw_lines_of_text(X, Y, Bg, Fg, Space, WordList) ->
-    [FirstLine | Rest] = WordList,
-    case FirstLine of
-        <<"">> ->
-            ok;  %% Just skip empty lines, don't draw anything
-        _ ->
-            draw_word(X, Y, Bg, Fg, FirstLine)
-    end,
-    draw_lines_of_text(X, Y + 1, Fg, Bg, Space - 1 , Rest).
+%% Handle an empty line: just recurse, incrementing Y
+draw_lines_of_text(X, Y, Fg, Bg, Space, [<<>> | Rest]) ->
+    draw_lines_of_text(X, Y + 1, Fg, Bg, Space - 1, Rest);
+
+%% Handle a line with content
+draw_lines_of_text(X, Y, Fg, Bg, Space, [FirstLine | Rest]) ->
+    draw_line(X, Y, Fg, Bg, FirstLine),
+    draw_lines_of_text(X, Y + 1, Fg, Bg, Space - 1, Rest).
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================

@@ -86,7 +86,6 @@ update(State) ->
     Style = css:load_stylesheet("priv/default_theme.css"),
 
     StyledLayout = css:style(Layout, Style),
-    logger:info("STYLED LAYOUT: ~p~n", [StyledLayout]),
 
     ?TERMBOX:tb_clear(),
     widgets:render(StyledLayout),

@@ -71,18 +71,6 @@ update_based_on_key({4, 0, 0}, _Model) -> %% Ctrl+D without modifiers
 update_based_on_key(KeyCode, Model) ->
     update_focused_editor(KeyCode, Model).
 
-%% Move focus to the next editor
-move_focus_forward(Model) ->
-    focus_manager:move_focus_forward(),
-    {ok, NewFocused} = focus_manager:get_focused(),
-    Model#{focused := NewFocused}.
-
-%% Move focus to the previous editor
-move_focus_backward(Model) ->
-    focus_manager:move_focus_backward(),
-    {ok, NewFocused} = focus_manager:get_focused(),
-    Model#{focused := NewFocused}.
-
 %% Update the currently focused editor with the key input
 update_focused_editor({Code1, Code2, _Modifiers}, #{focused := Focused} = Model) ->
     logger:info("UFE DEBUG 1: ~p~n", [Focused]),

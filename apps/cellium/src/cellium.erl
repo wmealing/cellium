@@ -68,7 +68,11 @@ init(#{module := Module}= Args) ->
         truecolor ->
             ?TERMBOX:tb_set_output_mode(5);
         256  ->
-            ?TERMBOX:tb_set_output_mode(2)
+            ?TERMBOX:tb_set_output_mode(2);
+	normal ->
+          ?TERMBOX:tb_set_output_mode(4);
+        _AnythingElse ->
+            logger:debug("Wierd color format set")
     end,
 
     {ok, Model} = Module:init([]),
@@ -112,7 +116,6 @@ render_immediately(Module, Model) ->
 terminate(_Reason, _State) ->
 
     ?TERMBOX:tb_shutdown(),
-    logging:teardown(),
 
     % set this as on option in a future verrsion.
     init:stop(),

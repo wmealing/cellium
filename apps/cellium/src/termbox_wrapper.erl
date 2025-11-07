@@ -73,6 +73,34 @@ tb_set_output_mode(Mode) ->
 %% #define TB_CYAN                 0x0007
 %% #define TB_WHITE                0x0008
 
+
+%% someone put the # symbol in front.
+lookup(HexColorString)  when is_list(HexColorString), length(HexColorString) == 7 ->
+    ["#" | Rest] = HexColorString,
+    lookup(Rest);
+
+lookup(HexColorString)  when is_list(HexColorString), length(HexColorString) == 6 ->
+    % 1. Extract the Red component (characters 1 and 2)
+    RedStr = string:substr(HexColorString, 1, 2),
+
+    % 2. Extract the Green component (characters 3 and 4)
+    GreenStr = string:substr(HexColorString, 3, 2),
+
+    % 3. Extract the Blue component (characters 5 and 6)
+    BlueStr = string:substr(HexColorString, 5, 2),
+
+    % 4. Convert each hexadecimal substring (base 16) to an integer (base 10).
+    R = list_to_integer(RedStr, 16),
+    G = list_to_integer(GreenStr, 16),
+    B = list_to_integer(BlueStr, 16),
+
+    % 5. Combine the R, G, and B components into a single 24-bit integer
+    % This is done using bitwise shift left (bsl) and bitwise OR (bor).
+    RGB_Int = (R bsl 16) bor (G bsl 8) bor B,
+
+    % Return the resulting single RGB integer
+    RGB_Int;
+
 lookup('white') ->
     ?TB_WHITE;
 lookup('cyan') ->

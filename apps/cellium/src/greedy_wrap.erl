@@ -3,12 +3,20 @@
 -export([word_wrap/2]).
 
 word_wrap(Text, Width) ->
-    Words = binary:split(Text, [<<" ">>], [global, trim]),
-    % Filter out empty binaries that might result from extra spaces
-    FilteredWords = [W || W <- Words, W =/= <<>>],
-    lists:reverse(do_wrap(FilteredWords, Width, <<>>, [])).
+    Lines = binary:split(Text, <<"\n">>, [global]),
+    lists:flatmap(fun(Line) -> wrap_single_line(Line, Width) end, Lines).
 
-% The main recursive function
+wrap_single_line(Line, Width) ->
+    Words = binary:split(Line, [<<" ">>], [global, trim]),
+    FilteredWords = [W || W <- Words, W =/= <<>>],
+    if
+        FilteredWords == [] ->
+            [<<>>]; % This was an empty line, preserve it.
+        true ->
+            lists:reverse(do_wrap(FilteredWords, Width, <<>>, []))
+    end.
+
+% The main recursive function for wrapping a single line's words
 do_wrap([], _Width, CurrentLine, Lines) ->
     % Base case: No more words. Add the final line.
     [CurrentLine | Lines];
@@ -23,7 +31,7 @@ do_wrap([Word | Rest], Width, CurrentLine, Lines) ->
     CurrentSize = size(CurrentLine),
 
     % The total length if we add the word, including one space
-    PotentialSize = CurrentSize + 1 + WordSize, 
+    PotentialSize = CurrentSize + 1 + WordSize,
 
     if PotentialSize =< Width ->
         % Subcase A: Word fits. Append space and word.

@@ -9,6 +9,11 @@ export LIB_EBIN
 TERMBOX_EBIN = -pa _checkouts/termbox2_nif/_build/default/lib/termbox2_nif/ebin
 export TERMBOX_EBIN
 
+counter:
+	erl -sname node1 -setcookie mysecretcookie -noshell  -noinput \
+	$(LIB_EBIN) $(TERMBOX_EBIN) $(EXTRAS_EBIN) -eval 'counter:start()'
+
+
 widget_demo:
 	erl -sname node1 -setcookie mysecretcookie -noshell  -noinput \
 	$(LIB_EBIN) $(TERMBOX_EBIN) $(EXTRAS_EBIN) -eval 'widget_demo:start()'
@@ -76,4 +81,5 @@ editable_table_demo:
 	erl -sname node1 -setcookie mysecretcookie -noshell -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'editable_table_demo:start()'
 
 
-
+clean:
+	rebar3 clean 
