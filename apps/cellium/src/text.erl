@@ -35,17 +35,14 @@ render(Widget) ->
     Words = maps:get(value, Widget, <<"NO TEXT">>),
 
     WrappedWords = greedy_wrap:word_wrap(Words, Width),
-    logger:info("Wrapping at width: ~p", [Width]),
     draw_lines_of_text(X,Y,Fg,Bg, Height, WrappedWords),
     ok.
 
 
 draw_line(_X, _Y, _Fg, _Bg, []) ->
-    logger:info("EOF"),
     ok;
 
 draw_line(X,Y, Fg, Bg, Word) ->
-    logger:info("TEXT: X:~p Y:~p ", [X,Y]),
     ?TERMBOX:tb_print(X,
                       Y,
                       Fg,
