@@ -21,6 +21,7 @@ simple() ->
                                              expand => true,
                                              children => [
                                                           maybe_set_focus((box:new(box1, 10, 10))#{ expand => true,
+												   color => "000000", 
                                                                                                    'background-color' => "FFFFFF"
                                                                                                   })
                                                           ]},
@@ -67,5 +68,9 @@ update(Model, Msg) ->
   end.
 
 render(_Model) ->
-    simple().
+    S = simple(),
+    logger:info("WIDGET: ~p", [S]),
+    S.
+
+
 

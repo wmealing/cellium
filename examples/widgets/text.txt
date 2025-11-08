@@ -1,5 +1,6 @@
 #{type => widget,
   widget_type => text,
   id => demo1,
-  expand => true,
+  expand => true, 
+  adding => #{left => 0,right => 0,top => 0,bottom => 0}, 
   value => <<"HELLO THERE WORLD">> }.

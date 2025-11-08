@@ -1,8 +1,6 @@
 #{id => something,
   type => widget,
   expand => true,
-  width => 10,
-  height => 10,
   widget_type => frame,
   text => <<"FRAME AS ANYTHING">>,
   padding => #{left => 0,
