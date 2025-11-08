@@ -31,8 +31,14 @@ stop() ->
     gen_server:cast(?MODULE, stop).
 
 render_caller(Module, Model) ->
-    Layout = Module:render(Model),
-    view:set_root_widget(Layout).
+    try
+        Layout = Module:render(Model),
+        view:set_root_widget(Layout)
+    catch
+        Exception:Reason:Stacktrace ->
+            logger:error("Error in render: ~p:~p~n~p", [Exception, Reason, Stacktrace]),
+            ok
+    end.
 
 %%%===================================================================
 %%% Internal functions
@@ -113,8 +119,8 @@ render_immediately(Module, Model) ->
     view:set_root_widget(NewLayout),
     ok.
 
-terminate(_Reason, _State) ->
-
+terminate(Reason, _State) ->
+    logger:info("Terminating cellium with reason: ~p", [Reason]),
     ?TERMBOX:tb_shutdown(),
 
     % set this as on option in a future verrsion.

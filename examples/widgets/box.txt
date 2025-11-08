@@ -1,3 +1,12 @@
-#{id => a_box,type => widget,expand => true,width => 10,
-  widget_type => box,height => 10,
-  padding => #{left => 0,right => 0,top => 0,bottom => 0}}. 
+                #{
+                    id => box1,
+                    type => widget,
+                    expand => true,
+                    width => 10,
+                    padding => #{left => 0, right => 0, bottom => 0, top => 0},
+                    widget_type => box,
+                    height => 10,
+                    'background-color' => "FFA500",
+                    color => "000000" 
+                }. 
+ 

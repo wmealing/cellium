@@ -17,10 +17,12 @@
 %%%===================================================================
 %%% API
 %%%===================================================================
+start() ->
+   cellium:start(#{module => ?MODULE, color_type => truecolor}).
 
 init(_Args) ->
-    WidgetList = ["colors", "box", "frame", "text"],
-    Model = #{widget => "colors", widget_list => WidgetList},
+    WidgetList = ["colors", "box", "frame", "text", "simple" ],
+    Model = #{widget => "text", widget_list => WidgetList},
     {ok, Model}.
 
 %% this function mutates the model.
@@ -55,5 +57,3 @@ render(#{widget := WidgetName}) ->
       debug => true,
       children => [ W ]}.
 
-start() ->
-   cellium:start(#{module => ?MODULE}).

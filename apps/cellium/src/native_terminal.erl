@@ -479,10 +479,12 @@ check_if_partial_kitty(Rest) ->
 
 
 lookup_color(Color, Type, default) when is_list(Color) ->
-    erlang:error("NOT IMPLEMENTED");
+    erlang:error(#{reason => "NOT IMPLEMENTED",
+                   line => ?LINE});
 
 lookup_color(Color, Type, normal) when is_list(Color) ->
-    erlang:error("NOT IMPLEMENTED");
+    erlang:error(#{reason => "NOT IMPLEMENTED",
+                   line => ?LINE});
 
 lookup_color(Color, Type, truecolor) when is_list(Color) ->
 
