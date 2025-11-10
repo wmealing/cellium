@@ -38,13 +38,65 @@
     waiting_client = undefined :: undefined | pid()
 }).
 
--define(RESET, "\e[0m").
 
--define(ALT_SCREEN_ENABLE,  "\e[?1049h").
--define(ALT_SCREEN_DISABLE, "\e[?1049l").
+%% Character constants
+-define(ESC, 27).
+-define(CSI_START, 91).  % '['
+-define(SS3_START, 79).  % 'O'
+-define(TILDE, 126).     % '~'
+-define(KITTY_END, 117). % 'u'
+-define(SEMICOLON, 59).  % ';'
+-define(SPACE, 32).
+-define(BACKSPACE, 8).
+-define(TAB, 9).
+-define(ENTER, 13).
+-define(BACKSPACE2, 127).
 
--define(HIDE_CURSOR, "\e[?25l").
--define(SHOW_CURSOR, "\e[?25h").
+
+-define(RESET,              [?ESC, ?CSI_START, "0m"]).
+-define(ALT_SCREEN_ENABLE,  [?ESC, ?CSI_START, "1049h"]).
+-define(ALT_SCREEN_DISABLE, [?ESC, ?CSI_START, "1049l"]).
+-define(HIDE_CURSOR, [?ESC, ?CSI_START, "25l"]).
+-define(SHOW_CURSOR, [?ESC, ?CSI_START, "25h"]).
+
+% -define(ALT_SCREEN_ENABLE,  "\e[?1049h").
+% -define(ALT_SCREEN_DISABLE, "\e[?1049l").
+
+% -define(HIDE_CURSOR, "\e[?25l").
+% -define(SHOW_CURSOR, "\e[?25h").
+
+
+%% ASCII ranges
+-define(DIGIT_0, 48).
+-define(DIGIT_1, 49).
+-define(DIGIT_2, 50).
+-define(DIGIT_3, 51).
+-define(DIGIT_4, 52).
+-define(DIGIT_5, 53).
+-define(DIGIT_6, 54).
+-define(DIGIT_7, 55).
+-define(DIGIT_8, 56).
+-define(DIGIT_9, 57).
+
+-define(UPPER_A, 65).
+-define(UPPER_Z, 90).
+-define(LOWER_A, 97).
+-define(LOWER_Z, 122).
+
+-define(PRINTABLE_START, 33).
+-define(PRINTABLE_END, 126).
+
+%% Special sequence characters
+-define(CHAR_H, 72).  % 'H' for Home
+-define(CHAR_F, 70).  % 'F' for End
+-define(CHAR_A, 65).  % 'A' for Up
+-define(CHAR_B, 66).  % 'B' for Down
+-define(CHAR_C, 67).  % 'C' for Right
+-define(CHAR_D, 68).  % 'D' for Left
+-define(CHAR_P, 80).  % 'P' for F1
+-define(CHAR_Q, 81).  % 'Q' for F2
+-define(CHAR_R, 82).  % 'R' for F3
+-define(CHAR_S, 83).  % 'S' for F4
 
 -doc """
   Represents the state of the native terminal driver.
@@ -102,6 +154,7 @@ tb_set_cell(X, Y, Char, Fg, Bg) ->
     OutputMode = tb_get_output_mode(),
     FgAnsi = lookup_color(Fg, fg, OutputMode),
     BgAnsi = lookup_color(Bg, bg, OutputMode),
+
     io:put_chars([
         "\e[" ++ integer_to_list(Y + 1) ++ ";" ++ integer_to_list(X + 1) ++ "H",
         FgAnsi,
@@ -116,7 +169,6 @@ tb_print(X, Y, Fg, Bg, Str) ->
 
     FgAnsi = lookup_color(Fg, fg, OutputMode),
     BgAnsi = lookup_color(Bg, bg, OutputMode),
-
 
     Move = "\e[" ++ integer_to_list(Y + 1) ++ ";" ++ integer_to_list(X + 1) ++ "H",
     io:put_chars([Move, FgAnsi, BgAnsi, Str, ?RESET]).
@@ -275,10 +327,10 @@ process_char(eof, State) ->
     Event = {event, eof, 0, 0, 0, 0},
     add_event(Event, State);
 
-process_char(27, State) ->
+process_char(?ESC, State) ->
     schedule_timeout_check(),
     State#state{
-        char_buffer = [27],
+        char_buffer = [?ESC],
         buffer_time = erlang:monotonic_time(millisecond)
     };
 
@@ -325,12 +377,12 @@ parse_single_char(4, _) -> {key, [ctrl_key], <<"d">>};
 parse_single_char(5, _) -> {key, [ctrl_key], <<"e">>};
 parse_single_char(6, _) -> {key, [ctrl_key], <<"f">>};
 parse_single_char(7, _) -> {key, [ctrl_key], <<"g">>};
-parse_single_char(8, _) -> {key, [], backspace_key};  % also CTRL_H
-parse_single_char(9, _) -> {key, [], tab_key};  % also CTRL_I
+parse_single_char(?BACKSPACE, _) -> {key, [], backspace_key};  % also CTRL_H
+parse_single_char(?TAB, _) -> {key, [], tab_key};  % also CTRL_I
 parse_single_char(10, _) -> {key, [ctrl_key], <<"j">>};
 parse_single_char(11, _) -> {key, [ctrl_key], <<"k">>};
 parse_single_char(12, _) -> {key, [ctrl_key], <<"l">>};
-parse_single_char(13, _) -> {key, [], enter_key};  % also CTRL_M
+parse_single_char(?ENTER, _) -> {key, [], enter_key};  % also CTRL_M
 parse_single_char(14, _) -> {key, [ctrl_key], <<"n">>};
 parse_single_char(15, _) -> {key, [ctrl_key], <<"o">>};
 parse_single_char(16, _) -> {key, [ctrl_key], <<"p">>};
@@ -344,49 +396,49 @@ parse_single_char(23, _) -> {key, [ctrl_key], <<"w">>};
 parse_single_char(24, _) -> {key, [ctrl_key], <<"x">>};
 parse_single_char(25, _) -> {key, [ctrl_key], <<"y">>};
 parse_single_char(26, _) -> {key, [ctrl_key], <<"z">>};
-parse_single_char(27, _) -> {key, [], esc_key};  % also CTRL_[ / CTRL_3
+parse_single_char(?ESC, _) -> {key, [], esc_key};  % also CTRL_[ / CTRL_3
 parse_single_char(28, _) -> {key, [ctrl_key], <<"\\">>};  % CTRL_4 / CTRL_BACKSLASH
 parse_single_char(29, _) -> {key, [ctrl_key], <<"]">>};  % CTRL_5 / CTRL_RSQ_BRACKET
 parse_single_char(30, _) -> {key, [ctrl_key], <<"6">>};
 parse_single_char(31, _) -> {key, [ctrl_key], <<"/">>};  % CTRL_7 / CTRL_SLASH / CTRL_UNDERSCORE
-parse_single_char(32, _) -> {key, [], <<" ">>};
-parse_single_char(127, _) -> {key, [], backspace2_key};
-parse_single_char(C, _) when C >= 33, C =< 126 ->
+parse_single_char(?SPACE, _) -> {key, [], <<" ">>};
+parse_single_char(?BACKSPACE2, _) -> {key, [], backspace2_key};
+parse_single_char(C, _) when C >= ?PRINTABLE_START, C =< ?PRINTABLE_END ->
     {key, [], unicode:characters_to_binary([C])};
 parse_single_char(C, _) ->
     {char, C}.
 
-try_parse_sequence([27, 91, 51, 126]) -> {complete, {key, [], delete_key}};
-try_parse_sequence([27, 91, 53, 126]) -> {complete, {key, [], pgup_key}};
-try_parse_sequence([27, 91, 54, 126]) -> {complete, {key, [], pgdn_key}};
-try_parse_sequence([27, 91, 72]) -> {complete, {key, [], home_key}};
-try_parse_sequence([27, 91, 70]) -> {complete, {key, [], end_key}};
-try_parse_sequence([27, 91, 65]) -> {complete, {key, [], up_key}};
-try_parse_sequence([27, 91, 66]) -> {complete, {key, [], down_key}};
-try_parse_sequence([27, 91, 67]) -> {complete, {key, [], right_key}};
-try_parse_sequence([27, 91, 68]) -> {complete, {key, [], left_key}};
-try_parse_sequence([27, 79, 65]) -> {complete, {key, [], up_key}};
-try_parse_sequence([27, 79, 66]) -> {complete, {key, [], down_key}};
-try_parse_sequence([27, 79, 67]) -> {complete, {key, [], right_key}};
-try_parse_sequence([27, 79, 68]) -> {complete, {key, [], left_key}};
-try_parse_sequence([27, 79, 80]) -> {complete, {key, [], f1_key}};
-try_parse_sequence([27, 79, 81]) -> {complete, {key, [], f2_key}};
-try_parse_sequence([27, 79, 82]) -> {complete, {key, [], f3_key}};
-try_parse_sequence([27, 79, 83]) -> {complete, {key, [], f4_key}};
-try_parse_sequence([27, 91, 49, 53, 126]) -> {complete, {key, [], f5_key}};
-try_parse_sequence([27, 91, 49, 55, 126]) -> {complete, {key, [], f6_key}};
-try_parse_sequence([27, 91, 49, 56, 126]) -> {complete, {key, [], f7_key}};
-try_parse_sequence([27, 91, 49, 57, 126]) -> {complete, {key, [], f8_key}};
-try_parse_sequence([27, 91, 50, 48, 126]) -> {complete, {key, [], f9_key}};
-try_parse_sequence([27, 91, 50, 49, 126]) -> {complete, {key, [], f10_key}};
-try_parse_sequence([27, 91, 50, 51, 126]) -> {complete, {key, [], f11_key}};
-try_parse_sequence([27, 91, 50, 52, 126]) -> {complete, {key, [], f12_key}};
-try_parse_sequence([27, 91, 50, 55, 59, 53, 59, 49, 51, 126]) -> {complete, {key, [ctrl_key], enter_key}};
-try_parse_sequence([27, C]) when C >= 97, C =< 122 ->  % ESC + lowercase letter (alt+letter)
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_3, ?TILDE]) -> {complete, {key, [], delete_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_5, ?TILDE]) -> {complete, {key, [], pgup_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_6, ?TILDE]) -> {complete, {key, [], pgdn_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_H]) -> {complete, {key, [], home_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_F]) -> {complete, {key, [], end_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_A]) -> {complete, {key, [], up_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_B]) -> {complete, {key, [], down_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_C]) -> {complete, {key, [], right_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_D]) -> {complete, {key, [], left_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_A]) -> {complete, {key, [], up_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_B]) -> {complete, {key, [], down_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_C]) -> {complete, {key, [], right_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_D]) -> {complete, {key, [], left_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_P]) -> {complete, {key, [], f1_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_Q]) -> {complete, {key, [], f2_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_R]) -> {complete, {key, [], f3_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_S]) -> {complete, {key, [], f4_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_5, ?TILDE]) -> {complete, {key, [], f5_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_7, ?TILDE]) -> {complete, {key, [], f6_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_8, ?TILDE]) -> {complete, {key, [], f7_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_9, ?TILDE]) -> {complete, {key, [], f8_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_0, ?TILDE]) -> {complete, {key, [], f9_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_1, ?TILDE]) -> {complete, {key, [], f10_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_3, ?TILDE]) -> {complete, {key, [], f11_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_4, ?TILDE]) -> {complete, {key, [], f12_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_7, ?SEMICOLON, ?DIGIT_5, ?SEMICOLON, ?DIGIT_1, ?DIGIT_3, ?TILDE]) -> {complete, {key, [ctrl_key], enter_key}};
+try_parse_sequence([?ESC, C]) when C >= ?LOWER_A, C =< ?LOWER_Z ->  % ESC + lowercase letter (alt+letter)
     {complete, {key, [alt_key], <<C>>}};
-try_parse_sequence([27, C]) when C >= 65, C =< 90 ->  % ESC + uppercase letter (alt+shift+letter)
+try_parse_sequence([?ESC, C]) when C >= ?UPPER_A, C =< ?UPPER_Z ->  % ESC + uppercase letter (alt+shift+letter)
     {complete, {key, [alt_key, shift_key], <<(C + 32)>>}};
-try_parse_sequence([27, C]) when C >= 48, C =< 57 ->  % ESC + digit (alt+number)
+try_parse_sequence([?ESC, C]) when C >= ?DIGIT_0, C =< ?DIGIT_9 ->  % ESC + digit (alt+number)
     {complete, {key, [alt_key], <<C>>}};
 try_parse_sequence(Seq) ->
     case parse_kitty_sequence(Seq) of
@@ -394,12 +446,12 @@ try_parse_sequence(Seq) ->
         _ -> check_incomplete_or_invalid(Seq)
     end.
 
-parse_kitty_sequence([27, 91 | Rest]) ->
+parse_kitty_sequence([?ESC, ?CSI_START | Rest]) ->
     case Rest of
         [] -> incomplete_or_invalid;
         _ ->
             case lists:last(Rest) of
-                117 ->  % ends with 'u'
+                ?KITTY_END ->  % ends with 'u'
                     Params = lists:sublist(Rest, length(Rest) - 1),
                     case parse_kitty_params(Params) of
                         {Keycode, Modifiers} ->
@@ -430,48 +482,48 @@ parse_kitty_params(Params) ->
             invalid
     end.
 
-kitty_keycode_to_key(Keycode, 5) when Keycode >= 97, Keycode =< 122 ->
+kitty_keycode_to_key(Keycode, 5) when Keycode >= ?LOWER_A, Keycode =< ?LOWER_Z ->
     [ctrl_key, <<(Keycode - 32)>>];  % Ctrl + letter
 kitty_keycode_to_key(Keycode, _Mods) ->
     unicode:characters_to_binary([Keycode]).
 
-check_incomplete_or_invalid([27]) -> {incomplete};
-check_incomplete_or_invalid([27, 91]) -> {incomplete};
-check_incomplete_or_invalid([27, 79]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 51]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 53]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 54]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 49]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 50]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 49, 53]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 49, 55]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 49, 56]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 49, 57]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 50, 48]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 50, 49]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 50, 51]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 50, 52]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 50, 55]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 50, 55, 59]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 50, 55, 59, 53]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 50, 55, 59, 53, 59]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 50, 55, 59, 53, 59, 49]) -> {incomplete};
-check_incomplete_or_invalid([27, 91, 50, 55, 59, 53, 59, 49, 51]) -> {incomplete};
-check_incomplete_or_invalid([27, 91 | Rest]) ->
+check_incomplete_or_invalid([?ESC]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?SS3_START]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_3]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_5]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_6]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_1]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_2]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_5]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_7]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_8]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_9]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_0]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_1]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_3]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_4]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_7]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_7, ?SEMICOLON]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_7, ?SEMICOLON, ?DIGIT_5]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_7, ?SEMICOLON, ?DIGIT_5, ?SEMICOLON]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_7, ?SEMICOLON, ?DIGIT_5, ?SEMICOLON, ?DIGIT_1]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_7, ?SEMICOLON, ?DIGIT_5, ?SEMICOLON, ?DIGIT_1, ?DIGIT_3]) -> {incomplete};
+check_incomplete_or_invalid([?ESC, ?CSI_START | Rest]) ->
     case Rest of
         [] -> {incomplete};
         _ ->
             LastChar = lists:last(Rest),
             case LastChar of
-                117 -> {incomplete};  % ends with 'u', might be incomplete kitty
+                ?KITTY_END -> {incomplete};  % ends with 'u', might be incomplete kitty
                 _ -> check_if_partial_kitty(Rest)
             end
     end;
 check_incomplete_or_invalid(_) -> {invalid}.
 
 check_if_partial_kitty(Rest) ->
-    HasSemicolon = lists:any(fun(C) -> C =:= 59 end, Rest),
-    HasDigit = lists:any(fun(C) -> C >= 48 andalso C =< 57 end, Rest),
+    HasSemicolon = lists:any(fun(C) -> C =:= ?SEMICOLON end, Rest),
+    HasDigit = lists:any(fun(C) -> C >= ?DIGIT_0 andalso C =< ?DIGIT_9 end, Rest),
     case HasSemicolon orelse HasDigit of
         true -> {incomplete};  % likely partial kitty sequence
         false -> {invalid}
