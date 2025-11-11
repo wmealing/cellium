@@ -14,7 +14,7 @@ init(_Ignored) ->
 update(Model, Msg) ->
 
  case Msg of
-        {tb_event, key, _ ,{keydata, _ ,$q}} ->
+        {key, _, _, _, _, <<"q">>} ->
             init:stop(),
             Model;
          _Else -> Model

@@ -6,9 +6,23 @@
 %%% @end
 -module(widget).
 
--export([new/0, get_common_props/1]).
+-export([new/0, get_common_props/1, color_to_int/1]).
 
 -include("cellium.hrl").
+
+-spec color_to_int(Color :: atom() | integer()) -> integer().
+color_to_int(Color) when is_integer(Color) ->
+    Color;
+color_to_int('default') -> ?TB_DEFAULT;
+color_to_int('black') -> ?TB_BLACK;
+color_to_int('red') -> ?TB_RED;
+color_to_int('green') -> ?TB_GREEN;
+color_to_int('yellow') -> ?TB_YELLOW;
+color_to_int('blue') -> ?TB_BLUE;
+color_to_int('magenta') -> ?TB_MAGENTA;
+color_to_int('cyan') -> ?TB_CYAN;
+color_to_int('white') -> ?TB_WHITE;
+color_to_int(_) -> ?TB_DEFAULT.
 
 %%% @doc Creates a new base widget map with default values.
 %%%

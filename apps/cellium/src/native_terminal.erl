@@ -56,12 +56,16 @@
 -define(RESET,              [?ESC, ?CSI_START, "0m"]).
 -define(ALT_SCREEN_ENABLE,  [?ESC, ?CSI_START, "1049h"]).
 -define(ALT_SCREEN_DISABLE, [?ESC, ?CSI_START, "1049l"]).
--define(HIDE_CURSOR, [?ESC, ?CSI_START, "25l"]).
+
 -define(SHOW_CURSOR, [?ESC, ?CSI_START, "25h"]).
+
+-define(HIDE_CURSOR, "\033[?25l").
+-define(HIDE_CURSOR_WUT, [?ESC, ?CSI_START, "25l"]).
 
 % -define(ALT_SCREEN_ENABLE,  "\e[?1049h").
 % -define(ALT_SCREEN_DISABLE, "\e[?1049l").
-
+% \033[?25l
+% ESC[?25l
 % -define(HIDE_CURSOR, "\e[?25l").
 % -define(SHOW_CURSOR, "\e[?25h").
 
@@ -360,6 +364,7 @@ add_event(Event, #state{event_buffer = Buffer, waiting_client = undefined} = Sta
     State#state{event_buffer = Buffer ++ [Event]};
 
 add_event(Event, #state{waiting_client = Client} = State) ->
+    %% what ?
     gen_server:reply(Client, Event),
     State#state{waiting_client = undefined}.
 
@@ -369,77 +374,77 @@ parse_single_char(Char, alt) ->
         Event -> Event
     end;
 
-parse_single_char(0, _) -> {key, [ctrl_key], <<"~\\">>};  % CTRL_TILDE / CTRL_2
-parse_single_char(1, _) -> {key, [ctrl_key], <<"a">>};
-parse_single_char(2, _) -> {key, [ctrl_key], <<"b">>};
-parse_single_char(3, _) -> {key, [ctrl_key], <<"c">>};
-parse_single_char(4, _) -> {key, [ctrl_key], <<"d">>};
-parse_single_char(5, _) -> {key, [ctrl_key], <<"e">>};
-parse_single_char(6, _) -> {key, [ctrl_key], <<"f">>};
-parse_single_char(7, _) -> {key, [ctrl_key], <<"g">>};
-parse_single_char(?BACKSPACE, _) -> {key, [], backspace_key};  % also CTRL_H
-parse_single_char(?TAB, _) -> {key, [], tab_key};  % also CTRL_I
-parse_single_char(10, _) -> {key, [ctrl_key], <<"j">>};
-parse_single_char(11, _) -> {key, [ctrl_key], <<"k">>};
-parse_single_char(12, _) -> {key, [ctrl_key], <<"l">>};
-parse_single_char(?ENTER, _) -> {key, [], enter_key};  % also CTRL_M
-parse_single_char(14, _) -> {key, [ctrl_key], <<"n">>};
-parse_single_char(15, _) -> {key, [ctrl_key], <<"o">>};
-parse_single_char(16, _) -> {key, [ctrl_key], <<"p">>};
-parse_single_char(17, _) -> {key, [ctrl_key], <<"q">>};
-parse_single_char(18, _) -> {key, [ctrl_key], <<"r">>};
-parse_single_char(19, _) -> {key, [ctrl_key], <<"s">>};
-parse_single_char(20, _) -> {key, [ctrl_key], <<"t">>};
-parse_single_char(21, _) -> {key, [ctrl_key], <<"u">>};
-parse_single_char(22, _) -> {key, [ctrl_key], <<"v">>};
-parse_single_char(23, _) -> {key, [ctrl_key], <<"w">>};
-parse_single_char(24, _) -> {key, [ctrl_key], <<"x">>};
-parse_single_char(25, _) -> {key, [ctrl_key], <<"y">>};
-parse_single_char(26, _) -> {key, [ctrl_key], <<"z">>};
-parse_single_char(?ESC, _) -> {key, [], esc_key};  % also CTRL_[ / CTRL_3
-parse_single_char(28, _) -> {key, [ctrl_key], <<"\\">>};  % CTRL_4 / CTRL_BACKSLASH
-parse_single_char(29, _) -> {key, [ctrl_key], <<"]">>};  % CTRL_5 / CTRL_RSQ_BRACKET
-parse_single_char(30, _) -> {key, [ctrl_key], <<"6">>};
-parse_single_char(31, _) -> {key, [ctrl_key], <<"/">>};  % CTRL_7 / CTRL_SLASH / CTRL_UNDERSCORE
-parse_single_char(?SPACE, _) -> {key, [], <<" ">>};
-parse_single_char(?BACKSPACE2, _) -> {key, [], backspace2_key};
+parse_single_char(0, _) -> {key, false, false, true, false, <<"~\\">>};  % CTRL_TILDE / CTRL_2
+parse_single_char(1, _) -> {key, false, false, true, false, <<"a">>};
+parse_single_char(2, _) -> {key, false, false, true, false, <<"b">>};
+parse_single_char(3, _) -> {key, false, false, true, false, <<"c">>};
+parse_single_char(4, _) -> {key, false, false, true, false, <<"d">>};
+parse_single_char(5, _) -> {key, false, false, true, false, <<"e">>};
+parse_single_char(6, _) -> {key, false, false, true, false, <<"f">>};
+parse_single_char(7, _) -> {key, false, false, true, false, <<"g">>};
+parse_single_char(?BACKSPACE, _) -> {key, false, false, false, false, backspace_key};  % also CTRL_H
+parse_single_char(?TAB, _) -> {key, false, false, false, false, tab_key};  % also CTRL_I
+parse_single_char(10, _) -> {key, false, false, true, false, <<"j">>};
+parse_single_char(11, _) -> {key, false, false, true, false, <<"k">>};
+parse_single_char(12, _) -> {key, false, false, true, false, <<"l">>};
+parse_single_char(?ENTER, _) -> {key, false, false, false, false, enter_key};  % also CTRL_M
+parse_single_char(14, _) -> {key, false, false, true, false, <<"n">>};
+parse_single_char(15, _) -> {key, false, false, true, false, <<"o">>};
+parse_single_char(16, _) -> {key, false, false, true, false, <<"p">>};
+parse_single_char(17, _) -> {key, false, false, true, false, <<"q">>};
+parse_single_char(18, _) -> {key, false, false, true, false, <<"r">>};
+parse_single_char(19, _) -> {key, false, false, true, false, <<"s">>};
+parse_single_char(20, _) -> {key, false, false, true, false, <<"t">>};
+parse_single_char(21, _) -> {key, false, false, true, false, <<"u">>};
+parse_single_char(22, _) -> {key, false, false, true, false, <<"v">>};
+parse_single_char(23, _) -> {key, false, false, true, false, <<"w">>};
+parse_single_char(24, _) -> {key, false, false, true, false, <<"x">>};
+parse_single_char(25, _) -> {key, false, false, true, false, <<"y">>};
+parse_single_char(26, _) -> {key, false, false, true, false, <<"z">>};
+parse_single_char(?ESC, _) -> {key, false, false, false, false, esc_key};  % also CTRL_[ / CTRL_3
+parse_single_char(28, _) -> {key, false, false, true, false, <<"\\">>};  % CTRL_4 / CTRL_BACKSLASH
+parse_single_char(29, _) -> {key, false, false, true, false, <<"]">>};  % CTRL_5 / CTRL_RSQ_BRACKET
+parse_single_char(30, _) -> {key, false, false, true, false, <<"6">>};
+parse_single_char(31, _) -> {key, false, false, true, false, <<"/">>};  % CTRL_7 / CTRL_SLASH / CTRL_UNDERSCORE
+parse_single_char(?SPACE, _) -> {key, false, false, false, false, <<" ">>};
+parse_single_char(?BACKSPACE2, _) -> {key, false, false, false, false, backspace2_key};
 parse_single_char(C, _) when C >= ?PRINTABLE_START, C =< ?PRINTABLE_END ->
-    {key, [], unicode:characters_to_binary([C])};
+    {key, false, false, false, false, unicode:characters_to_binary([C])};
 parse_single_char(C, _) ->
     {char, C}.
 
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_3, ?TILDE]) -> {complete, {key, [], delete_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_5, ?TILDE]) -> {complete, {key, [], pgup_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_6, ?TILDE]) -> {complete, {key, [], pgdn_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?CHAR_H]) -> {complete, {key, [], home_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?CHAR_F]) -> {complete, {key, [], end_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?CHAR_A]) -> {complete, {key, [], up_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?CHAR_B]) -> {complete, {key, [], down_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?CHAR_C]) -> {complete, {key, [], right_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?CHAR_D]) -> {complete, {key, [], left_key}};
-try_parse_sequence([?ESC, ?SS3_START, ?CHAR_A]) -> {complete, {key, [], up_key}};
-try_parse_sequence([?ESC, ?SS3_START, ?CHAR_B]) -> {complete, {key, [], down_key}};
-try_parse_sequence([?ESC, ?SS3_START, ?CHAR_C]) -> {complete, {key, [], right_key}};
-try_parse_sequence([?ESC, ?SS3_START, ?CHAR_D]) -> {complete, {key, [], left_key}};
-try_parse_sequence([?ESC, ?SS3_START, ?CHAR_P]) -> {complete, {key, [], f1_key}};
-try_parse_sequence([?ESC, ?SS3_START, ?CHAR_Q]) -> {complete, {key, [], f2_key}};
-try_parse_sequence([?ESC, ?SS3_START, ?CHAR_R]) -> {complete, {key, [], f3_key}};
-try_parse_sequence([?ESC, ?SS3_START, ?CHAR_S]) -> {complete, {key, [], f4_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_5, ?TILDE]) -> {complete, {key, [], f5_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_7, ?TILDE]) -> {complete, {key, [], f6_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_8, ?TILDE]) -> {complete, {key, [], f7_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_9, ?TILDE]) -> {complete, {key, [], f8_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_0, ?TILDE]) -> {complete, {key, [], f9_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_1, ?TILDE]) -> {complete, {key, [], f10_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_3, ?TILDE]) -> {complete, {key, [], f11_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_4, ?TILDE]) -> {complete, {key, [], f12_key}};
-try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_7, ?SEMICOLON, ?DIGIT_5, ?SEMICOLON, ?DIGIT_1, ?DIGIT_3, ?TILDE]) -> {complete, {key, [ctrl_key], enter_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_3, ?TILDE]) -> {complete, {key, false, false, false, false, delete_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_5, ?TILDE]) -> {complete, {key, false, false, false, false, pgup_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_6, ?TILDE]) -> {complete, {key, false, false, false, false, pgdn_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_H]) -> {complete, {key, false, false, false, false, home_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_F]) -> {complete, {key, false, false, false, false, end_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_A]) -> {complete, {key, false, false, false, false, up_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_B]) -> {complete, {key, false, false, false, false, down_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_C]) -> {complete, {key, false, false, false, false, right_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?CHAR_D]) -> {complete, {key, false, false, false, false, left_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_A]) -> {complete, {key, false, false, false, false, up_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_B]) -> {complete, {key, false, false, false, false, down_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_C]) -> {complete, {key, false, false, false, false, right_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_D]) -> {complete, {key, false, false, false, false, left_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_P]) -> {complete, {key, false, false, false, false, f1_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_Q]) -> {complete, {key, false, false, false, false, f2_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_R]) -> {complete, {key, false, false, false, false, f3_key}};
+try_parse_sequence([?ESC, ?SS3_START, ?CHAR_S]) -> {complete, {key, false, false, false, false, f4_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_5, ?TILDE]) -> {complete, {key, false, false, false, false, f5_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_7, ?TILDE]) -> {complete, {key, false, false, false, false, f6_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_8, ?TILDE]) -> {complete, {key, false, false, false, false, f7_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?DIGIT_9, ?TILDE]) -> {complete, {key, false, false, false, false, f8_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_0, ?TILDE]) -> {complete, {key, false, false, false, false, f9_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_1, ?TILDE]) -> {complete, {key, false, false, false, false, f10_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_3, ?TILDE]) -> {complete, {key, false, false, false, false, f11_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_4, ?TILDE]) -> {complete, {key, false, false, false, false, f12_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_7, ?SEMICOLON, ?DIGIT_5, ?SEMICOLON, ?DIGIT_1, ?DIGIT_3, ?TILDE]) -> {complete, {key, false, false, true, false, enter_key}};
 try_parse_sequence([?ESC, C]) when C >= ?LOWER_A, C =< ?LOWER_Z ->  % ESC + lowercase letter (alt+letter)
-    {complete, {key, [alt_key], <<C>>}};
+    {complete, {key, false, true, false, false, <<C>>}};
 try_parse_sequence([?ESC, C]) when C >= ?UPPER_A, C =< ?UPPER_Z ->  % ESC + uppercase letter (alt+shift+letter)
-    {complete, {key, [alt_key, shift_key], <<(C + 32)>>}};
+    {complete, {key, true, true, false, false, <<(C + 32)>>}};
 try_parse_sequence([?ESC, C]) when C >= ?DIGIT_0, C =< ?DIGIT_9 ->  % ESC + digit (alt+number)
-    {complete, {key, [alt_key], <<C>>}};
+    {complete, {key, false, true, false, false, <<C>>}};
 try_parse_sequence(Seq) ->
     case parse_kitty_sequence(Seq) of
         {complete, _} = Result -> Result;
@@ -454,9 +459,9 @@ parse_kitty_sequence([?ESC, ?CSI_START | Rest]) ->
                 ?KITTY_END ->  % ends with 'u'
                     Params = lists:sublist(Rest, length(Rest) - 1),
                     case parse_kitty_params(Params) of
-                        {Keycode, Modifiers} ->
-                            Key = kitty_keycode_to_key(Keycode, Modifiers),
-                            {complete, {key, Key}};
+                        {Keycode, ModifierBits} ->
+                            {Shift, Alt, Control, Meta, Key} = kitty_keycode_to_key(Keycode, ModifierBits),
+                            {complete, {key, Shift, Alt, Control, Meta, Key}};
                         _ ->
                             incomplete_or_invalid
                     end;
@@ -482,10 +487,20 @@ parse_kitty_params(Params) ->
             invalid
     end.
 
-kitty_keycode_to_key(Keycode, 5) when Keycode >= ?LOWER_A, Keycode =< ?LOWER_Z ->
-    [ctrl_key, <<(Keycode - 32)>>];  % Ctrl + letter
-kitty_keycode_to_key(Keycode, _Mods) ->
-    unicode:characters_to_binary([Keycode]).
+kitty_keycode_to_key(Keycode, ModifierBits) ->
+    Shift = (ModifierBits band 1) =/= 0,
+    Alt = (ModifierBits band 2) =/= 0,
+    Control = (ModifierBits band 4) =/= 0,
+    Meta = (ModifierBits band 8) =/= 0,
+    
+    Key = if
+        Control andalso Keycode >= ?LOWER_A andalso Keycode =< ?LOWER_Z ->
+            <<(Keycode - 32)>>;
+        true ->
+            unicode:characters_to_binary([Keycode])
+    end,
+    
+    {Shift, Alt, Control, Meta, Key}.
 
 check_incomplete_or_invalid([?ESC]) -> {incomplete};
 check_incomplete_or_invalid([?ESC, ?CSI_START]) -> {incomplete};

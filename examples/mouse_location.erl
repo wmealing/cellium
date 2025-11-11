@@ -25,12 +25,12 @@ init(_Args) ->
 %% this function mutates the model.
 update(#{blocks := ExistingBlocks} = Model, Msg) ->
     case Msg of
-        {tb_event, key, _ ,{keydata, _ ,$q}} ->
+        {key, _, _, _, _, <<"q">>} ->
             cellium:stop(),
             Model;
-        {tb_event, mouse, {buttons, _B}, {pos, {MouseX, MouseY}}} ->
+        {mouse, _, {MouseX, MouseY}} ->
             NewBlocks = ExistingBlocks ++ [#{x => MouseX, y => MouseY}],
-            #{x => MouseX, y => MouseY, blocks => NewBlocks };
+            Model#{x => MouseX, y => MouseY, blocks => NewBlocks };
         _AnythingElse ->
 	    logger:info("unknown event: ~p", [Msg]),
             Model

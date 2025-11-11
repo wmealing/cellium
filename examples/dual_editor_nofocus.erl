@@ -39,9 +39,8 @@ start() ->
 init(_Context) ->
     register_editors(),
     {ok, #{
-        editor1 => [<<"">>],
-        editor2 => [<<"">>],
-        focused => editor1
+        editor1 => "",
+        editor2 => ""
     }}.
 
 %% Register both editors with the focus_manager
@@ -52,21 +51,34 @@ register_editors() ->
 
 %% Update the model based on user input or focus changes
 update(Model, Msg) ->
-    {ok, FocusedWidget} = focus_manager:get_focused(),
-    TextData  = maps:get(FocusedWidget, Model),
-    Key = get_key_code(Msg),
-    NewText = apply_key_to_text(Key, TextData),
-    maps:update(FocusedWidget, NewText, Model).
+    case Msg of
+        {key, false, false, false, false, tab_key} ->
+            focus_manager:focus_next(),
+            Model;
+        {key, true, false, false, false, tab_key} ->
+            focus_manager:focus_previous(),
+            Model;
+        {key, _, _, true, _, <<"d">>} ->
+            cellium:stop(),
+            init:stop();
+        {key, _, _, _, _, Key} ->
+            {ok, FocusedWidget} = focus_manager:get_focused(),
+            TextData  = maps:get(FocusedWidget, Model),
+            NewText = apply_key_to_text(Key, TextData),
+            maps:update(FocusedWidget, NewText, Model);
+        _ ->
+            Model
+    end.
 
 %% Apply a keycode to text (add character or delete on backspace)
-apply_key_to_text({127, 0}, Text) ->
+apply_key_to_text(backspace_key, Text) ->
     delete_last_char(Text);
-apply_key_to_text({_, 32}, Text) ->
+apply_key_to_text(<<" ">>, Text) ->
     Text ++ " ";
-apply_key_to_text({_, 0}, Text) ->
-    Text;
-apply_key_to_text({_, Num}, Text) when is_integer(Num) ->
-    lists:flatten([Text, [Num]]).
+apply_key_to_text(Key, Text) when is_binary(Key) ->
+    Text ++ binary_to_list(Key);
+apply_key_to_text(_, Text) ->
+    Text.
 
 %% Delete the last character from text
 delete_last_char(Text) ->
@@ -130,7 +142,3 @@ build_editor_label(Title, Content, EditorId) ->
 	_Other ->
     		io_lib:bformat("~s ~s: ~s", ["  ", Title, Content])
 	end.
-
-
-get_key_code({tb_event, key, _, {keydata, Code1, Code2}}) ->
-    {Code1, Code2}.

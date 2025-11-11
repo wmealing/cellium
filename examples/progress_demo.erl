@@ -15,11 +15,11 @@ init(_Args) ->
 
 update(#{progress := Progress} = Model, Msg) ->
     case Msg of
-        {tb_event, key, _, {keydata, _, $+}} ->
+        {key, _, _, _, _, <<"+">>} ->
             Model#{progress => clamp(Progress + 5)};
-        {tb_event, key, _, {keydata, _, $-}} ->
+        {key, _, _, _, _, <<"-">>} ->
             Model#{progress => clamp(Progress - 5)};
-        {tb_event, key, _, {keydata, _, $q}} ->
+        {key, _, _, _, _, <<"q">>} ->
             cellium:stop(),
             Model;
         _Else ->

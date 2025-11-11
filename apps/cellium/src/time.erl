@@ -5,13 +5,12 @@
 % API
 -export([render/1]).
 
+-import(widget, [get_common_props/1]).
+
 -include("cellium.hrl").
 
 render(Widget) ->
-    X = maps:get(x, Widget, 0),
-    Y = maps:get(y, Widget, 0),
-
-    #{bg := Bg, fg := Fg} = theme:load(time),
+    #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget), 
 
     {{_Year,_Mon,_Day} ,{Hour, Min, Second}} =
         calendar:local_time(),

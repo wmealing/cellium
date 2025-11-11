@@ -28,16 +28,18 @@ init(_Args) ->
 %% this function mutates the model.
 update(#{widget := _WidgetName, widget_list := WidgetList} = Model, Msg) ->
     case Msg of
-        {tb_event, key, _ ,{keydata, _ ,$r}} ->
+        {key, _, _, _, _, <<"r">>} ->
             init("arg");
-        {tb_event, key, _ ,{keydata, _ ,$q}} ->
+        {key, _, _, _, _, <<"q">>} ->
             cellium:stop(),
             Model;
-        _AnythingElse ->
+        {key, _, _, _, _, _} ->
             logger:info("Changing widget...", []),
             [FirstWidget | RestWidgets ] = WidgetList,
             NewWidgetList = RestWidgets ++ [FirstWidget],
-            #{widget => FirstWidget, widget_list => NewWidgetList}
+            Model#{widget => FirstWidget, widget_list => NewWidgetList};
+        _ ->
+            Model
     end.
 
 

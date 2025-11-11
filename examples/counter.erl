@@ -25,11 +25,11 @@ init(_Args) ->
 %% this function mutates the model.
 update(#{count := Count} = Model, Msg) ->
     case Msg of
-        {tb_event, key, _ ,{keydata, _ ,$+}} ->
+         {key,false,false,false,false,<<"+">>} ->
             #{count => Count + 1};
-        {tb_event, key, _ ,{keydata, _ ,$-}} ->
+         {key,false,false,false,false,<<"-">>} ->
             #{count => Count - 1};
-        {tb_event, key, _ ,{keydata, _ ,$q}} ->
+         {key,false,false,false,false,<<"q">>} ->
             cellium:stop(),
             Model;
         _AnythingElse ->

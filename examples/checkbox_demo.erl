@@ -12,25 +12,24 @@ init(_) ->
 
 update(#{checkbox :=  S} = Model, Msg) ->
   case Msg of
-        {tb_event, key, _ ,{keydata, _ ,$q}} ->
-            cellium:stop(),
-            Model;
-        {tb_event, key, _ ,{keydata, 0 , 32}} ->
-            #{checkbox => not S};
-        Else ->
+      {key, _, _, _, _, <<"q">>} ->
+          cellium:stop(),
+          Model;
+      {key,false,false,false,false,<<" ">>}->
+          logger:info("GOT MSG: ~p", [S]),
+          #{checkbox => not S};
+      Else ->
           logger:info("GOT MSG: ~p", [Else]),
           Model
     end.
 
-render(_Model) ->
-    W1 = (checkbox:new(one, <<"CHECKBOX1">>))#{checked => true,
-                                               color => ?TB_WHITE,
-                                               expand => true},
-    W2 = (checkbox:new(two, <<"CHECKBOX2">>))#{checked => true,
-                                               color => ?TB_WHITE,
-                                               expand => true},
+render(#{checkbox :=  S} = Model) ->
+
+    Checkbox1 = (checkbox:new(one, <<"CHECKBOX 1">>))#{checked => S,
+                                                      expand => true},
+
     #{type => container,
       id => main_container,
       orientation => vertical,
-      children => [ W1, W2 ] }.
+      children => [ Checkbox1] }.
 

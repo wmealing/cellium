@@ -39,8 +39,8 @@ start() ->
 init(_Context) ->
     register_editors(),
     {ok, #{
-        editor1 => [<<"EDIT1">>],
-        editor2 => [<<"EDIT2">>],
+        editor1 => "EDIT1",
+        editor2 => "EDIT2",
         focused => editor1
     }}.
 
@@ -49,45 +49,36 @@ register_editors() ->
     focus_manager:register_widget(editor1),
     focus_manager:register_widget(editor2).
 
-%% Extract the key code and modifiers from the keyboard event
-get_key_code({tb_event, key, {mod, Modifiers}, {keydata, Code1, Code2}}) ->
-    {Code1, Code2, Modifiers}.
-
 %% Update the model based on user input or focus changes
 update(Model, Msg) ->
-    {Code1, Code2, Modifiers} = get_key_code(Msg),
-    logger:info("*********** ~p ~p ~p", [Code1, Code2, Modifiers]),
-    update_based_on_key({Code1, Code2, Modifiers}, Model).
-
-update_based_on_key({9, 0, 2}, Model) -> %% Tab without modifiers
-    {ok, NewFocused} = focus_manager:get_focused(),
-    Model#{focused := NewFocused};
-update_based_on_key({65513, 0, 0}, Model) -> %% Shift+Tab (TB_KEY_BACK_TAB) without modifiers
-    {ok, NewFocused} = focus_manager:get_focused(),
-    Model#{focused := NewFocused};
-update_based_on_key({4, 0, 0}, _Model) -> %% Ctrl+D without modifiers
-    cellium:stop(),
-    init:stop();
-update_based_on_key(KeyCode, Model) ->
-    update_focused_editor(KeyCode, Model).
+    case Msg of
+        {key, _, _, _, _, tab_key} ->
+            {ok, NewFocused} = focus_manager:get_focused(),
+            Model#{focused := NewFocused};
+        {key, _, _, true, _, <<"d">>} -> %% Ctrl+D
+            cellium:stop(),
+            init:stop();
+        {key, _, _, _, _, Key} ->
+            update_focused_editor(Key, Model);
+        _ ->
+            Model
+    end.
 
 %% Update the currently focused editor with the key input
-update_focused_editor({Code1, Code2, _Modifiers}, #{focused := Focused} = Model) ->
-    logger:info("UFE DEBUG 1: ~p~n", [Focused]),
+update_focused_editor(Key, #{focused := Focused} = Model) ->
     EditorContent = maps:get(Focused, Model),
-    UpdatedContent = apply_key_to_text({Code1, Code2}, EditorContent),
-    logger:info("UFE DEBUG 2: ~p~n", [UpdatedContent]),
+    UpdatedContent = apply_key_to_text(Key, EditorContent),
     Model#{Focused := UpdatedContent}.
 
 %% Apply a keycode to text (add character or delete on backspace)
-apply_key_to_text({127, 0}, Text) ->
+apply_key_to_text(backspace_key, Text) ->
     delete_last_char(Text);
-apply_key_to_text({_, 32}, Text) ->
+apply_key_to_text(<<" ">>, Text) ->
     Text ++ " ";
-apply_key_to_text({_, 0}, Text) ->
-    Text;
-apply_key_to_text({_, Num}, Text) when is_integer(Num) ->
-    lists:flatten([Text, [Num]]).
+apply_key_to_text(Key, Text) when is_binary(Key) ->
+    Text ++ binary_to_list(Key);
+apply_key_to_text(_, Text) ->
+    Text.
 
 %% Delete the last character from text
 delete_last_char(Text) ->

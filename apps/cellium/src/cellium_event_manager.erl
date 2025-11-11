@@ -10,7 +10,6 @@
 
 -behaviour(gen_server).
 
--include_lib("eunit/include/eunit.hrl").
 
 %% API
 -export([start_link/0, start_link/1]).

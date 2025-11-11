@@ -9,7 +9,9 @@
 -include_lib("cellium.hrl").
 
 start() ->
-   cellium:start(#{module => ?MODULE, color_type => truecolor}).
+   cellium:start(#{module => ?MODULE, 
+                   color_type => truecolor,
+                   auto_focus => true}).
 
 
 simple() ->
@@ -60,9 +62,11 @@ init(_Ignored) ->
 
 update(Model, Msg) ->
   case Msg of
-        {tb_event, key, _ ,{keydata, _ ,$q}} ->
+         {key,_ ,_ ,_ ,_,<<"q">>} ->
           cellium:stop(),
           Model;
+      {key,_ ,_ ,_ ,_,tab_key} -> 
+          logger:info("TAB KEY PRESSED");
        _Else ->
           Model
   end.

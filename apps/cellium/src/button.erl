@@ -37,8 +37,15 @@ new(Text, Callback) ->
 render(Widget) ->
     #{x := X1, y := Y1, fg := Fg, bg := Bg} = get_common_props(Widget),
 
-    X2 = X1 + maps:get(width, Widget, 0),
-    Y2 = Y1 + maps:get(height, Widget, 0),
+    Style = maps:get(style, Widget, double),
+    Box = box_styles:Style(),
+
+    Width = maps:get(width, Widget, 0),
+    Height = maps:get(height, Widget, 0),
+
+    X2 = X1 + Width,
+    Y2 = Y1 + Height,
+
     Label = maps:get(label, Widget, [<<"NO TEXT">>]),
 
     ButtonLength = X2 - X1,
@@ -46,5 +53,5 @@ render(Widget) ->
     XOffset = trunc ((ButtonLength / 2) - (WordLength / 2) ),
     YOffset = trunc( (Y2 - Y1) / 2) -1 ,
 
-    text:draw_words(X1 + XOffset , Y1 + YOffset, X2, Y2, Bg, Fg , Label),
-    table:draw_box(X1, Y1, X2, Y2, Fg, Bg).
+    text:draw_lines_of_text(X1 + XOffset , Y1 + YOffset, Bg, Fg, 1, Label),
+    table:draw_table(X1, Y1, X2 + Width, Fg, Bg, Box, [X2 - X1]).

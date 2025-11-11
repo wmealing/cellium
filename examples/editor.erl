@@ -35,24 +35,22 @@
 start() ->
    cellium:start(#{module => ?MODULE}).
 
-get_code({tb_event,key,_,{keydata, Code1, Code2}}) ->
-    {Code1, Code2}.
-
 init(_Context) ->
     {ok, ""}.
 
 update(Model, Msg) ->
-    case get_code(Msg) of
-
-        {127, 0} ->
-            Length = length(Model),
-            string:substr(Model, 1, Length -1);
-        {_ , 32} ->
+    case Msg of
+        {key, _, _, _, _, backspace_key} ->
+            case length(Model) of
+                0 -> "";
+                Length -> string:substr(Model, 1, Length - 1)
+            end;
+        {key, _, _, _, _, <<" ">>} ->
             Model ++ " ";
-        { _, 0 } ->
-            Model;
-        { _, Num}  when is_integer(Num) ->
-            Model ++ [Num]
+        {key, _, _, _, _, Key} when is_binary(Key) ->
+            Model ++ binary_to_list(Key);
+        _ ->
+            Model
     end.
 
 render(Text) ->

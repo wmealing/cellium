@@ -27,7 +27,7 @@ start(Args) ->
     gen_server:start_link({local, cellium_server}, ?MODULE, Args, [] ).
 
 stop() ->
-    logging:info("STOP() called", []),
+    logger:info("STOP() called", []),
     gen_server:cast(?MODULE, stop).
 
 render_caller(Module, Model) ->
@@ -52,11 +52,12 @@ init(#{module := Module}= Args) ->
     ColorType = maps:get(color_type, Args, output_normal),
 
 
-
     cellium_event_manager:start_link(?MODULE),
 
     case AutoFocus of
-        true ->  focus_manager:start_link();
+        true ->  
+            logger:info("Auto focus requested.."),
+            focus_manager:start_link();
         _ -> ok
     end,
 
@@ -104,7 +105,7 @@ handle_call(Msg, _From, State) ->
     {reply, {ok, done}, NewState}.
 
 handle_cast(stop, State) ->
-    logging:info("CAST STOP - CELLIUM"),
+    logger:info("CAST STOP - CELLIUM"),
     {stop, normal, State};
 
 handle_cast(_Msg, State) ->
@@ -127,21 +128,13 @@ terminate(Reason, _State) ->
     init:stop(),
     ok.
 
-%% Internal functions
-keycodes({tb_event, key, _, {keydata, Code1, Code2}}) ->
-    {Code1, Code2};
-keycodes(_AnythingElse) ->
-    %% probably not a focus event
-    ignore.
-
-
 process_focus_event(_State, Event) ->
-   case keycodes(Event) of
+   case Event of
        %% tab
-       {9,0} ->
+       {key, false, false, false, false, tab_key} ->
            focus_manager:move_focus_forward();
        %% shift tab
-       {65513,0} ->
+       {key, true, false, false, false, tab_key} ->
            focus_manager:move_focus_backward();
        _Other ->
            ok

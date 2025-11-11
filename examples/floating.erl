@@ -19,20 +19,29 @@
 %%%===================================================================
 
 init(_Args) ->
-    Model = #{},
+    Model = #{x_position => 10, y_position => 10},
     {ok, Model}.
 
-update(Model, Msg) ->
+update(#{x_position := X, y_position := Y } = Model, Msg) ->
     case Msg of
-        {tb_event, key, _ ,{keydata, _ ,$q}} ->
+        {key, _, _, _, _, <<"q">>} ->
             cellium:stop(),
             Model;
+        {key, _, _, _, _, right_key} ->
+            Model#{x_position => X + 1};
+        {key, _, _, _, _, left_key} ->
+            Model#{x_position => X - 1};
+        {key, _, _, _, _, up_key} ->
+            Model#{y_position => Y - 1};
+        {key, _, _, _, _, down_key} ->
+            Model#{y_position => Y + 1};
+
         _AnythingElse ->
             Model
     end.
 
 
-render(_Model) ->
+render(#{x_position := X, y_position := Y} = Model) ->
     Boxes = boxes(),
     FloatingBox = floating_container:new(float_box, horizontal, 5, 5, 30, 8),
     FloatingBoxWithChildren =
@@ -41,11 +50,10 @@ render(_Model) ->
             #{type => widget,
               widget_type => frame,
               position => absolute,
-              text => <<"float">>,
+              text => <<"HELLO WORLD">>,
               id => content,
-              value => <<"This is a floating box!">>,
-              x => 10,
-              y => 20,
+              x => X,
+              y => Y,
               width => 10,
               height => 5}
         ]
@@ -58,7 +66,6 @@ render(_Model) ->
                    Boxes,
                    FloatingBoxWithChildren
                   ]}.
-
 
 
 start() ->
