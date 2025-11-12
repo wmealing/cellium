@@ -102,20 +102,7 @@
 -define(CHAR_R, 82).  % 'R' for F3
 -define(CHAR_S, 83).  % 'S' for F4
 
--doc """
-  Represents the state of the native terminal driver.
 
-  @field width The width of the terminal in columns.
-  @field height The height of the terminal in rows.
-  @field input_mode The current input mode (e.g., `default`, `alt`).
-  @field output_mode The current output mode (e.g., `2` for 256-color, `5` for truecolor).
-  @field char_buffer Buffer for incoming characters to parse escape sequences.
-  @field event_buffer Buffer for parsed events waiting to be consumed.
-  @field buffer_time Timestamp for managing character buffer timeouts.
-  @field waiting_client The PID of a client waiting for an event.
-""".
-
--type state() :: #state{}.
 
 -define(SERVER, ?MODULE).
 
@@ -365,8 +352,10 @@ add_event(Event, #state{event_buffer = Buffer, waiting_client = undefined} = Sta
 
 add_event(Event, #state{waiting_client = Client} = State) ->
     %% what ?
+    %% Client is {Pid, Reference}
     gen_server:reply(Client, Event),
     State#state{waiting_client = undefined}.
+ 
 
 parse_single_char(Char, alt) ->
     case keyboard_maps:parse_alt_char(Char) of
@@ -545,11 +534,11 @@ check_if_partial_kitty(Rest) ->
     end.
 
 
-lookup_color(Color, Type, default) when is_list(Color) ->
+lookup_color(Color, _Type, default) when is_list(Color) ->
     erlang:error(#{reason => "NOT IMPLEMENTED",
                    line => ?LINE});
 
-lookup_color(Color, Type, normal) when is_list(Color) ->
+lookup_color(Color, _Type, normal) when is_list(Color) ->
     erlang:error(#{reason => "NOT IMPLEMENTED",
                    line => ?LINE});
 
