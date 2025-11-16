@@ -108,11 +108,11 @@ draw_rows(X, Y, Fg, Bg, Box, Height, ColumnWidths) ->
 %%% @param Fg Foreground color
 %%% @param Bg Background color
 %%% @param Box Box style to use
-%%% @param ColumnWidths List of column widths (wrapped in a list)
+%%% @param ColumnWidths List of column widths
 %%% @returns ok
 %%% @end
--spec draw_bottom(integer(), integer(), atom(), atom(), #box{}, [[non_neg_integer()]]) -> ok.
-draw_bottom(X, Y, Fg, Bg, Box, [ColumnWidths]) ->
+-spec draw_bottom(integer(), integer(), atom(), atom(), #box{}, [non_neg_integer()]) -> ok.
+draw_bottom(X, Y, Fg, Bg, Box, ColumnWidths) ->
     Line = get_bottom(Box, ColumnWidths),
     box_styles:drawline(X, Y, Fg, Bg, Line),
     ok.
@@ -135,7 +135,7 @@ draw_bottom(X, Y, Fg, Bg, Box, [ColumnWidths]) ->
 draw_table(X,Y, Height,Fg,Bg,Box,ColumnWidths) ->
     draw_header(X, Y,          Fg, Bg, Box,         ColumnWidths),
     draw_rows(X,   Y + 1,      Fg, Bg, Box, Height, ColumnWidths),
-    draw_bottom(X, Y + Height, Fg, Bg, Box,         [ColumnWidths]).
+    draw_bottom(X, Y + Height, Fg, Bg, Box, ColumnWidths).
 
 %%% @doc Renders a complete table widget with headers and data.
 %%%

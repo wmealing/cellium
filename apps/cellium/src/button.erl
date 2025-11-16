@@ -44,8 +44,8 @@ render(Widget) ->
     Width = maps:get(width, Widget, 0),
     Height = maps:get(height, Widget, 0),
 
-    X2 = X1 + Width  - 2,
-    Y2 = Y1 + Height - 2 ,
+    X2 = X1 + Width - 2,
+    Y2 = Y1 + Height - 1,
 
     Label = maps:get(label, Widget, <<"NO TEXT">>),
 
@@ -54,5 +54,5 @@ render(Widget) ->
     XOffset = trunc ((ButtonLength / 2) - (WordLength / 2) ),
     YOffset = trunc( (Y2 - Y1) / 2) + 1,
 
-    table:draw_table(X1, Y1, X2 + Width, Fg, Bg, Box, [X2 - X1]),
+    table:draw_table(X1, Y1, Y2 - Y1, Fg, Bg, Box, [X2 - X1]),
     text:draw_line(X1 + XOffset , Y1 + YOffset, Fg, Bg, Label).
