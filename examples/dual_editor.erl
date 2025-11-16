@@ -71,7 +71,7 @@ update_focused_editor(Key, #{focused := Focused} = Model) ->
     Model#{Focused := UpdatedContent}.
 
 %% Apply a keycode to text (add character or delete on backspace)
-apply_key_to_text(backspace_key, Text) ->
+apply_key_to_text(backspace2_key, Text) ->
     delete_last_char(Text);
 apply_key_to_text(<<" ">>, Text) ->
     Text ++ " ";

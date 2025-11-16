@@ -19,10 +19,12 @@
 %%% @param Id Unique identifier for the frame
 %%% @returns A frame widget map configured as a visible container with padding
 %%% @end
+
 -spec new(term()) -> map().
 new(Id) ->
     (widget:new())#{id => Id,
-                    widget_type => visible_container,
+                    widget_type => frame,
+                    orientation => vertical,
                     padding => #{top => 1, bottom => 1, left => 1, right => 1},
                     type => container }.
 

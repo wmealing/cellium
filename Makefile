@@ -13,6 +13,15 @@ counter:
 	erl -sname node1 -setcookie mysecretcookie -noshell  -noinput \
 	$(LIB_EBIN) $(TERMBOX_EBIN) $(EXTRAS_EBIN) -eval 'counter:start()'
 
+huenicorn:
+	erl -sname node1 -setcookie mysecretcookie -noshell  -noinput \
+	$(LIB_EBIN) $(TERMBOX_EBIN) $(EXTRAS_EBIN) -eval 'huenicorn:start()'
+
+button_demo:
+	erl -sname node1 -setcookie mysecretcookie -noshell  -noinput \
+	$(LIB_EBIN) $(TERMBOX_EBIN) $(EXTRAS_EBIN) -eval 'button_demo:start()'
+
+
 
 widget_demo:
 	erl -sname node1 -setcookie mysecretcookie -noshell  -noinput \

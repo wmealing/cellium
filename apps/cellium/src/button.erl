@@ -20,10 +20,11 @@
 %%% @returns A widget map configured as a button
 %%% @end
 -spec new(binary() | string(), fun()) -> map().
-new(Text, Callback) ->
-    (widget:new())#{label => Text,
-                    widget_type => button,
-                    callback => Callback}.
+new(Id, Label) ->
+    (widget:new())#{id => Id,
+                    label => Label,
+                    type => widget,
+                    widget_type => button}.
 
 %%% @doc Renders the button widget to the terminal.
 %%%
@@ -43,15 +44,15 @@ render(Widget) ->
     Width = maps:get(width, Widget, 0),
     Height = maps:get(height, Widget, 0),
 
-    X2 = X1 + Width,
-    Y2 = Y1 + Height,
+    X2 = X1 + Width  - 2,
+    Y2 = Y1 + Height - 2 ,
 
-    Label = maps:get(label, Widget, [<<"NO TEXT">>]),
+    Label = maps:get(label, Widget, <<"NO TEXT">>),
 
     ButtonLength = X2 - X1,
-    WordLength = string:length(Label),
+    WordLength = byte_size(Label),
     XOffset = trunc ((ButtonLength / 2) - (WordLength / 2) ),
-    YOffset = trunc( (Y2 - Y1) / 2) -1 ,
+    YOffset = trunc( (Y2 - Y1) / 2) + 1,
 
-    text:draw_lines_of_text(X1 + XOffset , Y1 + YOffset, Bg, Fg, 1, Label),
-    table:draw_table(X1, Y1, X2 + Width, Fg, Bg, Box, [X2 - X1]).
+    table:draw_table(X1, Y1, X2 + Width, Fg, Bg, Box, [X2 - X1]),
+    text:draw_line(X1 + XOffset , Y1 + YOffset, Fg, Bg, Label).

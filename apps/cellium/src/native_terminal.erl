@@ -154,8 +154,11 @@ tb_set_cell(X, Y, Char, Fg, Bg) ->
         ?RESET
     ]).
 
+
 -doc "Prints a string at the specified (X, Y) position with given foreground and background colors.".
 tb_print(X, Y, Fg, Bg, Str) ->
+
+%%    logger:info("-----------> STR: ~p", [is_binary(Str)]),
     OutputMode = tb_get_output_mode(),
 
     FgAnsi = lookup_color(Fg, fg, OutputMode),
@@ -230,6 +233,7 @@ handle_call({set_output_mode, Mode}, _From, State) ->
                      _ -> truecolor
                  end,
 
+    logger:info("Setting output mode; ~p~n", [OutputMode]),
     {reply, ok, State#state{output_mode = OutputMode}};
 
 handle_call(get_output_mode, _From, State) ->

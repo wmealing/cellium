@@ -9,7 +9,7 @@
 -module(text).
 
 %% API
--export([draw_lines_of_text/6, render/1, new/2]).
+-export([draw_lines_of_text/6, draw_line/5, render/1, new/2]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -50,11 +50,11 @@ draw_line(X,Y, Fg, Bg, Word) ->
                       Word).
 
 %% terminate early if there is no 'lines' left.
-draw_lines_of_text(_X, _Y,  _Bg, _Fg, 0, _l) ->
+draw_lines_of_text(_X, _Y,  _Fg, _Bg, 0, _l) ->
     ok;
 
 %% terminate early if there is no content left.
-draw_lines_of_text(_X, _Y,  _Bg, _Fg, _Space, []) ->
+draw_lines_of_text(_X, _Y,  _Fg, _Bg, _Space, []) ->
     ok;
 
 %% Handle an empty line: just recurse, incrementing Y

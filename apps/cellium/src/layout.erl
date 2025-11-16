@@ -62,7 +62,7 @@ calculate_layout(Container) ->
             ExpandCount = length(ExpandChildren),
 
             % Distribute available space among expanding children
-            ExpandedChildren = 
+            ExpandedChildren =
                 if ExpandCount > 0 ->
                     BaseExpandSize = trunc(AvailableSpace / ExpandCount),
                     Remainder = AvailableSpace rem ExpandCount,
@@ -89,10 +89,10 @@ calculate_layout(Container) ->
 
             % Assign final coordinates and dimensions, including gaps
             {RealizedChildren, _} =
-                lists:foldl(fun({Index, Child}, {Acc, CurrentOffset}) ->                    
+                lists:foldl(fun({Index, Child}, {Acc, CurrentOffset}) ->
                     % Check if child has absolute positioning
                     IsAbsolute = maps:get(position, Child, relative) =:= absolute,
-                    
+
                     ChildSize = maps:get(size, Child, 0),
                     Gap = 0,
 

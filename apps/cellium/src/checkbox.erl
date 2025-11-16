@@ -8,6 +8,7 @@
 new(Id, Label) ->
     (widget:new())#{id => Id,
                     type => widget,
+                    size => 1,
                     widget_type => checkbox,
                     label => Label,
                     padding =>
