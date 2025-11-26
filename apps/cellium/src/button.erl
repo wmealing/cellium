@@ -52,7 +52,7 @@ render(Widget) ->
     ButtonLength = X2 - X1,
     WordLength = byte_size(Label),
     XOffset = trunc ((ButtonLength / 2) - (WordLength / 2) ),
-    YOffset = trunc( (Y2 - Y1) / 2) + 1,
+    YOffset = trunc( (Y2 - Y1) / 2),
 
     table:draw_table(X1, Y1, Y2 - Y1, Fg, Bg, Box, [X2 - X1]),
     text:draw_line(X1 + XOffset , Y1 + YOffset, Fg, Bg, Label).

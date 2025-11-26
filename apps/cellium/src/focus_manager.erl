@@ -8,7 +8,7 @@
 -export([register_widget/1, unregister_widget/1]).
 -export([set_focused/1, get_focused/0]).
 -export([move_focus_forward/0, move_focus_backward/0]).
--export([can_focus/1]).
+-export([can_focus/1, remove_all/0, list_all/0]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -117,6 +117,19 @@ move_focus_backward() ->
 can_focus(WidgetId) ->
     gen_server:call(?SERVER, {can_focus, WidgetId}).
 
+
+-spec remove_all() ->
+          reset.
+remove_all() ->
+    gen_server:call(?SERVER, {remove_all}).
+
+
+-spec list_all() ->
+          [WidgetId :: term()].
+list_all() ->
+    gen_server:call(?SERVER, {list_all}).
+
+
 %%%===================================================================
 %%% gen_server callbacks
 %%%===================================================================
@@ -162,6 +175,14 @@ handle_call(move_focus_backward, _From, State) ->
 handle_call({can_focus, WidgetId}, _From, State) ->
     Reply = is_focusable(WidgetId, State),
     {reply, Reply, State};
+
+handle_call({remove_all}, _From, #state{current_focus = Current}) ->
+    NewState = #state{focusable_widgets = [], current_focus = Current},
+    Reply = reset,
+    {reply, Reply, NewState};
+
+handle_call({list_all}, _From, #state{focusable_widgets = L} = State) ->
+    {reply, L, State};
 
 handle_call(_Request, _From, State) ->
     {reply, ok, State}.

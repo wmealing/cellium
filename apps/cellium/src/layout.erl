@@ -1,19 +1,67 @@
+%%%-------------------------------------------------------------------
+%%% @doc Layout Engine Module
+%%%
+%%% This module implements the core layout calculation engine for Cellium.
+%%% It transforms a widget tree with relative dimensions and positioning
+%%% into an absolute coordinate system ready for rendering.
+%%%
+%%% The layout engine supports:
+%%% - Horizontal and vertical container orientation
+%%% - Fixed-size and expanding children
+%%% - Padding and spacing
+%%% - Absolute and relative positioning
+%%% - Nested container layouts
+%%%
+%%% Layout calculation proceeds recursively from parent containers to their
+%%% children, distributing available space according to size constraints and
+%%% expand properties.
+%%% @end
+%%%-------------------------------------------------------------------
 -module(layout).
 -export([calculate_layout/1, calculate_layout/3]).
 
 -include("cellium.hrl").
 
+%%% @doc Calculates layout with explicit dimensions.
+%%%
+%%% Wrapper function that sets explicit width and height on a widget
+%%% before performing layout calculation. Useful for setting root
+%%% container dimensions.
+%%%
+%%% @param Widget The widget or container to layout
+%%% @param Width The width to set
+%%% @param Height The height to set
+%%% @returns Updated widget map with calculated layout
+%%% @end
+-spec calculate_layout(map(), integer(), integer()) -> map().
 calculate_layout(Widget, Width, Height) ->
     NewWidget = Widget#{width => Width,
                         height => Height},
     calculate_layout(NewWidget).
 
-%% @doc Recursively realizes the layout of a container by calculating the x, y, width,
-%% and height for all its children.
+%%% @doc Recursively calculates layout for a widget tree.
+%%%
+%%% This is the main layout calculation function that transforms a widget tree
+%%% with relative dimensions into absolute coordinates. The function:
+%%% 
+%%% 1. Handles absolutely-positioned widgets by skipping layout
+%%% 2. Applies container padding (frames get default padding)
+%%% 3. Separates children into fixed-size and expanding categories
+%%% 4. Distributes available space among expanding children
+%%% 5. Assigns final coordinates based on container orientation
+%%% 6. Recursively processes nested containers
+%%%
+%%% Children with the expand property share remaining space equally after
+%%% accounting for fixed-size children. The last expanding child receives any
+%%% remaining pixels from integer division.
+%%%
+%%% @param Widget Widget or container map to layout
+%%% @returns Widget map with calculated x, y, width, height for all descendants
+%%% @end
 
 -spec calculate_layout(map()) -> map().
 calculate_layout(#{position := absolute} = Widget) ->
-    logger:debug("IGNORING LAYOUT FOR WIDGET ~p", [Widget]),
+    %% Absolutely positioned widgets ignore layout calculation
     Widget;
 
 calculate_layout(Container) ->
