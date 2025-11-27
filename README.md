@@ -45,15 +45,16 @@ init(_Args) ->
     Model = #{count => 0},
     {ok, Model}.
 
-update(#{count := Count} = Model, Msg) ->
+update(Model, Msg) ->
     case Msg of
-        {tb_event, key, _, {keydata, _, $+}} ->
-            #{count => Count + 1};
-        {tb_event, key, _, {keydata, _, $-}} ->
-            #{count => Count - 1};
-        {tb_event, key, _ , {keydata, _ , $q}} ->
-            init:stop();
-        _Other ->
+        {key, _, _, _, _, <<"+">>} ->
+            Model#{count => maps:get(count, Model) + 1};
+        {key, _, _, _, _, <<"-">>} ->
+            Model#{count => maps:get(count, Model) - 1};
+        {key, _, _, _, _, <<"q">>} ->
+            init:stop(),
+            Model;
+        _ ->
             Model
     end.
 
@@ -133,30 +134,16 @@ The root of the view tree should always be a container. Child elements are organ
 
 #### Running It
 
-Start the application by calling:
+To run the counter example, use the `make run` command:
 
 ```sh
-$ erl -noshell -pa ./_build/default/checkouts/termbox2_nif/ebin -pa ./_build/default/lib/*/ebin -pa ./_build/default/extras/examples/ -eval 'counter:start()'
+make run example=counter
 ```
 
-Using the -noinput parameter so that the erlang runtime doesn't 'steal' keyboard input that is intended for your application.
-
-Or you can use the makefile target, 'make count', which sets the -noshell flag and paths appropriately.
+You can also run the application by starting a `rebar3` shell and calling the `start/0` function:
 
 ```sh
-make count
-```
-
-Or, compile and run from the shell:
-
-```bash
-$ rebar3 compile
 $ rebar3 shell
-```
-
-Then from the Erlang shell:
-
-```erlang
 1> counter:start().
 ```
 

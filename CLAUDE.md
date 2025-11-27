@@ -39,7 +39,7 @@
 - `time.erl` - Time display widget
 
 #### Supporting Modules
-- `termbox2_nif.erl` / `termbox_dummy.erl` - Terminal rendering backend (switchable)
+- `termbox_dummy.erl` - Terminal rendering backend (switchable)
 - `input_handler.erl` - Keyboard/input processing
 - `update_model.erl` - Model update logic (TEA update function)
 - `theme.erl` - Theme definitions
@@ -52,9 +52,7 @@
 - `rebar.config` - Build configuration and dependencies
 
 ## Dependencies (from rebar.config)
-- `termbox2_nif` (2.0.0) - Terminal rendering library
 - `maps_in` (0.2.0) - Map manipulation utilities
-- `erlmcp` (git) - MCP integration (from erlsci/erlmcp)
 
 ## Development Workflow
 
@@ -109,7 +107,7 @@ demo:simple().  % Start demo application
 3. **Layout calculation** - `layout_manager:calculate_layout/3` computes positions
 4. **Theming** - `css:style/1` applies theme/styles
 5. **Render** - `widgets:render/1` dispatches to widget modules
-6. **Present** - `termbox2_nif:tb_present/0` displays to terminal
+6. **Present** - `?TERMBOX:tb_present/0` displays to terminal
 
 ## Event Flow
 1. Input event → `input_handler`
