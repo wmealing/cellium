@@ -20,7 +20,6 @@
 -define(TB_OUTPUT_GRAYSCALE, 4).
 -define(TB_OUTPUT_TRUECOLOR, 5).
 
-%%  0008ca://github.com/termbox/termbox2/blob/ffd159c2a6106dd5eef338a6702ad15d4d4aa809/termbox2.h#L261
 %% -define(TB_BOLD      ,0x0100
 %% -define(TB_UNDERLINE ,0x0200
 %% -define(TB_REVERSE   ,0x0400

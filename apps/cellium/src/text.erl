@@ -1,15 +1,22 @@
 %%%-------------------------------------------------------------------
 %%% @author Wade Mealing <wmealing@gmail.com>
 %%% @copyright (C) 2025, Wade Mealing
-%%% @doc
+%%% @doc Text Widget Module
 %%%
+%%% This module provides a text display widget that supports automatic
+%%% word wrapping and multi-line text rendering. The text widget displays
+%%% plain text content within specified dimensions, automatically wrapping
+%%% words to fit the available width.
+%%%
+%%% Text is wrapped using a greedy word-wrap algorithm and rendered line
+%%% by line within the height constraints of the widget.
 %%% @end
 %%% Created : 26 Sep 2025 by Wade Mealing <wmealing@gmail.com>
 %%%-------------------------------------------------------------------
 -module(text).
 
 %% API
--export([draw_lines_of_text/6, draw_line/5, render/1, new/2]).
+-export([draw_lines_of_text/6, draw_line/5, render/1, new/2, render_focused/1]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).

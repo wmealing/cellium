@@ -5,7 +5,7 @@
 %%% @end
 -module(button).
 
--export([render/1, new/2]).
+-export([render/1, new/2, render_focused/1]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -56,3 +56,35 @@ render(Widget) ->
 
     table:draw_table(X1, Y1, Y2 - Y1, Fg, Bg, Box, [X2 - X1]),
     text:draw_line(X1 + XOffset , Y1 + YOffset, Fg, Bg, Label).
+
+%%% @doc Renders the button widget to the terminal when it has focus.
+%%%
+%%% This function is similar to `render/1` but swaps the foreground and
+%%% background colors to provide a visual indication that the widget is focused.
+%%%
+%%% @param Widget The button widget map containing position, size, and label
+%%% @returns ok
+%%% @end
+-spec render_focused(map()) -> ok.
+render_focused(Widget) ->
+    #{x := X1, y := Y1, fg := Fg, bg := Bg} = get_common_props(Widget),
+
+    Style = maps:get(style, Widget, double),
+    Box = box_styles:Style(),
+
+    Width = maps:get(width, Widget, 0),
+    Height = maps:get(height, Widget, 0),
+
+    X2 = X1 + Width - 2,
+    Y2 = Y1 + Height - 1,
+
+    Label = maps:get(label, Widget, <<"NO TEXT">>),
+
+    ButtonLength = X2 - X1,
+    WordLength = byte_size(Label),
+    XOffset = trunc ((ButtonLength / 2) - (WordLength / 2) ),
+    YOffset = trunc( (Y2 - Y1) / 2),
+
+    table:draw_table(X1, Y1, Y2 - Y1, Bg, Fg, Box, [X2 - X1]), %% Swapped Fg and Bg
+    text:draw_line(X1 + XOffset , Y1 + YOffset, Bg, Fg, Label). %% Swapped Fg and Bg
+

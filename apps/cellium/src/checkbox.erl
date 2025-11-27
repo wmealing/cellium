@@ -1,5 +1,5 @@
 -module(checkbox).
--export([new/2, render/1, toggle/1]).
+-export([new/2, render/1, toggle/1, render_focused/1]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -30,6 +30,21 @@ render(Widget) ->
             ?TERMBOX:tb_print(X,Y, Fg, Bg,<<"[x]">> );
         false ->
             ?TERMBOX:tb_print(X,Y, Fg, Bg, <<"[ ]">> )
+    end,
+
+    ?TERMBOX:tb_print(X + 4 ,Y, Fg, Bg, Label).
+
+render_focused(Widget) ->
+    Checked = maps:get(checked, Widget),
+    Label = maps:get(label, Widget),
+
+    #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
+
+    case Checked of
+        true ->
+            ?TERMBOX:tb_print(X,Y, Fg, Bg,<<"[[x]]">> );
+        false ->
+            ?TERMBOX:tb_print(X,Y, Fg, Bg, <<"[[]]">> )
     end,
 
     ?TERMBOX:tb_print(X + 4 ,Y, Fg, Bg, Label).

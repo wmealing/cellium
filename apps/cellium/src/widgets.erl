@@ -1,5 +1,5 @@
 -module(widgets).
--export([render/1]).
+-export([render/1, render_focused/1]).
 
 %% @doc Renders a widget into a virtual screen representation.
 
@@ -10,11 +10,22 @@ render(Widget) ->
     case maps:get(type, Widget, none) of
         container ->
             Mod = maps:get(widget_type, Widget, container),
-            Mod:render(Widget),
+            case maps:get(focused, Widget, false) of
+                true -> Mod:render_focused(Widget);
+                false -> Mod:render(Widget)
+            end,
             [render(Child) || Child <- maps:get(children, Widget, [])];
         widget ->
             Mod = maps:get(widget_type, Widget),
-            Mod:render(Widget);
+            case maps:get(focused, Widget, false) of
+                true -> Mod:render_focused(Widget);
+                false -> Mod:render(Widget)
+            end;
         _ ->
             no_widgets
     end.
+
+render_focused(Widget) ->
+    Mod = maps:get(widget_type, Widget),
+    Mod:render_focused(Widget).
+

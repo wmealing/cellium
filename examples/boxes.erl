@@ -73,7 +73,6 @@ update(Model, Msg) ->
 
 render(_Model) ->
     S = simple(),
-    logger:info("WIDGET: ~p", [S]),
     S.
 
 
