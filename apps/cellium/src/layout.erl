@@ -70,9 +70,14 @@ calculate_layout(OriginalContainer) ->
     Orientation = maps:get(orientation, OriginalContainer, horizontal),
     Id = maps:get(id, OriginalContainer, undefined),
 
-    {ok, FocusedWidget} = focus_manager:get_focused(),
-
-    logger:info("FOCUS MANGER GET FOCUSED: ~p", [FocusedWidget]),
+    FocusedWidget = case whereis(focus_manager) of
+        undefined -> undefined;
+        _ -> 
+            case focus_manager:get_focused() of
+                {ok, FW} -> FW;
+                _ -> undefined
+            end
+    end,
 
     % ok tricky.
     Container =
@@ -96,10 +101,21 @@ calculate_layout(OriginalContainer) ->
     PaddingBottom = maps:get(bottom, Padding, 0),
     PaddingLeft = maps:get(left, Padding, 0),
 
-    X = maps:get(x, Container, 0) + PaddingLeft,
-    Y = maps:get(y, Container, 0) + PaddingTop,
-    Width = max(0, maps:get(width, Container, ?TERMBOX:tb_width()) - PaddingLeft - PaddingRight),
-    Height = max(0, maps:get(height, Container, ?TERMBOX:tb_height()) - PaddingTop - PaddingBottom),
+    {X, Y, Width, Height} = 
+        try
+            %% Try getting dimensions from current backend
+            {maps:get(x, Container, 0) + PaddingLeft,
+             maps:get(y, Container, 0) + PaddingTop,
+             max(0, maps:get(width, Container, ?TERMBOX:tb_width()) - PaddingLeft - PaddingRight),
+             max(0, maps:get(height, Container, ?TERMBOX:tb_height()) - PaddingTop - PaddingBottom)}
+        catch
+            _:_ ->
+                %% Terminal backend not running, use defaults
+                {maps:get(x, Container, 0) + PaddingLeft,
+                 maps:get(y, Container, 0) + PaddingTop,
+                 max(0, maps:get(width, Container, 80) - PaddingLeft - PaddingRight),
+                 max(0, maps:get(height, Container, 24) - PaddingTop - PaddingBottom)}
+        end,
 
 
     if Children == [] ->

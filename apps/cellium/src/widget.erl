@@ -86,10 +86,10 @@ create(WidgetMap) ->
 %%% @param Widget A widget map that may contain x, y, color, and background-color keys
 %%% @returns A map with keys x, y, fg (foreground), and bg (background)
 %%% @end
--spec get_common_props(Widget :: map()) -> #{x := integer(), y := integer(), fg := atom(), bg := atom()}.
+-spec get_common_props(Widget :: map()) -> #{x := integer(), y := integer(), fg := integer(), bg := integer()}.
 get_common_props(Widget) ->
     X = maps:get(x, Widget, 0),
     Y = maps:get(y, Widget, 0),
-    Bg = maps:get('background-color', Widget, ?DEFAULT_BG_COLOR),
-    Fg = maps:get(color, Widget, ?DEFAULT_FG_COLOR),
-    #{x => X, y => Y, fg => Fg, bg => Bg}.
+    BgAtom = maps:get('background-color', Widget, ?DEFAULT_BG_COLOR),
+    FgAtom = maps:get(color, Widget, ?DEFAULT_FG_COLOR),
+    #{x => X, y => Y, fg => color_to_int(FgAtom), bg => color_to_int(BgAtom)}.

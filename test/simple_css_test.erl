@@ -5,10 +5,19 @@
 -export([test_one/0,test_two/0]).
 
 simple_css_test_() ->
-    [
+    {setup,
+     fun() ->
+             focus_manager:start_link()
+     end,
+     fun({ok, Pid}) ->
+             gen_server:stop(Pid);
+        (Pid) when is_pid(Pid) ->
+             gen_server:stop(Pid)
+     end,
+     [
         ?_test(test_one()),
         ?_test(test_two())
-    ].
+     ]}.
 
 test_one() ->
     Output = css:load_stylesheet("priv/test1.css"),

@@ -7,7 +7,10 @@
 
 layout_engine_test_() ->
     [
-        ?_test(test_one_child())
+        ?_test(test_one_child()),
+        ?_test(test_two_child()),
+        ?_test(test_one_fixed_child()),
+        ?_test(three_should_be_100_total())
     ].
 
 test_one_child() ->
@@ -30,11 +33,7 @@ test_one_child() ->
                                    ] },
     ScreenWidth = 100,
     ScreenHeight = 20,
-    Rendered = layout_engine:calculate_layout(LayoutData, ScreenWidth, ScreenHeight),
-%    GoalList = maps_in:get([children], Rendered, default),
-%    [GoalElement | _Rest] = GoalList,
-%    Goal = maps:get(width ,GoalElement, none),
-%    ?assertEqual(100, Goal),
+    _Rendered = layout:calculate_layout(LayoutData, ScreenWidth, ScreenHeight),
     ok.
 
 test_two_child() ->
@@ -44,18 +43,18 @@ test_two_child() ->
                        orientation => horizontal,
                        children => [ #{ type => widget,
                                         widget_type => box,
-                                        id => input_field,
+                                        id => box1,
                                         color => 2,
-                                        expand => 10 },
+                                        expand => true },
                                      #{ type => widget,
                                         widget_type => box,
-                                        id => input_field,
+                                        id => box2,
                                         color => 2,
-                                        expand => 10 }
+                                        expand => true }
                                    ] },
     ScreenWidth = 100,
-    Rendered = layout_engine:calculate_layout(LayoutData, ScreenWidth, 20),
-    GoalList = maps_in:get([children], Rendered, default),
+    Rendered = layout:calculate_layout(LayoutData, ScreenWidth, 20),
+    GoalList = maps:get(children, Rendered, []),
     [FirstElement, SecondElement] = GoalList,
     FirstGoal = maps:get(width, FirstElement, none),
     SecondGoal = maps:get(width, SecondElement, none ),
@@ -70,19 +69,18 @@ test_one_fixed_child() ->
                        orientation => horizontal,
                        children => [ #{ type => widget,
                                         widget_type => box,
-                                        id => input_field,
+                                        id => box1,
                                         color => 2,
-                                        width => 10 },
+                                        size => 10 },
                                      #{ type => widget,
                                         widget_type => box,
-                                        id => input_field,
+                                        id => box2,
                                         color => 2,
-                                        expand => 10 }
+                                        expand => true }
                                    ] },
     ScreenWidth = 100,
-    Rendered = layout_engine:calculate_layout(LayoutData, ScreenWidth, 20),
-    ?debugFmt("RENDERED: ~p~n", [Rendered]),
-    GoalList = maps_in:get([children], Rendered, default),
+    Rendered = layout:calculate_layout(LayoutData, ScreenWidth, 20),
+    GoalList = maps:get(children, Rendered, []),
     [FirstElement, SecondElement] = GoalList,
 
     FirstGoal = maps:get(width ,FirstElement, none),
@@ -116,9 +114,8 @@ three_should_be_100_total() ->
                                     expand => true }
                                ] },
     ScreenWidth = 100,
-    Rendered = layout_engine:calculate_layout(LayoutData, ScreenWidth, 20),
-    ?debugFmt("RENDERED: ~p~n", [Rendered]),
-    GoalList = maps_in:get([children], Rendered, default),
+    Rendered = layout:calculate_layout(LayoutData, ScreenWidth, 20),
+    GoalList = maps:get(children, Rendered, []),
     [FirstElement, SecondElement, ThirdElement] = GoalList,
 
     FirstGoal  = maps:get(width ,FirstElement,  none),
@@ -126,5 +123,3 @@ three_should_be_100_total() ->
     ThirdGoal  = maps:get(width, ThirdElement,  none),
     ?assertEqual(100,FirstGoal + SecondGoal + ThirdGoal),
     ok.
-
-
