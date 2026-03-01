@@ -1,0 +1,29 @@
+#{
+    id => outer,
+    type => container,
+    expand => true,
+    color => white,
+    children => [
+        #{
+            id => inner1,
+            type => container,
+            expand => true,
+            color => white,
+            children => [
+                #{
+                    id => box1,
+                    type => widget,
+                    expand => true,
+                    width => 10,
+                    'background-color' => "FFFFFF",
+                    color => "000000",
+                    padding => #{left => 0, right => 0, bottom => 0, top => 0},
+                    widget_type => box,
+                    height => 10,
+                    has_focus => true
+                }
+            ],
+            orientation => horizontal,
+            padding => #{left => 0, right => 0, bottom => 0, top => 0},
+            widget_type => container
+        } ] }. 
