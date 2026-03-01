@@ -71,7 +71,7 @@ render_internal(Widget, Focused) ->
         Box = box_styles:double(),
 
         table:draw_table(X, Y, Height - 1, BorderFg, Bg, Box, [Width - 2]),
-        native_terminal:tb_print(X + 2, Y, BorderFg, Bg, FrameTitle);
+        ?TERMBOX:tb_print(X + 2, Y, BorderFg, Bg, FrameTitle);
     true ->
         ok
     end.

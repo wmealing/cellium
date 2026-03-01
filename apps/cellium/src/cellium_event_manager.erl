@@ -70,9 +70,28 @@ init([]) ->
 init(Target) ->
     logger:info("Cellium event manager - init/1"),
     process_flag(trap_exit, true),
-    erlang:send_after(100, self(), tick),
+    
+    %% Start a dedicated poller process that blocks on ?TERMBOX:tb_poll_event()
+    %% This keeps the gen_server responsive to cast/call while we wait for input.
+    Self = self(),
+    spawn_link(fun() -> event_poller_loop(Self) end),
+    
     NewState = #state{event_target = Target},
     {ok, NewState}.
+
+%% --- Poller Process ---
+
+event_poller_loop(Parent) ->
+    case ?TERMBOX:tb_poll_event() of
+        {error, _} = Error ->
+            %% If the backend doesn't support polling (like mock), don't crash
+            logger:debug("Terminal poll error: ~p", [Error]),
+            timer:sleep(100),
+            event_poller_loop(Parent);
+        Event ->
+            gen_server:cast(Parent, {terminal_event, Event}),
+            event_poller_loop(Parent)
+    end.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -105,6 +124,11 @@ handle_call(Msg, _From, State) ->
           {noreply, NewState :: term(), Timeout :: timeout()} |
           {noreply, NewState :: term(), hibernate} |
           {stop, Reason :: term(), NewState :: term()}.
+
+handle_cast({terminal_event, Event}, State) ->
+    process_event(Event, State),
+    {noreply, State};
+
 handle_cast({external_event, Event}, State) ->
     cellium:handle_event(Event),
     {noreply, State};
@@ -124,8 +148,11 @@ handle_cast(_Request, State) ->
           {stop, Reason :: normal | term(), NewState :: term()}.
 
 handle_info(_Info, State) ->
-    Event = native_terminal:tb_poll_event(),
-    erlang:send_after(?TICK_INTERVAL, self(), tick),
+    {noreply, State}.
+
+%% --- Internal ---
+
+process_event(Event, _State) ->
     logger:info("POLL EVENT IS: ~p", [Event]),
 
     case Event of
@@ -136,8 +163,7 @@ handle_info(_Info, State) ->
         _ ->
             ok
     end,
-    cellium:handle_event(Event),
-    {noreply, State}.
+    cellium:handle_event(Event).
 
 %%--------------------------------------------------------------------
 %% @private
