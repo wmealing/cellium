@@ -6,7 +6,7 @@
 %%% @end
 -module(container).
 
--export([render/1, new/2]).
+-export([render/1, new/2, render_focused/1]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -45,8 +45,20 @@ render(Container) ->
             X2 = maps:get(width, Container, 0) + X1,
             Y2 = maps:get(height, Container, 0) + Y1,
 
-            [?TERMBOX:tb_set_cell(X, Y, $_, Fg, Bg) || X <- lists:seq(X1, X2),
-                                                       Y <- lists:seq(Y1, Y2)];
+            [?TERMBOX:tb_set_cell(X, Y, $_, Fg, Bg) || X <- lists:seq(X1, X2 - 1),
+                                                       Y <- lists:seq(Y1, Y2 - 1)];
         _Anything ->
             ok
     end.
+
+%%% @doc Renders the container when it has focus.
+%%%
+%%% For a container, this currently acts the same as `render/1` as visual
+%%% focus indication is handled by its focusable children.
+%%%
+%%% @param Container The container widget map
+%%% @returns ok or hi (internal token)
+%%% @end
+-spec render_focused(map()) -> ok | hi.
+render_focused(Container) ->
+    render(Container).

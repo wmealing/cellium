@@ -6,9 +6,10 @@
 %%% @end
 -module(widget).
 
--export([new/0, get_common_props/1, color_to_int/1]).
+-export([new/0, create/1, get_common_props/1, color_to_int/1]).
 
 -include("cellium.hrl").
+-import(focus_manager, [register_widget/1]).
 
 -spec color_to_int(Color :: atom() | integer()) -> integer().
 color_to_int(Color) when is_integer(Color) ->
@@ -36,6 +37,7 @@ color_to_int(_) -> ?TB_DEFAULT.
 %%% - `color': white
 %%% - `padding': all sides set to 0
 %%% - `id': override_me (should be set by specific widget)
+%%% - `focusable': false
 %%%
 %%% @returns A base widget map with default values
 %%% @end
@@ -45,7 +47,28 @@ new() ->
         widget_type  => override_me,
 	color => white, 
         padding => #{top => 0, bottom => 0, left => 0, right => 0},
-        id => override_me  }.
+        id => override_me,
+        focusable => false
+      }.
+
+%%% @doc Creates and registers a widget with the focus manager if it is focusable.
+%%% @param WidgetMap The widget map to create and register.
+%%% @returns The widget map.
+%%% @end
+-spec create(map()) -> map().
+create(WidgetMap) ->
+    case maps:get(focusable, WidgetMap, false) of
+        true ->
+            case maps:get(id, WidgetMap, undefined) of
+                undefined ->
+                    logger:warning("Cannot register widget with no ID: ~p", [WidgetMap]);
+                Id ->
+                    focus_manager:register_widget(Id)
+            end;
+        false ->
+            ok
+    end,
+    WidgetMap.
 
 %%% @doc Extracts common rendering properties from a widget map.
 %%%

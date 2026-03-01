@@ -25,8 +25,12 @@
 -spec build_line(#box{}, [non_neg_integer()], string(), string(), string(), string()) -> iolist().
 build_line(_Box, [], Left, _Horizontal, _Divider, Right) ->
     [Left, Right];
+build_line(_Box, [Width], Left, _Horizontal, _Divider, Right) when Width =< 0 ->
+    [Left, "", Right];
 build_line(_Box, [Width], Left, Horizontal, _Divider, Right) ->
     [Left, lists:duplicate(Width, Horizontal), Right];
+build_line(Box, [Width | Rest], Left, Horizontal, Divider, Right) when Width =< 0 ->
+    [Left, "", Divider | build_line(Box, Rest, "", Horizontal, Divider, Right)];
 build_line(Box, [Width | Rest], Left, Horizontal, Divider, Right) ->
     [Left, lists:duplicate(Width, Horizontal), Divider | build_line(Box, Rest, "", Horizontal, Divider, Right)].
 

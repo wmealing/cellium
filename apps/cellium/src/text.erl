@@ -19,7 +19,7 @@
 -export([draw_lines_of_text/6, draw_line/5, render/1, new/2, render_focused/1]).
 
 -include("cellium.hrl").
--import(widget, [get_common_props/1]).
+-import(widget, [get_common_props/1, create/1]).
 
 %%%===================================================================
 %%% API
@@ -37,13 +37,14 @@
 %%% @end
 -spec new(term(), binary()) -> map().
 new(Id, Words) ->
-    (widget:new())#{id => Id,
-                    type => widget,
-                    widget_type => text,
-                    value => Words,
-                    width => bit_size(Words),
-                    height => 1
-}.
+    widget:create(
+      (widget:new())#{id => Id,
+                      type => widget,
+                      widget_type => text,
+                      value => Words,
+                      width => bit_size(Words),
+                      height => 1
+                     }).
 
 %%% @doc Renders the text widget to the terminal.
 %%%
@@ -56,6 +57,10 @@ new(Id, Words) ->
 %%% @end
 -spec render(map()) -> ok.
 render(Widget) ->
+
+    Id = maps:get(id, Widget, undef),
+    logger:info(">> text widget rendering unfocused: ~p", [Id]),
+
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     Width = maps:get(width, Widget, 0),
@@ -77,6 +82,9 @@ render(Widget) ->
 %%% @end
 -spec render_focused(map()) -> ok.
 render_focused(Widget) ->
+
+
+    logger:info(">> text widget rendering focused."),
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     Width = maps:get(width, Widget, 0),

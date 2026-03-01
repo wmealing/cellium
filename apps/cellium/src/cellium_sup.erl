@@ -71,9 +71,11 @@ init([]) ->
     %% },
 
     ChildSpecs = [
-%                  RenderServer,
-%                  StateWorker,
-%                  EventManager
+                  %% #{id => cellium_state,
+                  %%   start => {cellium_state, start_link_local, []}, %% The specified function call
+                  %%   restart => permanent,                          %% Always restart if it dies
+                  %%   type => worker,
+                  %%   shutdown => 5000},
                  ],
 
     {ok, {SupFlags, ChildSpecs}}.

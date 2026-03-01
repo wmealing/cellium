@@ -6,10 +6,10 @@
 %%% @end
 -module(frame).
 
--export([render/1, new/1]).
+-export([render/1, new/1, render_focused/1]).
 
 -include("cellium.hrl").
--import(widget, [get_common_props/1]).
+-import(widget, [get_common_props/1, create/1]).
 
 %%% @doc Creates a new frame widget.
 %%%
@@ -22,11 +22,12 @@
 
 -spec new(term()) -> map().
 new(Id) ->
-    (widget:new())#{id => Id,
-                    widget_type => frame,
-                    orientation => vertical,
-                    padding => #{top => 1, bottom => 1, left => 1, right => 1},
-                    type => container }.
+    widget:create(
+      (widget:new())#{id => Id,
+                      widget_type => frame,
+                      orientation => vertical,
+                      padding => #{top => 1, bottom => 1, left => 1, right => 1},
+                      type => container }).
 
 %%% @doc Renders the frame with its border and optional title.
 %%%
@@ -39,20 +40,38 @@ new(Id) ->
 %%% @end
 -spec render(map()) -> ok.
 render(Widget) ->
+    render_internal(Widget, false).
+
+%%% @doc Renders the frame with its border and optional title when it has focus.
+%%%
+%%% Draws a double-line bordered box with a changed color around the frame's bounds
+%%% and displays the frame's title (if set) in the top border.
+%%%
+%%% @param Widget The frame widget map containing position, dimensions, and optional title
+%%% @returns ok
+%%% @end
+-spec render_focused(map()) -> ok.
+render_focused(Widget) ->
+    render_internal(Widget, true).
+
+render_internal(Widget, Focused) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     Width = maps:get(width, Widget, 0),
     Height = maps:get(height, Widget, 0),
 
+    BorderFg = case Focused of
+                   true -> red; %% Change color when focused
+                   false -> Fg
+               end,
+
     if Width > 1 andalso Height > 1 ->
         FrameTitle = maps:get(text, Widget, <<"Untitled">>),
 
-        [?TERMBOX:tb_set_cell(X1, Y1, $_, 1, 2) || X1 <- lists:seq(X, X + Width - 1),
-                                                   Y1 <- lists:seq(Y, Y + Height - 1)],
         Box = box_styles:double(),
 
-        table:draw_table(X, Y, Height - 1, Fg, Bg, Box, [Width - 2]),
-        ?TERMBOX:tb_print(X + 2, Y, Fg, Bg, FrameTitle);
+        table:draw_table(X, Y, Height - 1, BorderFg, Bg, Box, [Width - 2]),
+        native_terminal:tb_print(X + 2, Y, BorderFg, Bg, FrameTitle);
     true ->
         ok
     end.

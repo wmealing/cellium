@@ -12,13 +12,14 @@
 
 
 %% API
--export([start_link/0, start_link/1]).
+-export([start_link/0, start_link/1, send_event/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
 -include("cellium.hrl").
+-import(focus_manager, [move_focus_forward/0, move_focus_backward/0]).
 
 -define(SERVER, ?MODULE).
 -define(TICK_INTERVAL, 1). % ms
@@ -43,6 +44,9 @@ start_link() ->
 start_link(CallBackModule) ->
     gen_server:start_link({local, ?SERVER}, 
                           ?MODULE, CallBackModule, []).
+
+send_event(Event) ->
+    gen_server:cast(?SERVER, {external_event, Event}).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -101,6 +105,9 @@ handle_call(Msg, _From, State) ->
           {noreply, NewState :: term(), Timeout :: timeout()} |
           {noreply, NewState :: term(), hibernate} |
           {stop, Reason :: term(), NewState :: term()}.
+handle_cast({external_event, Event}, State) ->
+    cellium:handle_event(Event),
+    {noreply, State};
 handle_cast(_Request, State) ->
     {noreply, State}.
 
@@ -117,11 +124,18 @@ handle_cast(_Request, State) ->
           {stop, Reason :: normal | term(), NewState :: term()}.
 
 handle_info(_Info, State) ->
-    Event = ?TERMBOX:tb_poll_event(),
+    Event = native_terminal:tb_poll_event(),
     erlang:send_after(?TICK_INTERVAL, self(), tick),
     logger:info("POLL EVENT IS: ~p", [Event]),
 
-    % not sure i like this.
+    case Event of
+        {key, false, false, false, false, tab_key} ->
+            focus_manager:move_focus_forward();
+        {key, true, false, false, false, tab_key} ->
+            focus_manager:move_focus_backward();
+        _ ->
+            ok
+    end,
     cellium:handle_event(Event),
     {noreply, State}.
 

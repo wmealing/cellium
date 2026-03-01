@@ -64,10 +64,26 @@ calculate_layout(#{position := absolute} = Widget) ->
     %% Absolutely positioned widgets ignore layout calculation
     Widget;
 
-calculate_layout(Container) ->
+calculate_layout(OriginalContainer) ->
 
-    Children = maps:get(children, Container, []), 
-    Orientation = maps:get(orientation, Container, horizontal),
+    Children = maps:get(children, OriginalContainer, []),
+    Orientation = maps:get(orientation, OriginalContainer, horizontal),
+    Id = maps:get(id, OriginalContainer, undefined),
+
+    {ok, FocusedWidget} = focus_manager:get_focused(),
+
+    logger:info("FOCUS MANGER GET FOCUSED: ~p", [FocusedWidget]),
+
+    % ok tricky.
+    Container =
+    case FocusedWidget of
+        Id ->
+            logger:info("FOUND FOCUSED"),
+            maps:update(focused, true, OriginalContainer);
+        _Else ->
+            OriginalContainer
+        end,
+
 
     DefaultPadding = case maps:get(widget_type, Container, undefined) of
         frame -> #{top => 1, right => 1, bottom => 1, left => 1};
@@ -92,7 +108,7 @@ calculate_layout(Container) ->
             % Calculate fixed and expand children
             % Note: expand takes priority over size
             ExpandChildren = [Child || Child <- Children, maps:is_key(expand, Child)],
-            FixedChildren = [Child || Child <- Children, 
+            FixedChildren = [Child || Child <- Children,
                            maps:is_key(size, Child) andalso not maps:is_key(expand, Child)],
 
             % Calculate available space based on orientation
@@ -106,6 +122,7 @@ calculate_layout(Container) ->
                     FixedSizeSum = lists:sum([maps:get(size, Child) || Child <- FixedChildren]),
                     AvailableSpace = ParentSize - FixedSizeSum
             end,
+
 
             ExpandCount = length(ExpandChildren),
 
@@ -135,6 +152,7 @@ calculate_layout(Container) ->
                         end
                     end, [], Children),
 
+
             % Assign final coordinates and dimensions, including gaps
             {RealizedChildren, _} =
                 lists:foldl(fun({Index, Child}, {Acc, CurrentOffset}) ->
@@ -158,7 +176,7 @@ calculate_layout(Container) ->
                             end
                     end,
                     % Recursively realize child containers
-                    RealizedChildContainer = 
+                    RealizedChildContainer =
                         case maps:get(type, RealizedChild) of
                             container ->
                                 calculate_layout(RealizedChild);

@@ -15,6 +15,7 @@
          terminate/2, code_change/3]).
 
 -include("cellium.hrl").
+-import(cellium_event_manager, [send_event/1]).
 
 -define(SERVER, ?MODULE).
 
@@ -390,7 +391,5 @@ find_index(Item, [_ | Rest], Index) ->
     ok.
 emit_focus_changed(OldId, NewId) ->
     logger:info("Focus changed from ~p to ~p~n", [OldId, NewId]),
-    %% TODO: Send event to cellium_event_manager or similar
-    %% Event format: {focus_changed, #{from => OldId, to => NewId}}
-    ok.
+    cellium_event_manager:send_event({focus_changed, #{from => OldId, to => NewId}}).
 

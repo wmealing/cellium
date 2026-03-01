@@ -2,6 +2,7 @@
 -moduledoc "This module defines the `cellium` behaviour, which is the core of a Cellium application.\n\nIt's a `gen_server` that manages the application's state, event handling, and rendering\nloop. To create an application, you must implement the callback functions defined in this\nbehaviour.\n\nThe three main callbacks are:\n- `c:init/1`: To set up the initial state of the application (the model).\n- `c:update/2`: To handle events and update the application model.\n- `c:render/1`: To define the UI by transforming the model into a widget tree.\n\nA simple application would look like this:\n```\n-module(my_app).\n-behaviour(cellium).\n\n-export([init/1, update/2, render/1]).\n\ninit(_Args) ->\n    {ok, #{text => <<\"Hello, World!\">>}}.\n\nupdate(Model, _Msg) ->\n    Model.\n\nrender(#{text := Text}) ->\n    text:new(my_text, Text).\n```".
 
 -include("cellium.hrl").
+-import(focus_manager, [remove_all/0]).
 
 %% API
 -export([init/1, handle_call/3, handle_cast/2, render_caller/2]).
@@ -100,8 +101,6 @@ init(#{module := Module}= Args) ->
 handle_call(Msg, _From, State) ->
     #{module := Module, model := Model} = State,
 
-    process_focus_event(State, Msg),
-
     % update return the model.
     NewModel = Module:update(Model, Msg),
 
@@ -133,16 +132,7 @@ terminate(Reason, _State) ->
 
     % set this as on option in a future verrsion.
     init:stop(),
+    focus_manager:remove_all(),
     ok.
 
-process_focus_event(_State, Event) ->
-   case Event of
-       %% tab
-       {key, false, false, false, false, tab_key} ->
-           focus_manager:move_focus_forward();
-       %% shift tab
-       {key, true, false, false, false, tab_key} ->
-           focus_manager:move_focus_backward();
-       _Other ->
-           ok
-   end.
+

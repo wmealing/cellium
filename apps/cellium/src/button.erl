@@ -8,7 +8,7 @@
 -export([render/1, new/2, render_focused/1]).
 
 -include("cellium.hrl").
--import(widget, [get_common_props/1]).
+-import(widget, [get_common_props/1, create/1]).
 
 %%% @doc Creates a new button widget.
 %%%
@@ -19,12 +19,15 @@
 %%% @param Callback Function to be called when the button is activated
 %%% @returns A widget map configured as a button
 %%% @end
--spec new(binary() | string(), fun()) -> map().
+-spec new(term(), binary() | string()) -> map().
 new(Id, Label) ->
-    (widget:new())#{id => Id,
-                    label => Label,
-                    type => widget,
-                    widget_type => button}.
+    widget:create(
+      (widget:new())#{id => Id,
+                      label => Label,
+                      type => widget,
+                      widget_type => button,
+                      focusable => true
+                     }).
 
 %%% @doc Renders the button widget to the terminal.
 %%%
@@ -36,6 +39,10 @@ new(Id, Label) ->
 %%% @end
 -spec render(map()) -> ok.
 render(Widget) ->
+
+    Id = maps:get(id, Widget, none),
+
+    logger:info("NORMAL BUTTON RENDERING ~p",[Id]),
     #{x := X1, y := Y1, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     Style = maps:get(style, Widget, double),
@@ -55,7 +62,7 @@ render(Widget) ->
     YOffset = trunc( (Y2 - Y1) / 2),
 
     table:draw_table(X1, Y1, Y2 - Y1, Fg, Bg, Box, [X2 - X1]),
-    text:draw_line(X1 + XOffset , Y1 + YOffset, Fg, Bg, Label).
+    text:draw_line(X1 + 1 + XOffset , Y1 + YOffset, Fg, Bg, Label).
 
 %%% @doc Renders the button widget to the terminal when it has focus.
 %%%
@@ -67,6 +74,8 @@ render(Widget) ->
 %%% @end
 -spec render_focused(map()) -> ok.
 render_focused(Widget) ->
+
+    logger:info("BUTTON FOCUSED"),
     #{x := X1, y := Y1, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     Style = maps:get(style, Widget, double),
@@ -85,6 +94,6 @@ render_focused(Widget) ->
     XOffset = trunc ((ButtonLength / 2) - (WordLength / 2) ),
     YOffset = trunc( (Y2 - Y1) / 2),
 
-    table:draw_table(X1, Y1, Y2 - Y1, Bg, Fg, Box, [X2 - X1]), %% Swapped Fg and Bg
-    text:draw_line(X1 + XOffset , Y1 + YOffset, Bg, Fg, Label). %% Swapped Fg and Bg
+    table:draw_table(X1, Y1, Y2 - Y1, Bg, Fg, Box, [X2 - X1]),
+    text:draw_line(X1 + 1 + XOffset , Y1 + YOffset, Bg, Fg, Label).
 

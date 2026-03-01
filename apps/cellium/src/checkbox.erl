@@ -2,22 +2,24 @@
 -export([new/2, render/1, toggle/1, render_focused/1]).
 
 -include("cellium.hrl").
--import(widget, [get_common_props/1]).
+-import(widget, [get_common_props/1, create/1]).
 
 -spec new(term(), binary()) -> map().
 new(Id, Label) ->
-    (widget:new())#{id => Id,
-                    type => widget,
-                    size => 1,
-                    widget_type => checkbox,
-                    label => Label,
-                    padding =>
-                        #{top => 1,
-                          bottom => 1,
-                          left => 1,
-                          right => 1},
-                    checked => false
-                    }.
+    widget:create(
+      (widget:new())#{id => Id,
+                      type => widget,
+                      size => 1,
+                      widget_type => checkbox,
+                      label => Label,
+                      padding =>
+                          #{top => 1,
+                            bottom => 1,
+                            left => 1,
+                            right => 1},
+                      checked => false,
+                      focusable => true
+                     }).
 
 render(Widget) ->
     Checked = maps:get(checked, Widget),
