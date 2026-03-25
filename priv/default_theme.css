@@ -1,0 +1,23 @@
+
+
+.box {
+    color: black;
+    background-color: white;
+}
+
+
+#target_box {
+    color: black;
+    background-color: white;
+}
+
+
+.button {
+    color: white;
+    background-color: blue;
+}
+
+.button:focused {
+    color: black;
+    background-color: cyan;
+}
