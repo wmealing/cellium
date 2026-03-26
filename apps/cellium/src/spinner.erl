@@ -1,3 +1,5 @@
+%% -*- erlang-indent-level: 4;indent-tabs-mode: nil -*-
+%% ex: ts=4 sw=4 et
 -module(spinner).
 -export([render/1, new/1]).
 
@@ -9,7 +11,7 @@ new(Id) ->
     (widget:new())#{id => Id,
                     widget_type => spinner,
                     frame => 0,
-                    frames => ["|", "/", "-", "\\"],
+                    frames => ["⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"],
                     type => widget}.
 
 -spec render(map()) -> ok.

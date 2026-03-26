@@ -5,7 +5,7 @@
 -import(focus_manager, [remove_all/0]).
 
 %% API
--export([init/1, handle_call/3, handle_cast/2, render_caller/2]).
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, render_caller/2]).
 -export([start/1, stop/0, handle_event/1, terminate/2]).
 
 -behaviour(gen_server).
@@ -118,6 +118,12 @@ handle_cast(stop, State) ->
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
+handle_info(Msg, State) ->
+    #{module := Module, model := Model} = State,
+    NewModel = Module:update(Model, Msg),
+    render_immediately(Module, NewModel),
+    {noreply, State#{model := NewModel}}.
+
 -doc "Sends an event to the application's `update/2` callback for processing.\nThis is the primary way to send messages to the running application.".
 -spec handle_event(Event :: term()) -> {ok, done}.
 handle_event(Event) ->
@@ -141,3 +147,6 @@ terminate(Reason, _State) ->
     init:stop(),
     focus_manager:remove_all(),
     ok.
+
+code_change(_OldVsn, State, _Extra) ->
+    {ok, State}.
