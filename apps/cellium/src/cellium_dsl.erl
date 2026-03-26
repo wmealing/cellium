@@ -98,11 +98,14 @@ apply_props(Widget, [{id, _} | Rest]) -> apply_props(Widget, Rest);
 apply_props(Widget, [{padding, P} | Rest]) ->
     apply_props(Widget#{padding => parse_padding(P)}, Rest);
 
+apply_props(Widget, [{width, W} | Rest]) ->
+    apply_props(Widget#{width => W, requested_width => W}, Rest);
+
 apply_props(Widget, [{height, H} | Rest]) ->
-    apply_props(Widget#{size => H}, Rest);
+    apply_props(Widget#{size => H, requested_height => H}, Rest);
 
 apply_props(Widget, [{size, S} | Rest]) ->
-    apply_props(Widget#{size => S}, Rest);
+    apply_props(Widget#{size => S, requested_size => S}, Rest);
 
 apply_props(Widget, [{Key, Val} | Rest]) ->
     apply_props(Widget#{Key => Val}, Rest).

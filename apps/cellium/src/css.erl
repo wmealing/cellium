@@ -1,6 +1,13 @@
 -module(css).
 
--export([style/1, style/2, walk_layout/2, load_stylesheet/1, parse_stylesheet/1, parse_value/1, parse_properties/1]).
+-export([
+    style/1, style/2,
+    walk_layout/2,
+    load_stylesheet/1,
+    parse_stylesheet/1,
+    parse_value/1,
+    parse_properties/1
+]).
 
 -export([default_stylesheet/0]).
 
@@ -27,7 +34,7 @@ load_stylesheet(Filename) ->
             Content = binary_to_list(Binary),
             parse_stylesheet(Content);
         {error, _Reason} ->
-            #{} 
+            #{}
     end.
 
 %% Parse CSS-like stylesheet format
@@ -56,13 +63,21 @@ walk_children(Widget, Fun) ->
 
 apply_styles(Widget, Stylesheet) ->
     HasFocus = maps:get(has_focus, Widget, false),
-    
+
     IdStyles = get_id_styles(Widget, Stylesheet),
     ClassStyles = get_class_styles(Widget, Stylesheet),
-    
-    FocusedIdStyles = if HasFocus -> get_focused_id_styles(Widget, Stylesheet); true -> #{} end,
-    FocusedClassStyles = if HasFocus -> get_focused_class_styles(Widget, Stylesheet); true -> #{} end,
-    
+
+    FocusedIdStyles =
+        if
+            HasFocus -> get_focused_id_styles(Widget, Stylesheet);
+            true -> #{}
+        end,
+    FocusedClassStyles =
+        if
+            HasFocus -> get_focused_class_styles(Widget, Stylesheet);
+            true -> #{}
+        end,
+
     merge_styles(Widget, ClassStyles, IdStyles, FocusedClassStyles, FocusedIdStyles).
 
 get_id_styles(Widget, Stylesheet) ->
@@ -79,20 +94,22 @@ get_focused_id_styles(Widget, Stylesheet) ->
 
 get_class_styles(Widget, Stylesheet) ->
     case maps:get(class, Widget, undefined) of
-        undefined -> #{};
+        undefined ->
+            #{};
         Class when is_atom(Class) ->
             maps:get({class, Class}, Stylesheet, #{});
         Classes when is_list(Classes) ->
-            merge_class_list(Classes, Stylesheet, #{}, normal )
+            merge_class_list(Classes, Stylesheet, #{}, normal)
     end.
 
 get_focused_class_styles(Widget, Stylesheet) ->
     case maps:get(class, Widget, undefined) of
-        undefined -> #{};
+        undefined ->
+            #{};
         Class when is_atom(Class) ->
             maps:get({class, Class, focused}, Stylesheet, #{});
         Classes when is_list(Classes) ->
-            merge_class_list(Classes, Stylesheet, #{}, focused )
+            merge_class_list(Classes, Stylesheet, #{}, focused)
     end.
 
 merge_class_list([], _Stylesheet, Acc, _Type) ->
@@ -149,7 +166,8 @@ parse_selector_line(Line) ->
 
 parse_id_selector(Line) ->
     case string:chr(Line, ${) of
-        0 -> skip;
+        0 ->
+            skip;
         Pos ->
             FullIdPart = string:substr(Line, 2, Pos - 2),
             {IdStr, State} = parse_state(FullIdPart),
@@ -164,7 +182,8 @@ parse_id_selector(Line) ->
 
 parse_class_selector(Line) ->
     case string:chr(Line, ${) of
-        0 -> skip;
+        0 ->
+            skip;
         Pos ->
             FullClassPart = string:substr(Line, 2, Pos - 2),
             {ClassStr, State} = parse_state(FullClassPart),
@@ -187,8 +206,7 @@ parse_state(Selector) ->
 extract_properties(Line, StartPos) ->
     case string:chr(Line, $}) of
         0 -> "";
-        EndPos ->
-            string:substr(Line, StartPos + 1, EndPos - StartPos - 1)
+        EndPos -> string:substr(Line, StartPos + 1, EndPos - StartPos - 1)
     end.
 
 parse_properties(PropsStr) ->
@@ -208,7 +226,8 @@ parse_property_statement(Statement, Acc) ->
 parse_value(ValueStr) ->
     Stripped = string:strip(ValueStr),
     case string:to_integer(Stripped) of
-        {Int, ""} -> Int;
+        {Int, ""} ->
+            Int;
         _ ->
             case Stripped of
                 "true" -> true;

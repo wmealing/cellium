@@ -37,6 +37,12 @@ update(Model, Msg) ->
                 toggle_on => not maps:get(toggle_on, Model),
                 progress => (maps:get(progress, Model) + 10) rem 101
             };
+        {key, _, _, _, _, left_key} ->
+            NewValue = max(0, maps:get(gauge_value, Model) - 5),
+            Model#{gauge_value => NewValue};
+        {key, _, _, _, _, right_key} ->
+            NewValue = min(100, maps:get(gauge_value, Model) + 5),
+            Model#{gauge_value => NewValue};
         _ ->
             Model
     end.
@@ -73,10 +79,10 @@ render(Model) ->
             {progress_bar, [{id, pb1}, {progress, maps:get(progress, Model) / 100.0}, {width, 40}]},
             {gauge, [{id, g1}, {value, maps:get(gauge_value, Model)}, {label, <<"Volume">>} , {width, 40}]},
             {hbox, [{id, row3b}], [
-                {text, [{id, t3}], "Loading: "},
+                {text, [{id, t3}, {size, 9}], "Loading: "},
                 {spinner, [{id, s1}, {frame, maps:get(spinner_frame, Model)}]},
                 {spacer, [{size, 5}]},
-                {text, [{id, t4}], "Switch: "},
+                {text, [{id, t4}, {size, 8}], "Switch: "},
                 {toggle, [{id, tg1}, {on, maps:get(toggle_on, Model)}]}
             ]}
         ]},
