@@ -10,9 +10,11 @@ init(_Args) ->
         checked => true,
         selected_option => a,
         progress => 30,
+        features => true,
+        advanced => false,
         spinner_frame => 0,
         toggle_on => false,
-        input_text => "Edit me!",
+        input_text => text_input:state("Edit me!"),
         gauge_value => 50
     },
     % Start a timer for the spinner
@@ -29,47 +31,62 @@ update(Model, Msg) ->
             Model#{spinner_frame => maps:get(spinner_frame, Model) + 1};
         {focus_changed, _} ->
             Model;
-        % Handle interactions (demo only, normally we'd check which widget is focused)
-        {key, _, _, _, _, enter_key} ->
-            % Toggle some values for demo
-            Model#{
-                checked => not maps:get(checked, Model),
-                toggle_on => not maps:get(toggle_on, Model),
-                progress => (maps:get(progress, Model) + 10) rem 101
-            };
-        {key, _, _, _, _, left_key} ->
-            NewValue = max(0, maps:get(gauge_value, Model) - 5),
-            Model#{gauge_value => NewValue};
-        {key, _, _, _, _, right_key} ->
-            NewValue = min(100, maps:get(gauge_value, Model) + 5),
-            Model#{gauge_value => NewValue};
+        {key, _, _, _, _, _} = KeyEvent ->
+            case focus_manager:get_focused() of
+                {ok, Id} -> handle_focused_key(Id, KeyEvent, Model);
+                _ -> Model
+            end;
         _ ->
             Model
     end.
+
+handle_focused_key(ti1, Event, Model) ->
+    NewTextState = text_input:handle_event(Event, maps:get(input_text, Model)),
+    Model#{input_text => NewTextState};
+
+handle_focused_key(g1, {key, _, _, _, _, left_key}, Model) ->
+    NewValue = max(0, maps:get(gauge_value, Model) - 5),
+    Model#{gauge_value => NewValue};
+
+handle_focused_key(g1, {key, _, _, _, _, right_key}, Model) ->
+    NewValue = min(100, maps:get(gauge_value, Model) + 5),
+    Model#{gauge_value => NewValue};
+
+handle_focused_key(Id, {key, _, _, _, _, Key}, Model) when Key == enter_key; Key == <<" ">> ->
+    case Id of
+        r1 -> Model#{selected_option => a};
+        r2 -> Model#{selected_option => b};
+        cb1 -> Model#{features => not maps:get(features, Model)};
+        cb2 -> Model#{advanced => not maps:get(advanced, Model)};
+        tg1 -> Model#{toggle_on => not maps:get(toggle_on, Model)};
+        _ -> Model
+    end;
+handle_focused_key(_Id, _Event, Model) ->
+    Model.
 
 render(Model) ->
     {vbox, [{id, main}, {padding, 1}], [
         {header, [{id, h1}, {color, cyan}], "Cellium Widget Gallery"},
         {spacer, [{size, 1}]},
-        
+
         {hbox, [{id, row1}, {size, 3}], [
             {vbox, [{id, col1}, {expand, true}], [
-                {button, [{id, btn1}, {color, green}], "Submit"},
+                {button, [{id, btn1}, {colyor, green}], "Submit"},
                 {button, [{id, btn2}, {color, red}], "Cancel"}
             ]},
             {vbox, [{id, col2}, {expand, true}], [
-                {checkbox, [{id, cb1}, {checked, maps:get(checked, Model)}], "Enable Feature"},
-                {checkbox, [{id, cb2}, {checked, not maps:get(checked, Model)}], "Show Advanced"}
+                {checkbox, [{id, cb1}, {checked, maps:get(features, Model)}], "Enable Feature"},
+                {checkbox, [{id, cb2}, {checked, not maps:get(advanced, Model)}], "Show Advanced"}
             ]}
         ]},
 
         {spacer, [{size, 1}]},
 
         {hbox, [{id, row2}, {size, 1}], [
-            {text, [{id, t1}], "Radio Options: "},
-            {radio, [{id, r1}, {selected, maps:get(selected_option, Model) == a}], "Option A"},
-            {spacer, [{size, 2}]},
-            {radio, [{id, r2}, {selected, maps:get(selected_option, Model) == b}], "Option B"}
+            {text,  [{id, t1}, {size, 15}], "Radio Options: "},
+            {radio, [{id, r1}, {size, 12}, {selected, maps:get(selected_option, Model) == a}], "Option A"},
+            {spacer,[{size, 2}]},
+            {radio, [{id, r2}, {size, 12}, {selected, maps:get(selected_option, Model) == b}], "Option B"}
         ]},
 
         {spacer, [{size, 1}]},
@@ -91,7 +108,7 @@ render(Model) ->
 
         {vbox, [{id, row4}, {expand, true}], [
             {text, [{id, t5}], "Input Field:"},
-            {text_input, [{id, ti1}, {text, maps:get(input_text, Model)}, {color, yellow}]},
+            {text_input, [{id, ti1}, {state, maps:get(input_text, Model)}, {color, yellow}]},
             {spacer, [{size, 1}]},
             {box, [{id, b1}, {expand, true}, {color, blue}]}
         ]}
