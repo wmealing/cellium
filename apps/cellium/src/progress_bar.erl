@@ -10,6 +10,7 @@ new(Id) ->
                     widget_type => progress_bar,
                     progress => 0.0, %% 0.0 to 1.0
                     width => 20,
+                    focusable => true,
                     type => widget}.
 
 -spec render(map()) -> ok.

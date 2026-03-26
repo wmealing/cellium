@@ -43,15 +43,18 @@ update(Model, Msg) ->
 handle_focused_key(ti1, Event, Model) ->
     NewTextState = text_input:handle_event(Event, maps:get(input_text, Model)),
     Model#{input_text => NewTextState};
-
 handle_focused_key(g1, {key, _, _, _, _, left_key}, Model) ->
     NewValue = max(0, maps:get(gauge_value, Model) - 5),
     Model#{gauge_value => NewValue};
-
 handle_focused_key(g1, {key, _, _, _, _, right_key}, Model) ->
     NewValue = min(100, maps:get(gauge_value, Model) + 5),
     Model#{gauge_value => NewValue};
-
+handle_focused_key(pb1, {key, _, _, _, _, left_key}, Model) ->
+    NewValue = max(0, maps:get(progress, Model) - 5),
+    Model#{progress => NewValue};
+handle_focused_key(pb1, {key, _, _, _, _, right_key}, Model) ->
+    NewValue = min(100, maps:get(progress, Model) + 5),
+    Model#{progress => NewValue};
 handle_focused_key(Id, {key, _, _, _, _, Key}, Model) when Key == enter_key; Key == <<" ">> ->
     case Id of
         r1 -> Model#{selected_option => a};
@@ -71,7 +74,7 @@ render(Model) ->
 
         {hbox, [{id, row1}, {size, 3}], [
             {vbox, [{id, col1}, {expand, true}], [
-                {button, [{id, btn1}, {colyor, green}], "Submit"},
+                {button, [{id, btn1}, {color, green}], "Submit"},
                 {button, [{id, btn2}, {color, red}], "Cancel"}
             ]},
             {vbox, [{id, col2}, {expand, true}], [

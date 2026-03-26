@@ -11,19 +11,28 @@
 -include("cellium.hrl").
 -import(focus_manager, [register_widget/1]).
 
--spec color_to_int(Color :: atom() | integer()) -> integer().
+-spec color_to_int(Color :: atom() | integer()) -> integer() | atom().
 color_to_int(Color) when is_integer(Color) ->
     Color;
-color_to_int('default') -> ?TB_DEFAULT;
-color_to_int('black') -> ?TB_BLACK;
-color_to_int('red') -> ?TB_RED;
-color_to_int('green') -> ?TB_GREEN;
-color_to_int('yellow') -> ?TB_YELLOW;
-color_to_int('blue') -> ?TB_BLUE;
-color_to_int('magenta') -> ?TB_MAGENTA;
-color_to_int('cyan') -> ?TB_CYAN;
-color_to_int('white') -> ?TB_WHITE;
-color_to_int(_) -> ?TB_DEFAULT.
+color_to_int({R,G,B}) -> {R,G,B};
+color_to_int(default) -> default;
+color_to_int(black) -> black;
+color_to_int(red) -> red;
+color_to_int(green) -> green;
+color_to_int(yellow) -> yellow;
+color_to_int(blue) -> blue;
+color_to_int(magenta) -> magenta;
+color_to_int(cyan) -> cyan;
+color_to_int(white) -> white;
+color_to_int(bright_black) -> bright_black;
+color_to_int(bright_red) -> bright_red;
+color_to_int(bright_green) -> bright_green;
+color_to_int(bright_yellow) -> bright_yellow;
+color_to_int(bright_blue) -> bright_blue;
+color_to_int(bright_magenta) -> bright_magenta;
+color_to_int(bright_cyan) -> bright_cyan;
+color_to_int(bright_white) -> bright_white;
+color_to_int(_) -> default.
 
 %%% @doc Creates a new base widget map with default values.
 %%%
@@ -70,6 +79,17 @@ create(WidgetMap) ->
     end,
     WidgetMap.
 
+-spec brighten(atom()) -> atom().
+brighten(black) -> bright_black;
+brighten(red) -> bright_red;
+brighten(green) -> bright_green;
+brighten(yellow) -> bright_yellow;
+brighten(blue) -> bright_blue;
+brighten(magenta) -> bright_magenta;
+brighten(cyan) -> bright_cyan;
+brighten(white) -> bright_white;
+brighten(Color) -> Color.
+
 %%% @doc Extracts common rendering properties from a widget map.
 %%%
 %%% Retrieves the position and color properties needed for rendering,
@@ -86,10 +106,16 @@ create(WidgetMap) ->
 %%% @param Widget A widget map that may contain x, y, color, and background-color keys
 %%% @returns A map with keys x, y, fg (foreground), and bg (background)
 %%% @end
--spec get_common_props(Widget :: map()) -> #{x := integer(), y := integer(), fg := integer(), bg := integer()}.
+-spec get_common_props(Widget :: map()) -> #{x := integer(), y := integer(), fg := integer() | atom(), bg := integer() | atom()}.
 get_common_props(Widget) ->
     X = maps:get(x, Widget, 0),
     Y = maps:get(y, Widget, 0),
     BgAtom = maps:get('background-color', Widget, ?DEFAULT_BG_COLOR),
     FgAtom = maps:get(color, Widget, ?DEFAULT_FG_COLOR),
-    #{x => X, y => Y, fg => color_to_int(FgAtom), bg => color_to_int(BgAtom)}.
+    
+    FinalFg = case maps:get(focused, Widget, false) of
+        true -> brighten(FgAtom);
+        false -> FgAtom
+    end,
+
+    #{x => X, y => Y, fg => color_to_int(FinalFg), bg => color_to_int(BgAtom)}.

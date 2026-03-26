@@ -4,7 +4,12 @@
 -import(widget, [get_common_props/1]).
 
 new(Id) ->
-    (widget:new())#{id => Id, widget_type => gauge, type => widget, value => 0, label => <<>>}.
+    (widget:new())#{id => Id,
+                    widget_type => gauge,
+                    type => widget,
+                    value => 0,
+                    label => <<>>,
+                    focusable => true}.
 
 render(Widget) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),

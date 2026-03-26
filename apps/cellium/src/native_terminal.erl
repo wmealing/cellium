@@ -465,6 +465,7 @@ try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_0, ?TILDE]) -> {complete,
 try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_1, ?TILDE]) -> {complete, {key, false, false, false, false, f10_key}};
 try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_3, ?TILDE]) -> {complete, {key, false, false, false, false, f11_key}};
 try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_4, ?TILDE]) -> {complete, {key, false, false, false, false, f12_key}};
+try_parse_sequence([?ESC, ?CSI_START, 90]) -> {complete, {key, true, false, false, false, tab_key}}; %% Shift + Tab
 try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_2, ?DIGIT_7, ?SEMICOLON, ?DIGIT_5, ?SEMICOLON, ?DIGIT_1, ?DIGIT_3, ?TILDE]) -> {complete, {key, false, false, true, false, enter_key}};
 try_parse_sequence([?ESC, C]) when C >= ?LOWER_A, C =< ?LOWER_Z ->  % ESC + lowercase letter (alt+letter)
     {complete, {key, false, true, false, false, <<C>>}};

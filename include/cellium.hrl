@@ -58,8 +58,8 @@
 -define(TB_INPUT_ALT,        2).
 -define(TB_INPUT_MOUSE,      4).
 
--define(DEFAULT_BG_COLOR, 16#0001).
--define(DEFAULT_FG_COLOR, 16#0008).
+-define(DEFAULT_BG_COLOR, black).
+-define(DEFAULT_FG_COLOR, white).
 
 -record(box, {
     top_left, top, top_divider, top_right,
