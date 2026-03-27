@@ -12,12 +12,22 @@ new(Id) ->
                     focusable => true}.
 
 render(Widget) ->
+    render_with_colors(Widget, false).
+
+render_focused(Widget) ->
+    render_with_colors(Widget, true).
+
+render_with_colors(Widget, Focused) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
+    {FinalFg, FinalBg} = case Focused of
+        true -> {Bg, Fg};
+        false -> {Fg, Bg}
+    end,
     Value = maps:get(value, Widget, 0),
     Label = maps:get(label, Widget, <<>>),
     Width = maps:get(requested_width, Widget, maps:get(width, Widget, 10)),
 
-    ?TERMBOX:tb_print(X, Y, Fg, Bg, Label),
+    ?TERMBOX:tb_print(X, Y, FinalFg, FinalBg, Label),
 
     % Render progress bar
     BarWidth = Width - byte_size(Label) - 1,
@@ -25,17 +35,14 @@ render(Widget) ->
         BarWidth > 0 ->
             Filled = trunc(BarWidth * Value / 100),
             [
-                ?TERMBOX:tb_set_cell(X + byte_size(Label) + 1 + I, Y, 16#2588, Fg, Bg) %% █
+                ?TERMBOX:tb_set_cell(X + byte_size(Label) + 1 + I, Y, 16#2588, FinalFg, FinalBg) %% █
              || I <- lists:seq(0, Filled - 1)
             ],
             [
-                ?TERMBOX:tb_set_cell(X + byte_size(Label) + 1 + I, Y, 16#2591, Fg, Bg) %% ░
+                ?TERMBOX:tb_set_cell(X + byte_size(Label) + 1 + I, Y, 16#2591, FinalFg, FinalBg) %% ░
              || I <- lists:seq(Filled, BarWidth - 1)
             ],
             ok;
         true ->
             ok
     end.
-
-render_focused(Widget) ->
-    render(Widget).
