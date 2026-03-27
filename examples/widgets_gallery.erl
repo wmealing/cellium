@@ -111,7 +111,9 @@ render(Model) ->
 
         {vbox, [{id, row4}, {expand, true}], [
             {text, [{id, t5}], "Input Field:"},
-            {text_input, [{id, ti1}, {state, maps:get(input_text, Model)}, {color, yellow}]},
+            {box, [{id, b_input}, {size, 3}, {color, yellow}], [
+                {text_input, [{id, ti1}, {state, maps:get(input_text, Model)}]}
+            ]},
             {spacer, [{size, 1}]},
             {box, [{id, b1}, {expand, true}, {color, blue}]}
         ]}

@@ -56,8 +56,10 @@ from_dsl({spinner, Props}) ->
     W = spinner:new(Id),
     apply_leaf_props(W, Props);
 
-from_dsl({box, Props, []}) ->
-    from_dsl({box, Props});
+from_dsl({box, Props, Children}) when is_list(Children) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = box:new(Id),
+    apply_leaf_props(W#{children => [from_dsl(Child) || Child <- Children], type => container}, Props);
 
 from_dsl({box, Props}) ->
     Id = proplists:get_value(id, Props, make_ref()),

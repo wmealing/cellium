@@ -11,10 +11,11 @@ new(Id) ->
     (widget:new())#{id => Id,
                     widget_type => spinner,
                     frame => 0,
-                    frames => ["⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"],
+                    frames => ["⣷", "⣯", "⣟", "⡿", "⢿", "⣻","⣽","⣾"],
                     type => widget}.
 
 -spec render(map()) -> ok.
+
 render(Widget) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
     FrameIdx = maps:get(frame, Widget, 0),

@@ -39,6 +39,8 @@ new(Id, Width, Height) ->
                     widget_type => box,
                     width => Width,
                     height => Height,
+                    orientation => vertical,
+                    padding => #{top => 1, bottom => 1, left => 1, right => 1},
                     type => widget }.
 
 %%% @doc Renders the box widget to the terminal.
@@ -54,11 +56,12 @@ new(Id, Width, Height) ->
 -spec render(map()) -> ok.
 render(Widget) ->
     HasFocus = maps:get(has_focus, Widget, false),
+    HasChildFocus = has_child_focus(Widget),
 
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     BoxStyle =
-        case HasFocus of
+        case HasFocus orelse HasChildFocus of
             true ->
                 box_styles:double();
             false ->
@@ -68,5 +71,17 @@ render(Widget) ->
     Height = maps:get(height,Widget, 0),
     Width = maps:get(width, Widget, 0),
 
-    table:draw_table(X, Y, Height - 1, Fg,Bg, BoxStyle, [Width - 2]),
+    if
+        Height > 0 andalso Width > 0 ->
+            table:draw_table(X, Y, Height - 1, Fg, Bg, BoxStyle, [Width - 2]);
+        true ->
+            ok
+    end,
     ok.
+
+has_child_focus(#{children := Children}) ->
+    lists:any(fun(Child) -> 
+        maps:get(focused, Child, false) orelse has_child_focus(Child)
+    end, Children);
+has_child_focus(_) ->
+    false.
