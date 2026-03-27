@@ -25,11 +25,11 @@ render(Widget) ->
         BarWidth > 0 ->
             Filled = trunc(BarWidth * Value / 100),
             [
-                ?TERMBOX:tb_set_cell(X + byte_size(Label) + 1 + I, Y, $#, Fg, Bg)
+                ?TERMBOX:tb_set_cell(X + byte_size(Label) + 1 + I, Y, 16#2588, Fg, Bg) %% █
              || I <- lists:seq(0, Filled - 1)
             ],
             [
-                ?TERMBOX:tb_set_cell(X + byte_size(Label) + 1 + I, Y, $., Fg, Bg)
+                ?TERMBOX:tb_set_cell(X + byte_size(Label) + 1 + I, Y, 16#2591, Fg, Bg) %% ░
              || I <- lists:seq(Filled, BarWidth - 1)
             ],
             ok;

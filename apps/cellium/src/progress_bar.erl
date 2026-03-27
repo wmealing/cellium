@@ -20,6 +20,7 @@ render(Widget) ->
     Progress = maps:get(progress, Widget, 0.0),
     BarWidth = max(0, Width - 2),
     Filled = round(Progress * BarWidth),
-    Bar = lists:duplicate(Filled, "▓") ++ lists:duplicate(BarWidth - Filled, "."),
+    Bar = lists:duplicate(Filled, "█") ++ lists:duplicate(BarWidth - Filled, "░"),
+
     ?TERMBOX:tb_print(X, Y, Fg, Bg, "[" ++ Bar ++ "]"),
     ok.
