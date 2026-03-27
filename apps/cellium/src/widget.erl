@@ -112,10 +112,5 @@ get_common_props(Widget) ->
     Y = maps:get(y, Widget, 0),
     BgAtom = maps:get('background-color', Widget, ?DEFAULT_BG_COLOR),
     FgAtom = maps:get(color, Widget, ?DEFAULT_FG_COLOR),
-    
-    FinalFg = case maps:get(focused, Widget, false) of
-        true -> brighten(FgAtom);
-        false -> FgAtom
-    end,
 
-    #{x => X, y => Y, fg => color_to_int(FinalFg), bg => color_to_int(BgAtom)}.
+    #{x => X, y => Y, fg => color_to_int(FgAtom), bg => color_to_int(BgAtom)}.

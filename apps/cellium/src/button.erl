@@ -23,7 +23,7 @@ new(Id, Label) ->
 render(Widget) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = widget:get_common_props(Widget),
     Label = maps:get(label, Widget, "Button"),
-    HasFocus = maps:get(has_focus, Widget, false),
+    HasFocus = maps:get(focused, Widget, false),
     Height = maps:get(height, Widget, 1),
     Width = maps:get(width, Widget, length(Label) + 2),
 
