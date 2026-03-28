@@ -21,7 +21,8 @@
     tb_poll_event/0,
     get_next_event/0,
     tb_set_input_mode/1,
-    tb_set_output_mode/1
+    tb_set_output_mode/1,
+    tb_force_redraw/0
 ]).
 
 %% Internal state management
@@ -39,7 +40,8 @@
     event_buffer = [] :: list(term()),
     buffer_time = undefined :: undefined | integer(),
     waiting_client = undefined :: undefined | pid(),
-    buffer = #{} :: map()
+    back_buffer = #{} :: map(),
+    front_buffer = #{} :: map()
 }).
 
 
@@ -182,7 +184,11 @@ tb_set_input_mode(Mode) ->
 
 -doc "Sets the output mode for the terminal. Mode can be 'default', 2 (256-color) 4, or 5 (truecolor).".
 tb_set_output_mode(Mode) ->
-    gen_server:call(?SERVER, {set_output_mode, Mode}).
+    gen_server:call(?SERVER, {tb_set_output_mode, Mode}).
+
+-doc "Forces a full redraw on the next tb_present call by clearing the front buffer.".
+tb_force_redraw() ->
+    gen_server:call(?SERVER, tb_force_redraw).
 
 %% ===================================================================
 %% Server implementation
@@ -195,16 +201,17 @@ stop() ->
     gen_server:stop(?SERVER).
 
 init([]) ->
-    {ok, #state{width=0, height=0, input_mode=alt, output_mode=default, buffer = cellium_buffer:empty()}}.
+    {ok, #state{width=0, height=0, input_mode=alt, output_mode=default, back_buffer = cellium_buffer:empty(), front_buffer = cellium_buffer:empty()}}.
 
 handle_call(init_term, _From, State) ->
     shell:start_interactive({noshell, raw}),
     io:put_chars(?ALT_SCREEN_ENABLE), % Enable alternate screen buffer
     io:put_chars(?HIDE_CURSOR),
+    io:put_chars("\e[2J"),           % Initial clear
     {ok, W} = io:columns(),
     {ok, H} = io:rows(),
     start_event_loop(),
-    {reply, ok, State#state{width=W, height=H, buffer = cellium_buffer:empty()}};
+    {reply, ok, State#state{width=W, height=H, back_buffer = cellium_buffer:empty(), front_buffer = cellium_buffer:empty()}};
 
 handle_call(shutdown_term, _From, State) ->
     io:put_chars(?RESET),              % Reset all attributes
@@ -215,48 +222,39 @@ handle_call(shutdown_term, _From, State) ->
 
 handle_call(tb_clear, _From, State) ->
     io:put_chars(?SYNC_UPDATE_ENABLE),
-    io:put_chars("\e[2J"),
-    {reply, ok, State#state{buffer = cellium_buffer:empty()}};
+    {reply, ok, State#state{back_buffer = cellium_buffer:empty()}};
 
 handle_call(tb_present, _From, State) ->
+    #state{back_buffer = Back, front_buffer = Front, output_mode = OutputMode} = State,
+    
+    % Start synchronized update
+    io:put_chars(?SYNC_UPDATE_ENABLE),
+    
+    % Calculate and send diff
+    DiffOutput = diff_and_draw(Back, Front, OutputMode),
+    io:put_chars(DiffOutput),
+    
+    % End synchronized update
     io:put_chars(?SYNC_UPDATE_DISABLE),
-    {reply, ok, State};
+    
+    {reply, ok, State#state{front_buffer = Back}};
 
 handle_call({tb_set_cell, X, Y, Char, Fg, Bg}, _From, State) ->
-    OutputMode = State#state.output_mode,
-    FgAnsi = lookup_color(Fg, fg, OutputMode),
-    BgAnsi = lookup_color(Bg, bg, OutputMode),
-
-    io:put_chars([
-        "\e[" ++ integer_to_list(Y + 1) ++ ";" ++ integer_to_list(X + 1) ++ "H",
-        FgAnsi,
-        BgAnsi,
-        [Char],
-        ?RESET
-    ]),
-    
-    NewBuffer = cellium_buffer:set_cell(X, Y, Char, Fg, Bg, State#state.buffer),
-    {reply, ok, State#state{buffer = NewBuffer}};
+    NewBuffer = cellium_buffer:set_cell(X, Y, Char, Fg, Bg, State#state.back_buffer),
+    {reply, ok, State#state{back_buffer = NewBuffer}};
 
 handle_call({tb_print, X, Y, Fg, Bg, Str}, _From, State) ->
-    OutputMode = State#state.output_mode,
-    FgAnsi = lookup_color(Fg, fg, OutputMode),
-    BgAnsi = lookup_color(Bg, bg, OutputMode),
-
-    Move = "\e[" ++ integer_to_list(Y + 1) ++ ";" ++ integer_to_list(X + 1) ++ "H",
-    io:put_chars([Move, FgAnsi, BgAnsi, Str, ?RESET]),
-    
-    NewBuffer = cellium_buffer:put_string(X, Y, Fg, Bg, Str, State#state.buffer),
-    {reply, ok, State#state{buffer = NewBuffer}};
+    NewBuffer = cellium_buffer:put_string(X, Y, Fg, Bg, Str, State#state.back_buffer),
+    {reply, ok, State#state{back_buffer = NewBuffer}};
 
 handle_call({get_cell, X, Y}, _From, State) ->
-    {reply, cellium_buffer:get_cell(X, Y, State#state.buffer), State};
+    {reply, cellium_buffer:get_cell(X, Y, State#state.back_buffer), State};
 
 handle_call({get_row, Y, Width}, _From, State) ->
-    {reply, cellium_buffer:get_row(Y, Width, State#state.buffer), State};
+    {reply, cellium_buffer:get_row(Y, Width, State#state.back_buffer), State};
 
 handle_call({get_row, X, Y, Length}, _From, State) ->
-    {reply, cellium_buffer:get_row(X, Y, Length, State#state.buffer), State};
+    {reply, cellium_buffer:get_row(X, Y, Length, State#state.back_buffer), State};
 
 handle_call(get_width, _From, State) ->
     {reply, State#state.width, State};
@@ -289,6 +287,10 @@ handle_call(get_event, From, State) ->
         [] ->
             {noreply, State#state{waiting_client = From}}
     end;
+
+handle_call(tb_force_redraw, _From, State) ->
+    io:put_chars("\e[2J"),
+    {reply, ok, State#state{front_buffer = cellium_buffer:empty()}};
 
 handle_call(stop, _From, State) ->
     {stop, normal, ok, State};
@@ -338,6 +340,38 @@ code_change(_OldVsn, State, _Extra) ->
 %% ===================================================================
 %% Internal functions
 %% ===================================================================
+
+diff_and_draw(Back, Front, OutputMode) ->
+    % Keys that are in Back
+    AllBackKeys = maps:keys(Back),
+    % Keys that were in Front but are now gone (need to be cleared)
+    RemovedKeys = maps:keys(maps:without(AllBackKeys, Front)),
+    
+    % Changes and additions
+    DrawOps = maps:fold(fun(K, V, Acc) ->
+        case maps:get(K, Front, undefined) of
+            V -> Acc; % No change
+            _ -> [render_cell(K, V, OutputMode) | Acc]
+        end
+    end, [], Back),
+    
+    % Deletions
+    ClearOps = lists:foldl(fun(K, Acc) ->
+        [render_cell(K, {$\s, default, default}, OutputMode) | Acc]
+    end, [], RemovedKeys),
+    
+    DrawOps ++ ClearOps.
+
+render_cell({X, Y}, {Char, Fg, Bg}, OutputMode) ->
+    FgAnsi = lookup_color(Fg, fg, OutputMode),
+    BgAnsi = lookup_color(Bg, bg, OutputMode),
+    [
+        "\e[", integer_to_list(Y + 1), ";", integer_to_list(X + 1), "H",
+        FgAnsi,
+        BgAnsi,
+        [Char],
+        ?RESET
+    ].
 
 start_event_loop() ->
     spawn(fun() -> event_loop() end).

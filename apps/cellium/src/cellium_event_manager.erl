@@ -160,6 +160,10 @@ process_event(Event, _State) ->
             focus_manager:move_focus_forward();
         {key, true, false, false, false, tab_key} ->
             focus_manager:move_focus_backward();
+        {key, false, false, true, false, <<"l">>} -> % Ctrl-L
+            logger:info("Ctrl-L detected, forcing redraw"),
+            ?TERMBOX:tb_force_redraw(),
+            view:update_now();
         _ ->
             ok
     end,
