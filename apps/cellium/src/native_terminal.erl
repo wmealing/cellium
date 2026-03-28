@@ -61,6 +61,9 @@
 -define(ALT_SCREEN_ENABLE,  [?ESC, ?CSI_START, "1049h"]).
 -define(ALT_SCREEN_DISABLE, [?ESC, ?CSI_START, "1049l"]).
 
+-define(SYNC_UPDATE_ENABLE,  [?ESC, ?CSI_START, "?2026h"]).
+-define(SYNC_UPDATE_DISABLE, [?ESC, ?CSI_START, "?2026l"]).
+
 -define(SHOW_CURSOR, [?ESC, ?CSI_START, "25h"]).
 
 -define(HIDE_CURSOR, "\033[?25l").
@@ -140,9 +143,9 @@ tb_height() ->
 tb_clear() ->
     gen_server:call(?SERVER, tb_clear).
 
--doc "No-op for now, but would typically flush pending output to the terminal.".
+-doc "Flushes pending output to the terminal using synchronized updates if supported.".
 tb_present() ->
-    ok.
+    gen_server:call(?SERVER, tb_present).
 
 -doc "Sets a single character at the specified (X, Y) position with given foreground and background colors.".
 tb_set_cell(X, Y, Char, Fg, Bg) ->
@@ -206,12 +209,18 @@ handle_call(init_term, _From, State) ->
 handle_call(shutdown_term, _From, State) ->
     io:put_chars(?RESET),              % Reset all attributes
     io:put_chars(?SHOW_CURSOR),        % Show the cursor
+    io:put_chars(?SYNC_UPDATE_DISABLE), % Disable synchronized updates
     io:put_chars(?ALT_SCREEN_DISABLE), % Disable alternate screen buffer
     {reply, ok, State};
 
 handle_call(tb_clear, _From, State) ->
+    io:put_chars(?SYNC_UPDATE_ENABLE),
     io:put_chars("\e[2J"),
     {reply, ok, State#state{buffer = cellium_buffer:empty()}};
+
+handle_call(tb_present, _From, State) ->
+    io:put_chars(?SYNC_UPDATE_DISABLE),
+    {reply, ok, State};
 
 handle_call({tb_set_cell, X, Y, Char, Fg, Bg}, _From, State) ->
     OutputMode = State#state.output_mode,
