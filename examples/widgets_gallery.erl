@@ -15,7 +15,8 @@ init(_Args) ->
         spinner_frame => 0,
         toggle_on => false,
         input_text => text_input:state("Edit me!"),
-        gauge_value => 50
+        gauge_value => 50,
+        focused_id => undefined
     },
     % Start a timer for the spinner
     erlang:send_after(100, self(), tick),
@@ -29,8 +30,8 @@ update(Model, Msg) ->
         tick ->
             erlang:send_after(100, self(), tick),
             Model#{spinner_frame => maps:get(spinner_frame, Model) + 1};
-        {focus_changed, _} ->
-            Model;
+        {focus_changed, NewFocusedId} ->
+            Model#{focused_id => NewFocusedId};
         {key, _, _, _, _, _} = KeyEvent ->
             case focus_manager:get_focused() of
                 {ok, Id} -> handle_focused_key(Id, KeyEvent, Model);
@@ -68,55 +69,60 @@ handle_focused_key(_Id, _Event, Model) ->
     Model.
 
 render(Model) ->
-    {vbox, [{id, main}, {padding, 1}], [
-        {header, [{id, h1}, {color, cyan}], "Cellium Widget Gallery"},
-        {spacer, [{size, 1}]},
-
-        {hbox, [{id, row1}, {size, 3}], [
-            {vbox, [{id, col1}, {expand, true}], [
-                {button, [{id, btn1}, {color, green}], "Submit"},
-                {button, [{id, btn2}, {color, red}], "Cancel"}
-            ]},
-            {vbox, [{id, col2}, {expand, true}], [
-                {checkbox, [{id, cb1}, {checked, maps:get(features, Model)}], "Enable Feature"},
-                {checkbox, [{id, cb2}, {checked, not maps:get(advanced, Model)}], "Show Advanced"}
-            ]}
-        ]},
-
-        {spacer, [{size, 1}]},
-
-        {hbox, [{id, row2}, {size, 1}], [
-            {text,  [{id, t1}, {size, 15}], "Radio Options: "},
-            {radio, [{id, r1}, {size, 12}, {selected, maps:get(selected_option, Model) == a}], "Option A"},
-            {spacer,[{size, 2}]},
-            {radio, [{id, r2}, {size, 12}, {selected, maps:get(selected_option, Model) == b}], "Option B"}
-        ]},
-
-        {spacer, [{size, 1}]},
-
-        {vbox, [{id, row3}, {size, 4}], [
-            {text, [{id, t2}], "Progress & Status:"},
-            {progress_bar, [{id, pb1}, {progress, maps:get(progress, Model) / 100.0}, {width, 40}]},
-            {gauge, [{id, g1}, {value, maps:get(gauge_value, Model)}, {label, <<"Volume">>} , {width, 40}]},
-            {hbox, [{id, row3b}], [
-                {text, [{id, t3}, {size, 9}], "Loading: "},
-                {spinner, [{id, s1}, {frame, maps:get(spinner_frame, Model)}]},
-                {spacer, [{size, 5}]},
-                {text, [{id, t4}, {size, 8}], "Switch: "},
-                {toggle, [{id, tg1}, {on, maps:get(toggle_on, Model)}]}
-            ]}
-        ]},
-
-        {spacer, [{size, 1}]},
-
-        {vbox, [{id, row4}, {expand, true}], [
-            {text, [{id, t5}], "Input Field:"},
-            {box, [{id, b_input}, {size, 3}, {color, yellow}], [
-                {text_input, [{id, ti1}, {state, maps:get(input_text, Model)}]}
-            ]},
+    FocusedId = maps:get(focused_id, Model, undefined),
+    StatusText = io_lib:format("Tab: Navigate | Q: Quit | Focused: ~p", [FocusedId]),
+    
+    {vbox, [{id, main}, {padding, 0}], [
+        {vbox, [{id, content}, {expand, true}, {padding, 1}], [
+            {header, [{id, h1}, {color, cyan}], "Cellium Widget Gallery"},
             {spacer, [{size, 1}]},
-            {box, [{id, b1}, {expand, true}, {color, blue}]}
-        ]}
+
+            {hbox, [{id, row1}, {size, 3}], [
+                {vbox, [{id, col1}, {expand, true}], [
+                    {button, [{id, btn1}, {color, green}], "Submit"},
+                    {button, [{id, btn2}, {color, red}], "Cancel"}
+                ]},
+                {vbox, [{id, col2}, {expand, true}], [
+                    {checkbox, [{id, cb1}, {checked, maps:get(features, Model)}], "Enable Feature"},
+                    {checkbox, [{id, cb2}, {checked, not maps:get(advanced, Model)}], "Show Advanced"}
+                ]}
+            ]},
+
+            {spacer, [{size, 1}]},
+
+            {hbox, [{id, row2}, {size, 1}], [
+                {text,  [{id, t1}, {size, 15}], "Radio Options: "},
+                {radio, [{id, r1}, {size, 12}, {selected, maps:get(selected_option, Model) == a}], "Option A"},
+                {spacer,[{size, 2}]},
+                {radio, [{id, r2}, {size, 12}, {selected, maps:get(selected_option, Model) == b}], "Option B"}
+            ]},
+
+            {spacer, [{size, 1}]},
+
+            {vbox, [{id, row3}, {size, 4}], [
+                {text, [{id, t2}], "Progress & Status:"},
+                {progress_bar, [{id, pb1}, {progress, maps:get(progress, Model) / 100.0}, {width, 40}]},
+                {gauge, [{id, g1}, {value, maps:get(gauge_value, Model)}, {label, <<"Volume">>} , {width, 40}]},
+                {hbox, [{id, row3b}], [
+                    {text, [{id, t3}, {size, 9}], "Loading: "},
+                    {spinner, [{id, s1}, {frame, maps:get(spinner_frame, Model)}]},
+                    {spacer, [{size, 5}]},
+                    {text, [{id, t4}, {size, 8}], "Switch: "},
+                    {toggle, [{id, tg1}, {on, maps:get(toggle_on, Model)}]}
+                ]}
+            ]},
+
+            {spacer, [{size, 1}]},
+
+            {vbox, [{id, row4}, {expand, true}], [
+                {text, [{id, t5}], "Input Field:"},
+                {box, [{id, b_input}, {size, 3}, {color, yellow}], [
+                    {text_input, [{id, ti1}, {state, maps:get(input_text, Model)}]}
+                ]},
+                {spacer, [{size, 1}]}
+            ]}
+        ]},
+        {status_bar, [{id, sb1}, {color, white}], lists:flatten(StatusText)}
     ]}.
 
 start() ->
