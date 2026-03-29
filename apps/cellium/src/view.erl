@@ -34,9 +34,6 @@ init([]) ->
     % Load stylesheet once at startup
     Style = css:load_stylesheet("priv/default_theme.css"),
 
-    % Start periodic tick
-    erlang:send_after(50, self(), tick),
-
     {ok, #state{
         root_widget = container:new(root_widget, horizontal),
         width = W,
@@ -59,8 +56,6 @@ handle_cast(_Msg, State) ->
     {noreply, State}.
 
 handle_info(tick, State) ->
-%   Schedule next tick
-%   erlang:send_after(?TICK_INTERVAL, self(), tick),
     NewState = update(State),
     {noreply, NewState};
 
