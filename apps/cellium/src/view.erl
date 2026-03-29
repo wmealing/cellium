@@ -9,9 +9,7 @@
 
 -include("cellium.hrl").
 
--define(TICK_INTERVAL, 1000). % ms
-
--record(state, { root_widget = #{}}).
+-record(state, {root_widget = #{}, width = 0, height = 0}).
 
 start_link(_A, _B, _C) ->
     start_link().
@@ -30,19 +28,21 @@ init([]) ->
     _Cleared = ?TERMBOX:tb_clear(),
     _Presented = ?TERMBOX:tb_present(),
 
+    W = ?TERMBOX:tb_width(),
+    H = ?TERMBOX:tb_height(),
+
     % Start periodic tick
     erlang:send_after(50, self(), tick),
 
-    {ok, #state{root_widget = container:new(root_widget, horizontal)}}.
+    {ok, #state{root_widget = container:new(root_widget, horizontal), width = W, height = H}}.
 
 handle_call({set_root_widget, RootWidget}, _From, State) ->
-    NewState = State#state{root_widget = RootWidget},
-    update(NewState),
+    NewState = update(State#state{root_widget = RootWidget}),
     {reply, ok, NewState};
 
 handle_call(update_now, _From, State) ->
-    update(State),
-    {reply, ok, State};
+    NewState = update(State),
+    {reply, ok, NewState};
 
 handle_call(_Msg, _From, State) ->
     {reply, ok, State}.
@@ -53,8 +53,8 @@ handle_cast(_Msg, State) ->
 handle_info(tick, State) ->
 %   Schedule next tick
 %   erlang:send_after(?TICK_INTERVAL, self(), tick),
-    update(State),
-    {noreply, State};
+    NewState = update(State),
+    {noreply, NewState};
 
 handle_info(_Info, State) ->
     {noreply, State}.
@@ -79,14 +79,33 @@ update_now() ->
 update(State) ->
     RootWidget = State#state.root_widget,
 
-    Layout = layout:calculate_layout(RootWidget,
-                                     ?TERMBOX:tb_width(),
-                                     ?TERMBOX:tb_height()),
+    W = ?TERMBOX:tb_width(),
+    H = ?TERMBOX:tb_height(),
+
+    NewState = case {W, H} =/= {State#state.width, State#state.height} of
+        true ->
+            logger:info("View detected resize: ~p x ~p (was ~p x ~p), forcing redraw", 
+                        [W, H, State#state.width, State#state.height]),
+            ?TERMBOX:tb_force_redraw(),
+            State#state{width = W, height = H};
+        false ->
+            State
+    end,
+    
+    logger:debug("RW: ~p", [RootWidget]),
+
+
+    logger:debug("View update dimensions: ~p x ~p", [W, H]),
+
+    ?TERMBOX:tb_clear(),
+
+    Layout = layout:calculate_layout(RootWidget, W, H),
 
     Style = css:load_stylesheet("priv/default_theme.css"),
 
     StyledLayout = css:style(Layout, Style),
-
-    ?TERMBOX:tb_clear(),
+   
     widgets:render(StyledLayout),
-    ?TERMBOX:tb_present().
+    ?TERMBOX:tb_present(),
+    NewState.
+    

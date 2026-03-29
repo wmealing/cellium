@@ -25,7 +25,7 @@ render_with_colors(Widget, Focused) ->
     end,
     Value = maps:get(value, Widget, 0),
     Label = maps:get(label, Widget, <<>>),
-    Width = maps:get(requested_width, Widget, maps:get(width, Widget, 10)),
+    Width = min(maps:get(width, Widget, 10), maps:get(requested_width, Widget, maps:get(width, Widget, 10))),
 
     ?TERMBOX:tb_print(X, Y, FinalFg, FinalBg, Label),
 

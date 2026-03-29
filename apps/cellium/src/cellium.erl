@@ -107,7 +107,16 @@ handle_call(Msg, _From, State) ->
     NewModel = Module:update(Model, Msg),
     logger:info("CELLIUM: OLD MODEL: ~p, MSG: ~p, NEW MODEL: ~p", [Model, Msg, NewModel]),
 
+    case Msg of
+        {resize, _, _} ->
+            % Also ensure the view is updated immediately for resize
+            ?TERMBOX:tb_force_redraw();
+        _ ->
+            ok
+    end,
+
     render_immediately(Module, NewModel),
+    
     NewState = State#{model := NewModel},
     {reply, {ok, done}, NewState}.
 
@@ -135,8 +144,7 @@ render_immediately(Module, Model) ->
         true -> cellium_dsl:from_dsl(Layout);
         false -> Layout
     end,
-    NewLayout = layout:calculate_layout(ProcessedLayout),
-    view:set_root_widget(NewLayout),
+    view:set_root_widget(ProcessedLayout),
     ok.
 
 terminate(Reason, _State) ->

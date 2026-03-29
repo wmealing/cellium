@@ -68,8 +68,8 @@ render(Widget) ->
                 box_styles:square()
         end,
 
-    Height = maps:get(height,Widget, 0),
-    Width = maps:get(width, Widget, 0),
+    Width = min(maps:get(width, Widget, 0), maps:get(requested_width, Widget, maps:get(width, Widget, 0))),
+    Height = min(maps:get(height, Widget, 0), maps:get(requested_height, Widget, maps:get(height, Widget, 0))),
 
     if
         Height > 0 andalso Width > 0 ->

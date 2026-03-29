@@ -18,7 +18,23 @@ style(Layout) ->
 
 %% Apply stylesheet to layout
 style(Layout, Stylesheet) ->
-    walk_layout(Layout, fun(Widget) -> apply_styles(Widget, Stylesheet) end).
+    walk_layout(Layout, fun(Widget) -> apply_styles_protected(Widget, Stylesheet) end).
+
+apply_styles_protected(Widget, Stylesheet) ->
+    % Capture calculated layout properties
+    X = maps:get(x, Widget, undefined),
+    Y = maps:get(y, Widget, undefined),
+    W = maps:get(width, Widget, undefined),
+    H = maps:get(height, Widget, undefined),
+    
+    % Apply styles
+    StyledWidget = apply_styles(Widget, Stylesheet),
+    
+    % Restore layout properties if they were set
+    W1 = if X =/= undefined -> StyledWidget#{x => X}; true -> StyledWidget end,
+    W2 = if Y =/= undefined -> W1#{y => Y}; true -> W1 end,
+    W3 = if W =/= undefined -> W2#{width => W}; true -> W2 end,
+    if H =/= undefined -> W3#{height => H}; true -> W3 end.
 
 %% Walk the layout tree and apply a function to each widget
 walk_layout(Widget, Fun) when is_map(Widget) ->

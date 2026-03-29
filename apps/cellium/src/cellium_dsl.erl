@@ -4,12 +4,12 @@
 from_dsl({vbox, Props, Children}) when is_list(Children) ->
     Id = proplists:get_value(id, Props, make_ref()),
     C = container:new(Id, vertical),
-    apply_props(C#{children => [from_dsl(Child) || Child <- Children]}, Props);
+    apply_leaf_props(C#{children => [from_dsl(Child) || Child <- Children]}, Props);
 
 from_dsl({hbox, Props, Children}) when is_list(Children) ->
     Id = proplists:get_value(id, Props, make_ref()),
     C = container:new(Id, horizontal),
-    apply_props(C#{children => [from_dsl(Child) || Child <- Children]}, Props);
+    apply_leaf_props(C#{children => [from_dsl(Child) || Child <- Children]}, Props);
 
 from_dsl({header, Props, Value}) ->
     Id = proplists:get_value(id, Props, make_ref()),

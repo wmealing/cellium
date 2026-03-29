@@ -68,6 +68,7 @@ calculate_layout(OriginalContainer) ->
     Children = maps:get(children, OriginalContainer, []),
     Orientation = maps:get(orientation, OriginalContainer, horizontal),
     Id = maps:get(id, OriginalContainer, undefined),
+    WidgetType = maps:get(widget_type, OriginalContainer, undefined),
 
     FocusedWidgetId = case whereis(focus_manager) of
         undefined -> undefined;
@@ -82,7 +83,7 @@ calculate_layout(OriginalContainer) ->
     Container = OriginalContainer#{focused => IsFocused, has_focus => IsFocused},
 
 
-    DefaultPadding = case maps:get(widget_type, Container, undefined) of
+    DefaultPadding = case WidgetType of
         frame -> #{top => 1, right => 1, bottom => 1, left => 1};
         _ -> #{top => 0, right => 0, bottom => 0, left => 0}
     end,
@@ -93,26 +94,27 @@ calculate_layout(OriginalContainer) ->
     PaddingBottom = maps:get(bottom, Padding, 0),
     PaddingLeft = maps:get(left, Padding, 0),
 
-    {X, Y, Width, Height} = 
-        try
-            %% Try getting dimensions from current backend
-            {maps:get(x, Container, 0) + PaddingLeft,
-             maps:get(y, Container, 0) + PaddingTop,
-             max(0, maps:get(width, Container, ?TERMBOX:tb_width()) - PaddingLeft - PaddingRight),
-             max(0, maps:get(height, Container, ?TERMBOX:tb_height()) - PaddingTop - PaddingBottom)}
-        catch
-            _:_ ->
-                %% Terminal backend not running, use defaults
-                {maps:get(x, Container, 0) + PaddingLeft,
-                 maps:get(y, Container, 0) + PaddingTop,
-                 max(0, maps:get(width, Container, 80) - PaddingLeft - PaddingRight),
-                 max(0, maps:get(height, Container, 24) - PaddingTop - PaddingBottom)}
-        end,
+    % Core dimension calculation:
+    % 1. Use existing width/height (assigned by parent)
+    % 2. Fallback to terminal size ONLY if we are truly at the root (no parent assigned dimensions)
+    X = maps:get(x, Container, 0),
+    Y = maps:get(y, Container, 0),
+    
+    ContainerWidth = maps:get(width, Container, ?TERMBOX:tb_width()),
+    ContainerHeight = maps:get(height, Container, ?TERMBOX:tb_height()),
 
+    Width = max(0, ContainerWidth - PaddingLeft - PaddingRight),
+    Height = max(0, ContainerHeight - PaddingTop - PaddingBottom),
+
+%%    logger:debug("Layout: ID=~p, Type=~p, X=~p, Y=~p, W=~p, H=~p (Padding: ~p)", 
+%%                 [Id, WidgetType, X, Y, ContainerWidth, ContainerHeight, Padding]),
 
     if Children == [] ->
             Container;
        true ->
+            InnerX = X + PaddingLeft,
+            InnerY = Y + PaddingTop,
+            
             % Calculate fixed and expand children
             % Note: expand takes priority over size
             ExpandChildren = [Child || Child <- Children, maps:is_key(expand, Child)],
@@ -178,9 +180,9 @@ calculate_layout(OriginalContainer) ->
                             % Apply layout positioning for relative widgets
                             case Orientation of
                                 horizontal ->
-                                    Child#{x => X + CurrentOffset + Gap, y => Y, width => ChildSize, height => Height};
+                                    Child#{x => InnerX + CurrentOffset + Gap, y => InnerY, width => ChildSize, height => Height};
                                 vertical ->
-                                    Child#{x => X, y => Y + CurrentOffset + Gap, width => Width, height => ChildSize}
+                                    Child#{x => InnerX, y => InnerY + CurrentOffset + Gap, width => Width, height => ChildSize}
                             end
                     end,
                     % Recursively realize child containers

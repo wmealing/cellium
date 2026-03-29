@@ -27,7 +27,7 @@ render_with_colors(Widget, Focused) ->
         true -> {Bg, Fg};
         false -> {Fg, Bg}
     end,
-    Width = maps:get(requested_width, Widget, maps:get(width, Widget, 20)),
+    Width = min(maps:get(width, Widget, 20), maps:get(requested_width, Widget, maps:get(width, Widget, 20))),
     Progress = maps:get(progress, Widget, 0.0),
     BarWidth = max(0, Width - 2),
     Filled = round(Progress * BarWidth),

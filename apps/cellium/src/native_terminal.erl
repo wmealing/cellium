@@ -71,6 +71,8 @@
 -define(HIDE_CURSOR, "\033[?25l").
 -define(HIDE_CURSOR_WUT, [?ESC, ?CSI_START, "25l"]).
 
+-define(CLEAR, [?ESC, ?CSI_START, "2J", ?ESC, ?CSI_START, "H"]). 
+
 % -define(ALT_SCREEN_ENABLE,  "\e[?1049h").
 % -define(ALT_SCREEN_DISABLE, "\e[?1049l").
 % \033[?25l
@@ -201,9 +203,11 @@ stop() ->
     gen_server:stop(?SERVER).
 
 init([]) ->
+    os:set_signal(sigwinch, handle),
     {ok, #state{width=0, height=0, input_mode=alt, output_mode=default, back_buffer = cellium_buffer:empty(), front_buffer = cellium_buffer:empty()}}.
 
 handle_call(init_term, _From, State) ->
+    logger:debug("INIT TERM FROM NATIVE TERMINAL"), 
     shell:start_interactive({noshell, raw}),
     io:put_chars(?ALT_SCREEN_ENABLE), % Enable alternate screen buffer
     io:put_chars(?HIDE_CURSOR),
@@ -221,22 +225,21 @@ handle_call(shutdown_term, _From, State) ->
     {reply, ok, State};
 
 handle_call(tb_clear, _From, State) ->
-    io:put_chars(?SYNC_UPDATE_ENABLE),
     {reply, ok, State#state{back_buffer = cellium_buffer:empty()}};
 
 handle_call(tb_present, _From, State) ->
     #state{back_buffer = Back, front_buffer = Front, output_mode = OutputMode} = State,
-    
+
     % Start synchronized update
     io:put_chars(?SYNC_UPDATE_ENABLE),
-    
+
     % Calculate and send diff
     DiffOutput = diff_and_draw(Back, Front, OutputMode),
     io:put_chars(DiffOutput),
-    
+
     % End synchronized update
     io:put_chars(?SYNC_UPDATE_DISABLE),
-    
+
     {reply, ok, State#state{front_buffer = Back}};
 
 handle_call({tb_set_cell, X, Y, Char, Fg, Bg}, _From, State) ->
@@ -257,10 +260,12 @@ handle_call({get_row, X, Y, Length}, _From, State) ->
     {reply, cellium_buffer:get_row(X, Y, Length, State#state.back_buffer), State};
 
 handle_call(get_width, _From, State) ->
-    {reply, State#state.width, State};
+    {ok, W} = io:columns(),
+    {reply, W, State};
 
 handle_call(get_height, _From, State) ->
-    {reply, State#state.height, State};
+    {ok, Cols} = io:rows(),
+    {reply, Cols, State};
 
 handle_call({set_input_mode, Mode}, _From, State) ->
     {reply, ok, State#state{input_mode = Mode}};
@@ -289,7 +294,7 @@ handle_call(get_event, From, State) ->
     end;
 
 handle_call(tb_force_redraw, _From, State) ->
-    io:put_chars("\e[2J"),
+    io:put_chars(?CLEAR),
     {reply, ok, State#state{front_buffer = cellium_buffer:empty()}};
 
 handle_call(stop, _From, State) ->
@@ -327,6 +332,21 @@ handle_cast(check_buffer_timeout, State = #state{input_mode = InputMode}) ->
 
 handle_cast(_Msg, State) ->
     {noreply, State}.
+
+handle_info({signal, sigwinch}, State) ->
+    {ok, Cols} = io:columns(),
+    {ok, Rows} = io:rows(),
+    W = max(1, Cols),
+    H = max(1, Rows),
+    logger:info("Terminal resize detected via SIGNAL: ~p x ~p", [W, H]),
+    % Physically clear the screen as resize often scrambles contents
+    io:put_chars(?CLEAR),
+    % Force full redraw on next update
+    NewState = State#state{width = W, height = H, front_buffer = cellium_buffer:empty(), back_buffer = cellium_buffer:empty()},
+    % Notify event manager
+    Event = {resize, W, H},
+    FinalState = add_event(Event, NewState),
+    {noreply, FinalState};
 
 handle_info(_Info, State) ->
     {noreply, State}.
