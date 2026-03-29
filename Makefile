@@ -24,5 +24,5 @@ docs:
 # For example: `make run example=counter`
 run: compile
 	@echo "Starting example: $(example)"
-	@erl -noinput -sname cellium_dev -setcookie cellium_cookie  $(LIB_EBIN)  $(EXTRAS_EBIN) -eval "$(example):start()."
+	@erl -noshell -noinput -sname cellium_dev -setcookie cellium_cookie  $(LIB_EBIN)  $(EXTRAS_EBIN) -eval "$(example):start()."
 
