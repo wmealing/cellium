@@ -9,7 +9,7 @@
 
 -include("cellium.hrl").
 
--record(state, {root_widget = #{}, width = 0, height = 0}).
+-record(state, {root_widget = #{}, width = 0, height = 0, stylesheet = #{}}).
 
 start_link(_A, _B, _C) ->
     start_link().
@@ -31,10 +31,18 @@ init([]) ->
     W = ?TERMBOX:tb_width(),
     H = ?TERMBOX:tb_height(),
 
+    % Load stylesheet once at startup
+    Style = css:load_stylesheet("priv/default_theme.css"),
+
     % Start periodic tick
     erlang:send_after(50, self(), tick),
 
-    {ok, #state{root_widget = container:new(root_widget, horizontal), width = W, height = H}}.
+    {ok, #state{
+        root_widget = container:new(root_widget, horizontal),
+        width = W,
+        height = H,
+        stylesheet = Style
+    }}.
 
 handle_call({set_root_widget, RootWidget}, _From, State) ->
     NewState = update(State#state{root_widget = RootWidget}),
@@ -101,9 +109,7 @@ update(State) ->
 
     Layout = layout:calculate_layout(RootWidget, W, H),
 
-    Style = css:load_stylesheet("priv/default_theme.css"),
-
-    StyledLayout = css:style(Layout, Style),
+    StyledLayout = css:style(Layout, State#state.stylesheet),
    
     widgets:render(StyledLayout),
     ?TERMBOX:tb_present(),

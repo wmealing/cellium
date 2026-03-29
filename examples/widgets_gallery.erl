@@ -71,7 +71,7 @@ handle_focused_key(_Id, _Event, Model) ->
 render(Model) ->
     FocusedId = maps:get(focused_id, Model, undefined),
     StatusText = io_lib:format("Tab: Navigate | Q: Quit | Focused: ~p", [FocusedId]),
-    
+
     {vbox, [{id, main}, {padding, 0}], [
         {vbox, [{id, content}, {expand, true}, {padding, 1}], [
             {header, [{id, h1}, {color, cyan}], "Cellium Widget Gallery"},
@@ -116,7 +116,7 @@ render(Model) ->
 
             {vbox, [{id, row4}, {expand, true}], [
                 {text, [{id, t5}], "Input Field:"},
-                {box, [{id, b_input}, {size, 3}, {color, yellow}], [
+                {box, [{id, b_input}, {size, 5}, {color, yellow}], [
                     {text_input, [{id, ti1}, {state, maps:get(input_text, Model)}]}
                 ]},
                 {spacer, [{size, 1}]}

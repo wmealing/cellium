@@ -156,6 +156,8 @@ process_event(Event, _State) ->
     logger:info("POLL EVENT IS: ~p", [Event]),
 
     case Event of
+        {resize, W, H} ->
+            logger:info("RESIZE EVENT DETECTED: ~p x ~p", [W, H]);
         {key, false, false, false, false, tab_key} ->
             focus_manager:move_focus_forward();
         {key, true, false, false, false, tab_key} ->
