@@ -9,7 +9,14 @@
 
 -include("cellium.hrl").
 
--record(state, {root_widget = #{}, width = 0, height = 0, stylesheet = #{}}).
+-record(state, {
+    root_widget = #{},
+    last_root_widget = undefined,
+    width = 0,
+    height = 0,
+    stylesheet = #{} ,
+    force_redraw = false
+}).
 
 start_link(_A, _B, _C) ->
     start_link().
@@ -36,9 +43,11 @@ init([]) ->
 
     {ok, #state{
         root_widget = container:new(root_widget, horizontal),
+        last_root_widget = undefined,
         width = W,
         height = H,
-        stylesheet = Style
+        stylesheet = Style,
+        force_redraw = true
     }}.
 
 handle_call({set_root_widget, RootWidget}, _From, State) ->
@@ -46,11 +55,12 @@ handle_call({set_root_widget, RootWidget}, _From, State) ->
     {reply, ok, NewState};
 
 handle_call(update_now, _From, State) ->
-    NewState = update(State),
+    NewState = update(State#state{force_redraw = true}),
     {reply, ok, NewState};
 
 handle_call(_Msg, _From, State) ->
     {reply, ok, State}.
+
 
 handle_cast(_Msg, State) ->
     {noreply, State}.
@@ -85,28 +95,34 @@ update(State) ->
     W = ?TERMBOX:tb_width(),
     H = ?TERMBOX:tb_height(),
 
-    NewState = case {W, H} =/= {State#state.width, State#state.height} of
+    % Check if terminal size changed
+    {SizeChanged, State1} = case {W, H} =/= {State#state.width, State#state.height} of
         true ->
             logger:info("View detected resize: ~p x ~p (was ~p x ~p), forcing redraw", 
                         [W, H, State#state.width, State#state.height]),
             ?TERMBOX:tb_force_redraw(),
-            State#state{width = W, height = H};
+            {true, State#state{width = W, height = H}};
         false ->
-            State
+            {false, State}
     end,
-    
-    logger:debug("RW: ~p", [RootWidget]),
 
+    % Dirty check: RootWidget changed, Size changed, or force_redraw requested
+    IsDirty = SizeChanged
+              orelse (RootWidget =/= State#state.last_root_widget)
+              orelse (State#state.force_redraw == true),
 
-    logger:debug("View update dimensions: ~p x ~p", [W, H]),
-
-    ?TERMBOX:tb_clear(),
-
-    Layout = layout:calculate_layout(RootWidget, W, H),
-
-    StyledLayout = css:style(Layout, State#state.stylesheet),
-   
-    widgets:render(StyledLayout),
-    ?TERMBOX:tb_present(),
-    NewState.
+    case IsDirty of
+        false ->
+            logger:debug("View update: Skipping redundant render (not dirty)"),
+            State1;
+        true ->
+            logger:debug("View update: Rendering frame (dirty=~p, RootChanged=~p, Force=~p)", 
+                         [IsDirty, RootWidget =/= State#state.last_root_widget, State#state.force_redraw]),
+            ?TERMBOX:tb_clear(),
+            Layout = layout:calculate_layout(RootWidget, W, H),
+            StyledLayout = css:style(Layout, State1#state.stylesheet),
+            widgets:render(StyledLayout),
+            ?TERMBOX:tb_present(),
+            State1#state{last_root_widget = RootWidget, force_redraw = false}
+    end.
     
