@@ -30,7 +30,15 @@ init([]) ->
     H = ?TERMBOX:tb_height(),
 
     % Load stylesheet once at startup
-    Style = css:load_stylesheet("priv/default_theme.css"),
+    StylesheetPath = "priv/default_theme.css",
+    Style = case css:load_stylesheet(StylesheetPath) of
+        StyleMap when map_size(StyleMap) =:= 0 ->
+            logger:error("Failed to load stylesheet from ~s or file is empty, using default styles",
+                        [StylesheetPath]),
+            #{};
+        LoadedStyle ->
+            LoadedStyle
+    end,
 
     {ok, #state{
         root_widget = container:new(root_widget, horizontal),
