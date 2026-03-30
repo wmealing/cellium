@@ -1,5 +1,5 @@
 -module(breadcrumb).
--export([render/1, new/1]).
+-export([render/2, new/1]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -11,8 +11,7 @@ new(Id) ->
                     paths => [],
                     type => widget}.
 
--spec render(map()) -> ok.
-render(Widget) ->
-    #{x := _X, y := _Y, fg := _Fg, bg := _Bg} = get_common_props(Widget),
+-spec render(map(), map()) -> map().
+render(_Widget, Buffer) ->
     %% Breadcrumb rendering logic
-    ok.
+    Buffer.

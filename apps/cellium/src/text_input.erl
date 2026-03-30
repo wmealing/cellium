@@ -1,5 +1,5 @@
 -module(text_input).
--export([render/1, render_focused/1, new/1, handle_event/2, state/1]).
+-export([render/2, render_focused/2, new/1, handle_event/2, state/1]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -52,30 +52,28 @@ handle_backspace(State) ->
             State#{text => NewText, cursor_pos => CursorPos - 1}
     end.
 
--spec render(map()) -> ok.
-render(Widget) ->
+-spec render(map(), map()) -> map().
+render(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
     Text = get_text(Widget),
-    ?TERMBOX:tb_print(X, Y, Fg, Bg, Text),
-    ok.
+    cellium_buffer:put_string(X, Y, Fg, Bg, Text, Buffer).
 
--spec render_focused(map()) -> ok.
-render_focused(Widget) ->
+-spec render_focused(map(), map()) -> map().
+render_focused(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
     Text = get_text(Widget),
     CursorPos = get_cursor_pos(Widget, Text),
-    
+
     % Draw the text first
-    ?TERMBOX:tb_print(X, Y, Fg, Bg, Text),
-    
+    Buffer1 = cellium_buffer:put_string(X, Y, Fg, Bg, Text, Buffer),
+
     % Draw the cursor as a highlighted character
     % If CursorPos is at the end, draw a space
     {Char, NewX} = case CursorPos >= length(Text) of
                        true -> {$ , X + length(Text)};
                        false -> {lists:nth(CursorPos + 1, Text), X + CursorPos}
                    end,
-    ?TERMBOX:tb_set_cell(NewX, Y, Char, Bg, Fg),
-    ok.
+    cellium_buffer:set_cell(NewX, Y, Char, Bg, Fg, Buffer1).
 
 get_text(Widget) ->
     case maps:get(state, Widget, undefined) of

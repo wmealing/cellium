@@ -1,5 +1,5 @@
 -module(select).
--export([render/1, new/1]).
+-export([render/2, new/1]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -13,9 +13,8 @@ new(Id) ->
                     focusable => true,
                     type => widget}.
 
--spec render(map()) -> ok.
-render(Widget) ->
+-spec render(map(), map()) -> map().
+render(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
     %% Rendering logic for dropdown/select here
-    ?TERMBOX:tb_print(X, Y, Fg, Bg, "[ Select... ]"),
-    ok.
+    cellium_buffer:put_string(X, Y, Fg, Bg, "[ Select... ]", Buffer).

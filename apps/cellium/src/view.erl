@@ -89,6 +89,11 @@ update_now() ->
 
 
 %% INTERNAL
+write_buffer_to_terminal(Buffer) ->
+    maps:foreach(fun({X, Y}, {Char, Fg, Bg}) ->
+        ?TERMBOX:tb_set_cell(X, Y, Char, Fg, Bg)
+    end, Buffer).
+
 update(State) ->
     RootWidget = State#state.root_widget,
 
@@ -113,15 +118,13 @@ update(State) ->
 
     case IsDirty of
         false ->
-            logger:debug("View update: Skipping redundant render (not dirty)"),
             State1;
         true ->
-            logger:debug("View update: Rendering frame (dirty=~p, RootChanged=~p, Force=~p)", 
-                         [IsDirty, RootWidget =/= State#state.last_root_widget, State#state.force_redraw]),
             ?TERMBOX:tb_clear(),
             Layout = layout:calculate_layout(RootWidget, W, H),
             StyledLayout = css:style(Layout, State1#state.stylesheet),
-            widgets:render(StyledLayout),
+            Buffer = widgets:render(StyledLayout),
+            write_buffer_to_terminal(Buffer),
             ?TERMBOX:tb_present(),
             State1#state{last_root_widget = RootWidget, force_redraw = false}
     end.

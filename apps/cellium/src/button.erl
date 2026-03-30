@@ -1,5 +1,5 @@
 -module(button).
--export([render/1, render_focused/1, new/1, new/2]).
+-export([render/2, render_focused/2, new/1, new/2]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -19,8 +19,8 @@ new(Id, Label) ->
         type => widget
     }.
 
--spec render(map()) -> ok.
-render(Widget) ->
+-spec render(map(), map()) -> map().
+render(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = widget:get_common_props(Widget),
     Label = maps:get(label, Widget, "Button"),
     HasFocus = maps:get(focused, Widget, false),
@@ -42,23 +42,21 @@ render(Widget) ->
                     true -> box_styles:square()
                 end,
             % Draw the frame
-            table:draw_table(X, Y, Height - 1, FinalFg, FinalBg, BoxStyle, [Width - 2]),
+            Buffer1 = table:draw_table(X, Y, Height - 1, FinalFg, FinalBg, BoxStyle, [Width - 2], Buffer),
 
             % Print label centered
             TextX = X + (Width - length(Label)) div 2,
             TextY = Y + Height div 2,
-            ?TERMBOX:tb_print(TextX, TextY, FinalFg, FinalBg, Label),
-            ok;
+            cellium_buffer:put_string(TextX, TextY, FinalFg, FinalBg, Label, Buffer1);
         true ->
             FinalLabel =
                 case HasFocus of
                     true -> "[" ++ Label ++ "]";
                     false -> " " ++ Label ++ " "
                 end,
-            ?TERMBOX:tb_print(X, Y, FinalFg, FinalBg, FinalLabel),
-            ok
+            cellium_buffer:put_string(X, Y, FinalFg, FinalBg, FinalLabel, Buffer)
     end.
 
--spec render_focused(map()) -> ok.
-render_focused(Widget) ->
-    render(Widget).
+-spec render_focused(map(), map()) -> map().
+render_focused(Widget, Buffer) ->
+    render(Widget, Buffer).
