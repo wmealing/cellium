@@ -1,4 +1,28 @@
 -module(view).
+-moduledoc """
+View server responsible for rendering the widget tree to the terminal.
+
+This gen_server manages the rendering lifecycle, including:
+- Loading and applying CSS stylesheets
+- Calculating layouts from widget trees
+- Dirty checking to avoid unnecessary redraws
+- Handling terminal resizes
+- Managing the double-buffered rendering system
+
+The view uses a dirty-checking optimization where it only re-renders when:
+- The root widget tree has changed
+- The terminal has been resized
+- A forced redraw is requested
+
+## Rendering Pipeline
+
+1. Widget tree → Layout calculation → CSS styling → Buffer rendering → Terminal output
+
+## Double Buffering
+
+The underlying terminal backend maintains front and back buffers,
+only sending diff updates to the terminal for changed cells.
+""".
 
 -behaviour(gen_server).
 
@@ -80,9 +104,11 @@ code_change(_OldVsn, State, _Extra) ->
 
 
 %% API
+-doc "Sets the root widget tree and triggers a render if it has changed.".
 set_root_widget(RootWidget) ->
     gen_server:call(?MODULE, {set_root_widget, RootWidget}).
 
+-doc "Forces an immediate re-render regardless of dirty state.".
 update_now() ->
     gen_server:call(?MODULE, update_now).
 

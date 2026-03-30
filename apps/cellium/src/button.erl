@@ -1,13 +1,41 @@
 -module(button).
+-moduledoc """
+Button widget module for interactive clickable buttons.
+
+Buttons are focusable widgets that can be activated with Enter or Space.
+When focused, they display with inverted colors or a border to indicate selection.
+
+## Usage
+
+```
+button:new(submit_btn, "Submit")
+```
+
+## Properties
+
+- `label` (string): The text displayed on the button
+- `focusable` (boolean): Always true for buttons
+- `focused` (boolean): Set by focus manager when button has focus
+- `height` (integer): If >= 3, renders with a box border
+
+## Rendering
+
+- Height < 3: Simple text with brackets when focused: `[Submit]`
+- Height >= 3: Bordered box with centered label (double border when focused)
+- Focused state inverts foreground/background colors
+""".
+
 -export([render/2, render_focused/2, new/1, new/2]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
 
+-doc "Creates a new button widget with default label 'Button'.".
 -spec new(term()) -> map().
 new(Id) ->
     new(Id, "Button").
 
+-doc "Creates a new button widget with the specified label.".
 -spec new(term(), string()) -> map().
 new(Id, Label) ->
     (widget:new())#{
@@ -19,6 +47,7 @@ new(Id, Label) ->
         type => widget
     }.
 
+-doc "Renders the button widget to the buffer.".
 -spec render(map(), map()) -> map().
 render(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = widget:get_common_props(Widget),

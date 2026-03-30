@@ -1,37 +1,76 @@
 %% -*- erlang-indent-level: 4;indent-tabs-mode: nil -*-
 %% ex: ts=4 sw=4 et
-%%% @doc Box widget module for rendering rectangular boxes with borders.
-%%%
-%%% This module provides a simple box widget that can be rendered with
-%%% different border styles depending on focus state. The box uses the
-%%% table drawing functionality to render its borders.
-%%% @end
 -module(box).
+-moduledoc """
+Box widget module for rendering rectangular containers with borders.
+
+This module provides a container widget that draws a border around its
+contents. The box can contain child widgets and renders with different
+border styles depending on focus state.
+
+## Usage
+
+Basic box as a container:
+```
+{box, [{id, my_box}, {size, 10}, {color, yellow}], [
+    {text_input, [{id, input1}, {expand, true}]}
+]}
+```
+
+Empty decorative box:
+```
+box:new(decorative_box, 20, 5)
+```
+
+## Properties
+
+- `width` (integer): Width of the box in characters. Set by layout when used
+  as a container
+- `height` (integer): Height of the box in characters. Set by layout when used
+  as a container
+- `orientation` (atom): Layout orientation for children. Default: vertical
+- `padding` (map): Inner padding. Default: 1 on all sides
+- `type`: Set to `container` (can hold child widgets)
+- `color` (atom): Border color
+
+## Border Styles
+
+- **Unfocused**: Square/single-line border (`┌─┐│└┘`)
+- **Focused or child has focus**: Double-line border (`╔═╗║╚╝`)
+
+## Container Behavior
+
+The box is a container widget, so:
+- It can have children specified in the DSL
+- The layout system calculates dimensions for children
+- Default padding of 1 character on all sides
+- Children are laid out vertically by default
+
+## Example
+
+```
+{box, [{id, input_box}, {size, 5}, {color, cyan}], [
+    {text_input, [{id, ti1}, {wrap, true}, {expand, true}]}
+]}
+```
+""".
 
 % API
 -export([render/2, new/1, new/3]).
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
 
-%%% @doc Creates a new box widget with default dimensions.
-%%%
-%%% @param Id Unique identifier for the box widget
-%%% @returns A widget map configured as a box
-%%% @end
+-doc "Creates a new box with default dimensions (0x0).".
 -spec new(term()) -> map().
 new(Id) ->
     new(Id, 0, 0).
 
-%%% @doc Creates a new box widget.
-%%%
-%%% Creates a rectangular box widget with the specified dimensions.
-%%% The box can be rendered with different border styles and colors.
-%%%
-%%% @param Id Unique identifier for the box widget
-%%% @param Width Width of the box in characters
-%%% @param Height Height of the box in characters
-%%% @returns A widget map configured as a box
-%%% @end
+-doc """
+Creates a new box with specified dimensions.
+
+The box is a container that can hold child widgets. Children are laid out
+vertically with 1 character padding on all sides.
+""".
 -spec new(term(), non_neg_integer(), non_neg_integer()) -> map().
 new(Id, Width, Height) ->
     (widget:new())#{id => Id,
@@ -42,14 +81,13 @@ new(Id, Width, Height) ->
                     padding => #{top => 1, bottom => 1, left => 1, right => 1},
                     type => container }.
 
-%%% @doc Renders the box widget to the terminal.
-%%%
-%%% Draws a bordered box at the widget's coordinates using the table
-%%% drawing functions. The border style changes based on focus state:
-%%% - Focused: double-line border
-%%% - Unfocused: square border
-%%%
-%%% @param Widget The box widget map containing position and dimension info
+-doc """
+Renders the box border.
+
+Border style changes based on focus:
+- Focused or child has focus: double-line border
+- Unfocused: square/single-line border
+""".
 
 -spec render(map(), map()) -> map().
 render(Widget, Buffer) ->

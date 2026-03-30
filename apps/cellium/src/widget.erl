@@ -1,16 +1,61 @@
-%%% @doc Base widget module providing common widget functionality.
-%%%
-%%% This module defines the fundamental widget structure and common operations
-%%% used by all widget types in Cellium. Every widget is represented as a map
-%%% with specific required and optional keys.
-%%% @end
 -module(widget).
+-moduledoc """
+Base widget module providing common widget functionality.
+
+This module defines the fundamental widget structure and common operations
+used by all widget types in Cellium. Every widget is represented as a map
+with specific required and optional keys.
+
+## Widget Structure
+
+All widgets are maps containing:
+- `type`: Either `widget` or `container`
+- `widget_type`: Specific widget type (text, button, checkbox, etc.)
+- `id`: Unique identifier
+- `color`: Foreground color (default: white)
+- `background-color`: Background color (default: from ?DEFAULT_BG_COLOR)
+- `padding`: Padding map with top, bottom, left, right
+- `focusable`: Whether the widget can receive focus
+
+## Common Properties
+
+### Layout Properties
+- `x`, `y`: Position (set by layout system)
+- `width`, `height`: Dimensions (set by layout system)
+- `size`: Fixed size in layout direction
+- `expand`: Request to fill available space
+
+### Visual Properties
+- `color`: Foreground color atom (black, red, green, yellow, blue, magenta, cyan, white)
+- `background-color`: Background color atom
+- Bright variants: `bright_black`, `bright_red`, etc.
+
+### Focus Properties
+- `focusable`: Can this widget receive focus?
+- `focused`: Is this widget currently focused? (set by layout)
+- `has_focus`: Does this widget or a child have focus? (set by layout)
+
+## Creating Widgets
+
+Specific widget modules call `widget:new()` and add their own properties:
+```
+button:new(my_button, "Click Me")
+% Calls widget:new() internally and adds button-specific fields
+```
+""".
 
 -export([new/0, create/1, get_common_props/1, color_to_int/1]).
 
 -include("cellium.hrl").
 -import(focus_manager, [register_widget/1]).
 
+-doc """
+Converts color atoms to their integer or atom representation.
+
+Accepts color atoms (black, red, green, yellow, blue, magenta, cyan, white)
+and their bright variants, RGB tuples, or integers. Returns the color value
+for use in rendering.
+""".
 -spec color_to_int(Color :: atom() | integer()) -> integer() | atom().
 color_to_int(Color) when is_integer(Color) ->
     Color;
@@ -34,36 +79,36 @@ color_to_int(bright_cyan) -> bright_cyan;
 color_to_int(bright_white) -> bright_white;
 color_to_int(_) -> default.
 
-%%% @doc Creates a new base widget map with default values.
-%%%
-%%% Creates a widget map containing the minimum required fields. This is
-%%% typically called by specific widget constructors who then add their
-%%% own fields to customize the widget.
-%%%
-%%% Default values:
-%%% - `type': widget
-%%% - `widget_type': override_me (should be set by specific widget)
-%%% - `color': white
-%%% - `padding': all sides set to 0
-%%% - `id': override_me (should be set by specific widget)
-%%% - `focusable': false
-%%%
-%%% @returns A base widget map with default values
-%%% @end
+-doc """
+Creates a new base widget map with default values.
+
+This is typically called by specific widget constructors who then add their
+own fields to customize the widget.
+
+Default values:
+- `type`: widget
+- `widget_type`: override_me (should be set by specific widget)
+- `color`: white
+- `padding`: all sides set to 0
+- `id`: override_me (should be set by specific widget)
+- `focusable`: false
+""".
 -spec new() -> map().
 new() ->
       #{type => widget,
         widget_type  => override_me,
-	color => white, 
+	color => white,
         padding => #{top => 0, bottom => 0, left => 0, right => 0},
         id => override_me,
         focusable => false
       }.
 
-%%% @doc Creates and registers a widget with the focus manager if it is focusable.
-%%% @param WidgetMap The widget map to create and register.
-%%% @returns The widget map.
-%%% @end
+-doc """
+Creates and registers a widget with the focus manager if it is focusable.
+
+If the widget has `focusable => true`, registers it with the focus manager
+for keyboard navigation support.
+""".
 -spec create(map()) -> map().
 create(WidgetMap) ->
     case maps:get(focusable, WidgetMap, false) of
@@ -90,22 +135,22 @@ brighten(cyan) -> bright_cyan;
 brighten(white) -> bright_white;
 brighten(Color) -> Color.
 
-%%% @doc Extracts common rendering properties from a widget map.
-%%%
-%%% Retrieves the position and color properties needed for rendering,
-%%% applying default values when properties are not explicitly set.
-%%% This provides a consistent interface for all widgets to access
-%%% their rendering properties.
-%%%
-%%% Default values:
-%%% - `x': 0
-%%% - `y': 0
-%%% - `background-color': value of `?DEFAULT_BG_COLOR' macro
-%%% - `color': value of `?DEFAULT_FG_COLOR' macro
-%%%
-%%% @param Widget A widget map that may contain x, y, color, and background-color keys
-%%% @returns A map with keys x, y, fg (foreground), and bg (background)
-%%% @end
+-doc """
+Extracts common rendering properties from a widget map.
+
+Retrieves the position and color properties needed for rendering,
+applying default values when properties are not explicitly set.
+This provides a consistent interface for all widgets to access
+their rendering properties.
+
+Default values:
+- `x`: 0
+- `y`: 0
+- `background-color`: value of `?DEFAULT_BG_COLOR` macro
+- `color`: value of `?DEFAULT_FG_COLOR` macro
+
+Returns a map with keys `x`, `y`, `fg` (foreground), and `bg` (background).
+""".
 -spec get_common_props(Widget :: map()) -> #{x := integer(), y := integer(), fg := integer() | atom(), bg := integer() | atom()}.
 get_common_props(Widget) ->
     X = maps:get(x, Widget, 0),

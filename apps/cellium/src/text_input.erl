@@ -1,9 +1,57 @@
 -module(text_input).
+-moduledoc """
+Text input widget module for editable text fields.
+
+This module provides an interactive text input widget that handles keyboard
+events and supports optional word wrapping with vertical scrolling.
+
+## Usage
+
+Basic text input:
+```
+text_input:new(my_input)
+```
+
+Text input with wrapping (requires expand or size to get width/height from layout):
+```
+(text_input:new(my_input))#{wrap => true, expand => true}
+```
+
+## Properties
+
+- `wrap` (boolean): Enable word wrapping. When true, text wraps at the widget's
+  width and shows only the last N lines that fit in height. Default: false
+- `expand` (boolean): Request the layout system to assign width and height.
+  Required when using wrap. Default: false
+- `width` (integer): Set by the layout system when expand is true. Determines
+  wrap width.
+- `height` (integer): Set by the layout system when expand is true. Determines
+  how many wrapped lines to show (shows last N lines).
+- `state` (map): Text input state containing text and cursor position
+
+## Wrapping Behavior
+
+When wrap is enabled:
+- Text wraps horizontally at word boundaries (using greedy wrap algorithm)
+- Only the last N lines (fitting in height) are displayed
+- Earlier lines are hidden but not discarded
+- Cursor follows correctly across wrapped lines
+""".
+
 -export([render/2, render_focused/2, new/1, handle_event/2, state/1]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
 
+-doc """
+Creates a new text input widget.
+
+To enable word wrapping, set the `wrap` property to true and add `expand`
+so the layout system assigns width and height:
+```
+(text_input:new(my_id))#{wrap => true, expand => true}
+```
+""".
 -spec new(term()) -> map().
 new(Id) ->
     (widget:new())#{id => Id,
@@ -13,9 +61,16 @@ new(Id) ->
                     focusable => true,
                     type => widget}.
 
+-doc "Creates a text input state with the given text.".
 -spec state(string()) -> map().
 state(Text) -> #{text => Text, cursor_pos => length(Text)}.
 
+-doc """
+Handles keyboard events for the text input.
+
+Processes keyboard input including character insertion, backspace,
+and cursor movement (left/right arrow keys).
+""".
 -spec handle_event(term(), string() | map()) -> string() | map().
 handle_event(Event, Text) when is_list(Text) ->
     State = state(Text),
@@ -52,6 +107,13 @@ handle_backspace(State) ->
             State#{text => NewText, cursor_pos => CursorPos - 1}
     end.
 
+-doc """
+Renders the text input widget (unfocused state).
+
+If wrap is enabled and width/height are set by layout:
+- Text wraps at word boundaries at the widget's width
+- Only the last N lines (fitting in height) are displayed
+""".
 -spec render(map(), map()) -> map().
 render(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
@@ -81,6 +143,14 @@ render(Widget, Buffer) ->
             cellium_buffer:put_string(X, Y, Fg, Bg, Text, Buffer)
     end.
 
+-doc """
+Renders the text input widget (focused state) with cursor.
+
+If wrap is enabled and width/height are set by layout:
+- Text wraps at word boundaries at the widget's width
+- Only the last N lines (fitting in height) are displayed
+- Cursor position is calculated correctly across wrapped lines
+""".
 -spec render_focused(map(), map()) -> map().
 render_focused(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
@@ -109,21 +179,44 @@ render_focused(Widget, Buffer) ->
                     {CursorLine, CursorCol} = find_cursor_position(Lines, CursorPos),
 
                     % Only show the last N lines that fit in the height (if height is set)
-                    {VisibleLines, LineOffset} = case Height of
-                        undefined ->
-                            {Lines, 0};  % Show all lines if no height constraint
-                        _ ->
-                            TotalLines = length(Lines),
-                            VLines = get_last_n_lines(Lines, Height),
-                            Offset = TotalLines - length(VLines),
-                            {VLines, Offset}
+                    VisibleLines = case Height of
+                        undefined -> Lines;
+                        _ -> get_last_n_lines(Lines, Height)
                     end,
 
-                    % Adjust cursor line to be relative to visible lines
-                    AdjustedCursorLine = CursorLine - LineOffset,
+                    % Calculate the offset to adjust cursor Y position
+                    TotalLines = length(Lines),
+                    VisibleLineCount = length(VisibleLines),
+                    LineOffset = TotalLines - VisibleLineCount,
 
-                    % Render visible lines with cursor on the appropriate line (if visible)
-                    render_lines_focused(X, Y, Fg, Bg, VisibleLines, AdjustedCursorLine, CursorCol, 0, Buffer)
+                    % Render the visible lines
+                    Buffer1 = render_lines(X, Y, Fg, Bg, VisibleLines, Buffer),
+
+                    % Only show cursor if it's in the visible lines
+                    case CursorLine >= LineOffset of
+                        true ->
+                            % Cursor is visible
+                            AdjustedCursorY = Y + (CursorLine - LineOffset),
+                            CursorX = X + CursorCol,
+
+                            % Get character at cursor position or space if at end
+                            VisibleLineIndex = CursorLine - LineOffset + 1,
+                            case VisibleLineIndex =< length(VisibleLines) of
+                                true ->
+                                    Line = lists:nth(VisibleLineIndex, VisibleLines),
+                                    LineStr = binary_to_list(Line),
+                                    Char = case CursorCol >= length(LineStr) of
+                                               true -> $ ;
+                                               false -> lists:nth(CursorCol + 1, LineStr)
+                                           end,
+                                    cellium_buffer:set_cell(CursorX, AdjustedCursorY, Char, Bg, Fg, Buffer1);
+                                false ->
+                                    Buffer1
+                            end;
+                        false ->
+                            % Cursor is not in visible area (scrolled off top)
+                            Buffer1
+                    end
             end;
         false ->
             % No wrapping - render as single line with cursor
@@ -147,11 +240,11 @@ get_cursor_pos(Widget, Text) ->
         State -> maps:get(cursor_pos, State, length(Text))
     end.
 
-% Get the last N lines from a list
-get_last_n_lines(Lines, N) when N >= length(Lines) ->
-    Lines;
 get_last_n_lines(Lines, N) ->
-    lists:nthtail(length(Lines) - N, Lines).
+    case length(Lines) > N of
+        true -> lists:nthtail(length(Lines) - N, Lines);
+        false -> Lines
+    end.
 
 render_lines(_X, _Y, _Fg, _Bg, [], Buffer) ->
     Buffer;
@@ -160,46 +253,20 @@ render_lines(X, Y, Fg, Bg, [Line | Rest], Buffer) ->
     NewBuffer = cellium_buffer:put_string(X, Y, Fg, Bg, LineStr, Buffer),
     render_lines(X, Y + 1, Fg, Bg, Rest, NewBuffer).
 
-% Find which line and column the cursor is on after wrapping
 find_cursor_position(Lines, CursorPos) ->
     find_cursor_position(Lines, CursorPos, 0, 0).
 
-find_cursor_position([], _CursorPos, LineNum, _CharCount) ->
-    % Cursor is past the end - put it at the end of the last line
-    {LineNum, 0};
-find_cursor_position([Line | Rest], CursorPos, LineNum, CharCount) ->
-    LineLen = byte_size(Line),
-    % Account for space between words (except for last line)
-    LineWithSpace = case Rest of
-                        [] -> LineLen;
-                        _ -> LineLen + 1  % Add 1 for the space
-                    end,
-
-    case CursorPos =< CharCount + LineLen of
+find_cursor_position([], _CursorPos, CurrentLine, _CharCount) ->
+    % Cursor is past all lines, place at end of last line
+    {CurrentLine, 0};
+find_cursor_position([Line | Rest], CursorPos, CurrentLine, CharCount) ->
+    LineLength = byte_size(Line),
+    case CursorPos =< CharCount + LineLength of
         true ->
             % Cursor is on this line
-            {LineNum, CursorPos - CharCount};
+            ColPos = CursorPos - CharCount,
+            {CurrentLine, ColPos};
         false ->
             % Cursor is on a later line
-            find_cursor_position(Rest, CursorPos, LineNum + 1, CharCount + LineWithSpace)
+            find_cursor_position(Rest, CursorPos, CurrentLine + 1, CharCount + LineLength)
     end.
-
-render_lines_focused(_X, _Y, _Fg, _Bg, [], _CursorLine, _CursorCol, _CurrentLine, Buffer) ->
-    Buffer;
-render_lines_focused(X, Y, Fg, Bg, [Line | Rest], CursorLine, CursorCol, CurrentLine, Buffer) ->
-    LineStr = binary_to_list(Line),
-    Buffer1 = cellium_buffer:put_string(X, Y, Fg, Bg, LineStr, Buffer),
-
-    % If this is the cursor line, draw the cursor
-    Buffer2 = case CurrentLine of
-                  CursorLine ->
-                      {Char, CursorX} = case CursorCol >= length(LineStr) of
-                                            true -> {$ , X + length(LineStr)};
-                                            false -> {lists:nth(CursorCol + 1, LineStr), X + CursorCol}
-                                        end,
-                      cellium_buffer:set_cell(CursorX, Y, Char, Bg, Fg, Buffer1);
-                  _ ->
-                      Buffer1
-              end,
-
-    render_lines_focused(X, Y + 1, Fg, Bg, Rest, CursorLine, CursorCol, CurrentLine + 1, Buffer2).

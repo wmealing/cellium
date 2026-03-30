@@ -17,7 +17,9 @@
     tb_poll_event/0,
     get_next_event/0,
     tb_set_input_mode/1,
-    tb_set_output_mode/1
+    tb_set_output_mode/1,
+    tb_force_redraw/0,
+    get_buffer/0  % Testing helper
 ]).
 
 %% Internal state management
@@ -113,6 +115,14 @@ tb_set_input_mode(Mode) ->
 tb_set_output_mode(Mode) ->
     gen_server:call(?SERVER, {set_output_mode, Mode}).
 
+-doc "Forces a full redraw on the next tb_present call.".
+tb_force_redraw() ->
+    gen_server:call(?SERVER, tb_force_redraw).
+
+-doc "Returns the current buffer state for testing purposes.".
+get_buffer() ->
+    gen_server:call(?SERVER, get_buffer).
+
 %% ===================================================================
 %% Server implementation
 %% ===================================================================
@@ -145,10 +155,6 @@ handle_call({tb_set_cell, X, Y, Char, Fg, Bg}, _From, State) ->
     {reply, ok, State#state{buffer = NewBuffer}};
 
 handle_call({tb_print, X, Y, Fg, Bg, Str}, _From, State) ->
-    OutputMode = State#state.output_mode,
-    FgAnsi = lookup_color(Fg, fg, OutputMode),
-    BgAnsi = lookup_color(Bg, bg, OutputMode),
-    
     NewBuffer = cellium_buffer:put_string(X, Y, Fg, Bg, Str, State#state.buffer),
     {reply, ok, State#state{buffer = NewBuffer}};
 
@@ -185,6 +191,12 @@ handle_call({set_output_mode, Mode}, _From, State) ->
 handle_call(get_output_mode, _From, State) ->
     {reply, State#state.output_mode, State};
 
+handle_call(tb_force_redraw, _From, State) ->
+    {reply, ok, State};
+
+handle_call(get_buffer, _From, State) ->
+    {reply, State#state.buffer, State};
+
 handle_call(get_event, From, State) ->
     case State#state.event_buffer of
         [Event | Rest] ->
@@ -217,9 +229,6 @@ code_change(_OldVsn, State, _Extra) ->
 %% ===================================================================
 %% Internal functions
 %% ===================================================================
-
-start_event_loop() ->
-	ok.
 
 
 

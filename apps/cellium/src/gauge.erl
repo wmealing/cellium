@@ -1,8 +1,59 @@
 -module(gauge).
+-moduledoc """
+Gauge widget module for displaying labeled value indicators.
+
+This module provides a gauge widget that displays a label followed by a
+visual bar showing a value from 0 to 100. Commonly used for volume controls,
+levels, or other percentage-based indicators.
+
+## Usage
+
+Basic gauge:
+```
+gauge:new(volume_gauge)
+```
+
+Gauge with label and value:
+```
+Widget = gauge:new(volume_gauge),
+CustomWidget = Widget#{label => <<"Volume">>, value => 75, width => 30}
+```
+
+## Properties
+
+- `value` (integer): Current value from 0 to 100. Default: 0
+- `label` (binary): Text label displayed before the gauge bar. Default: empty
+- `width` (integer): Total width including label and bar. Set by layout
+- `focusable` (boolean): Set to true by default
+
+## Display
+
+The gauge displays as: `Label ████████░░░░`
+- `█` for filled portion (proportional to value)
+- `░` for unfilled portion
+- The bar width is calculated as: `width - label_length - 1`
+
+When focused, foreground and background colors are swapped.
+
+## Example
+
+```
+% Volume at 50% with width of 20
+Widget#{label => <<"Vol">>, value => 50, width => 20}
+% Displays: Vol ████████░░░░░░░
+```
+""".
+
 -export([render/2, render_focused/2, new/1]).
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
 
+-doc """
+Creates a new gauge with default settings.
+
+Default value is 0 and label is empty.
+""".
+-spec new(term()) -> map().
 new(Id) ->
     (widget:new())#{id => Id,
                     widget_type => gauge,
@@ -11,9 +62,13 @@ new(Id) ->
                     label => <<>>,
                     focusable => true}.
 
+-doc "Renders the gauge in unfocused state.".
+-spec render(map(), map()) -> map().
 render(Widget, Buffer) ->
     render_with_colors(Widget, false, Buffer).
 
+-doc "Renders the gauge in focused state with inverted colors.".
+-spec render_focused(map(), map()) -> map().
 render_focused(Widget, Buffer) ->
     render_with_colors(Widget, true, Buffer).
 
