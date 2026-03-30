@@ -110,7 +110,7 @@ event_poller_loop(Parent) ->
           {stop, Reason :: term(), NewState :: term()}.
 
 handle_call(Msg, _From, State) ->
-    logger:info("Wierd msg: ~p", [Msg]),
+    logger:info("Weird msg: ~p", [Msg]),
     {reply, ok, State}.
 
 %%--------------------------------------------------------------------
@@ -153,8 +153,6 @@ handle_info(_Info, State) ->
 %% --- Internal ---
 
 process_event(Event, _State) ->
-    logger:info("POLL EVENT IS: ~p", [Event]),
-
     case Event of
         {resize, W, H} ->
             logger:info("RESIZE EVENT DETECTED: ~p x ~p", [W, H]);

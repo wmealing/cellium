@@ -82,7 +82,7 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% API
 set_root_widget(RootWidget) ->
-  gen_server:call(?MODULE, {set_root_widget, RootWidget}).
+    gen_server:call(?MODULE, {set_root_widget, RootWidget}).
 
 update_now() ->
     gen_server:call(?MODULE, update_now).
@@ -95,37 +95,39 @@ write_buffer_to_terminal(Buffer) ->
     end, Buffer).
 
 update(State) ->
-    RootWidget = State#state.root_widget,
-
     W = ?TERMBOX:tb_width(),
     H = ?TERMBOX:tb_height(),
+    RootWidget = State#state.root_widget,
 
-    % Check if terminal size changed
-    {SizeChanged, State1} = case {W, H} =/= {State#state.width, State#state.height} of
-        true ->
-            logger:info("View detected resize: ~p x ~p (was ~p x ~p), forcing redraw", 
-                        [W, H, State#state.width, State#state.height]),
-            ?TERMBOX:tb_force_redraw(),
-            {true, State#state{width = W, height = H}};
-        false ->
-            {false, State}
+    % Determine what changed
+    SizeChanged = {W, H} =/= {State#state.width, State#state.height},
+    WidgetChanged = RootWidget =/= State#state.last_root_widget,
+
+    % Handle resize if needed
+    ResizedState = case SizeChanged of
+        true -> handle_resize(W, H, State);
+        false -> State
     end,
 
-    % Dirty check: RootWidget changed, Size changed, or force_redraw requested
-    IsDirty = SizeChanged
-              orelse (RootWidget =/= State#state.last_root_widget)
-              orelse (State#state.force_redraw == true),
-
+    % Render if anything changed
+    IsDirty = SizeChanged orelse WidgetChanged orelse State#state.force_redraw,
     case IsDirty of
-        false ->
-            State1;
-        true ->
-            ?TERMBOX:tb_clear(),
-            Layout = layout:calculate_layout(RootWidget, W, H),
-            StyledLayout = css:style(Layout, State1#state.stylesheet),
-            Buffer = widgets:render(StyledLayout),
-            write_buffer_to_terminal(Buffer),
-            ?TERMBOX:tb_present(),
-            State1#state{last_root_widget = RootWidget, force_redraw = false}
+        true -> render(W, H, RootWidget, ResizedState);
+        false -> ResizedState
     end.
+
+handle_resize(W, H, State) ->
+    logger:info("View detected resize: ~p x ~p (was ~p x ~p)",
+               [W, H, State#state.width, State#state.height]),
+    ?TERMBOX:tb_clear(),
+    ?TERMBOX:tb_force_redraw(),
+    State#state{width = W, height = H}.
+
+render(W, H, RootWidget, State) ->
+    Layout = layout:calculate_layout(RootWidget, W, H),
+    StyledLayout = css:style(Layout, State#state.stylesheet),
+    Buffer = widgets:render(StyledLayout),
+    write_buffer_to_terminal(Buffer),
+    ?TERMBOX:tb_present(),
+    State#state{last_root_widget = RootWidget, force_redraw = false}.
     

@@ -390,6 +390,6 @@ find_index(Item, [_ | Rest], Index) ->
 -spec emit_focus_changed(OldId :: term(), NewId :: term()) ->
     ok.
 emit_focus_changed(OldId, NewId) ->
-    logger:info("Focus changed from ~p to ~p~n", [OldId, NewId]),
+    logger:info("Focus changed from ~p to ~p", [OldId, NewId]),
     cellium_event_manager:send_event({focus_changed, #{from => OldId, to => NewId}}).
 

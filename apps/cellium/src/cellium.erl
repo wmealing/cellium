@@ -38,14 +38,15 @@ stop() ->
 render_caller(Module, Model) ->
     try
         Layout = Module:render(Model),
-        NewLayout = case is_tuple(Layout) of
+        ProcessedLayout = case is_tuple(Layout) of
             true -> cellium_dsl:from_dsl(Layout);
             false -> Layout
         end,
-        view:set_root_widget(NewLayout)
+        view:set_root_widget(ProcessedLayout),
+        ok
     catch
         Exception:Reason:Stacktrace ->
-            logger:error("Error in render: ~p:~p~n~p", [Exception, Reason, Stacktrace]),
+            logger:error("Error in render: ~p:~p~nStacktrace: ~p", [Exception, Reason, Stacktrace]),
             ok
     end.
 
@@ -87,12 +88,12 @@ init(#{module := Module}= Args) ->
 	normal ->
           ?TERMBOX:tb_set_output_mode(4);
         _AnythingElse ->
-            logger:debug("Wierd color format set")
+            logger:debug("Weird color format set")
     end,
 
     {ok, Model} = Module:init([]),
 
-    render_immediately(Module, Model),
+    render_caller(Module, Model),
 
     State = #{module => Module,
               model => Model},
@@ -115,8 +116,8 @@ handle_call(Msg, _From, State) ->
             ok
     end,
 
-    render_immediately(Module, NewModel),
-    
+    render_caller(Module, NewModel),
+
     NewState = State#{model := NewModel},
     {reply, {ok, done}, NewState}.
 
@@ -130,22 +131,13 @@ handle_cast(_Msg, State) ->
 handle_info(Msg, State) ->
     #{module := Module, model := Model} = State,
     NewModel = Module:update(Model, Msg),
-    render_immediately(Module, NewModel),
+    render_caller(Module, NewModel),
     {noreply, State#{model := NewModel}}.
 
 -doc "Sends an event to the application's `update/2` callback for processing.\nThis is the primary way to send messages to the running application.".
 -spec handle_event(Event :: term()) -> {ok, done}.
 handle_event(Event) ->
     gen_server:call(cellium_server, Event).
-
-render_immediately(Module, Model) ->
-    Layout = Module:render(Model),
-    ProcessedLayout = case is_tuple(Layout) of
-        true -> cellium_dsl:from_dsl(Layout);
-        false -> Layout
-    end,
-    view:set_root_widget(ProcessedLayout),
-    ok.
 
 terminate(Reason, _State) ->
     logger:info("Terminating cellium with reason: ~p", [Reason]),

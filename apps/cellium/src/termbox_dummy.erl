@@ -179,7 +179,7 @@ handle_call({set_output_mode, Mode}, _From, State) ->
                      _ -> truecolor
                  end,
 
-    logger:info("Setting output mode; ~p~n", [OutputMode]),
+    logger:info("Setting output mode: ~p", [OutputMode]),
     {reply, ok, State#state{output_mode = OutputMode}};
 
 handle_call(get_output_mode, _From, State) ->
