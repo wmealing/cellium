@@ -19,4 +19,23 @@ new(Id, Content) ->
 render(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
     Text = maps:get(text, Widget, ""),
-    cellium_buffer:put_string(X, Y, Fg, Bg, Text, Buffer).
+    Wrap = maps:get(wrap, Widget, false),
+
+    case Wrap of
+        true ->
+            % Wrap text at widget width (set by layout) and render each line
+            Width = maps:get(width, Widget),
+            TextBin = list_to_binary(Text),
+            Lines = greedy_wrap:word_wrap(TextBin, Width),
+            render_lines(X, Y, Fg, Bg, Lines, Buffer);
+        false ->
+            % No wrapping - render as single line
+            cellium_buffer:put_string(X, Y, Fg, Bg, Text, Buffer)
+    end.
+
+render_lines(_X, _Y, _Fg, _Bg, [], Buffer) ->
+    Buffer;
+render_lines(X, Y, Fg, Bg, [Line | Rest], Buffer) ->
+    LineStr = binary_to_list(Line),
+    NewBuffer = cellium_buffer:put_string(X, Y, Fg, Bg, LineStr, Buffer),
+    render_lines(X, Y + 1, Fg, Bg, Rest, NewBuffer).

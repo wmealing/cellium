@@ -40,7 +40,7 @@ new(Id, Width, Height) ->
                     height => Height,
                     orientation => vertical,
                     padding => #{top => 1, bottom => 1, left => 1, right => 1},
-                    type => widget }.
+                    type => container }.
 
 %%% @doc Renders the box widget to the terminal.
 %%%

@@ -115,9 +115,9 @@ render(Model) ->
             {spacer, [{size, 1}]},
 
             {vbox, [{id, row4}, {expand, true}], [
-                {text, [{id, t5}], "Input Field:"},
+                {text, [{id, t5}], "Input Field (with wrapping):"},
                 {box, [{id, b_input}, {size, 5}, {color, yellow}], [
-                    {text_input, [{id, ti1}, {state, maps:get(input_text, Model)}]}
+                    {text_input, [{id, ti1}, {state, maps:get(input_text, Model)}, {wrap, true}, {expand, true}]}
                 ]},
                 {spacer, [{size, 1}]}
             ]}
