@@ -27,12 +27,12 @@
 -spec start(Args :: map()) -> {ok, pid()} | {error, any()}.
 start(Args) ->
     application:ensure_all_started(cellium),
-    gen_server:start_link({local, cellium_server}, ?MODULE, Args, [] ).
+    gen_server:start_link({local, cellium_server}, ?MODULE, Args, []).
 
 -doc "Stops the Cellium application gracefully.".
 -spec stop() -> ok.
 stop() ->
-    logger:info("STOP() called", []),
+    logger:info("STOP() called"),
     gen_server:cast(?MODULE, stop).
 
 render_caller(Module, Model) ->
