@@ -1,6 +1,6 @@
-% -define(TERMBOX, termbox_dummy).
-%-define(TERMBOX, termbox_wrapper). 
--define(TERMBOX, native_terminal). 
+-ifndef(TERMBOX).
+-define(TERMBOX, native_terminal).
+-endif. 
 
 %%/* Colors (numeric) and attributes (bitwise) (`tb_cell.fg`, `tb_cell.bg`) */
 -define(TB_DEFAULT,16#0000).

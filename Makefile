@@ -1,6 +1,6 @@
 .PHONY: all compile clean test shell run
 
-export EXTRAS_EBIN = -pa ./_build/default/extras/examples/
+export EXTRAS_EBIN = -pa ./_build/default/lib/cellium/examples/
 export LIB_EBIN =    -pa _build/default/lib/*/ebin
 
 all: compile

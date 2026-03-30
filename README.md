@@ -57,7 +57,7 @@ start() ->
 
 ## Project Structure
 
-- `apps/cellium/src/`: Core framework source code, including the layout engine and terminal drivers.
+- `src/`: Core framework source code, including the layout engine and terminal drivers.
 - `examples/`: Sample applications demonstrating widgets and architectural patterns.
 - `include/`: Common header files and macro definitions.
 - `priv/`: Default stylesheets and theme configuration.
@@ -87,4 +87,4 @@ make run example=widgets_gallery
 ## Development
 
 - **Testing**: `rebar3 eunit`
-- **Logging**: Logs are written to `./logs/debug` by default. Logging configuration is managed in `apps/cellium/src/logging.erl`.
+- **Logging**: Logs are written to `./logs/debug` by default. Logging configuration is managed in `src/logging.erl`.
