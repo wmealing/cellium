@@ -106,7 +106,6 @@ handle_call(Msg, _From, State) ->
 
     % update return the model.
     NewModel = Module:update(Model, Msg),
-    logger:info("CELLIUM: OLD MODEL: ~p, MSG: ~p, NEW MODEL: ~p", [Model, Msg, NewModel]),
 
     case Msg of
         {resize, _, _} ->
