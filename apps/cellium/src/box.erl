@@ -9,8 +9,7 @@
 -module(box).
 
 % API
--export([render/1, new/1, new/3]).
-
+-export([render/2, new/1, new/3]).
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
 
@@ -51,10 +50,9 @@ new(Id, Width, Height) ->
 %%% - Unfocused: square border
 %%%
 %%% @param Widget The box widget map containing position and dimension info
-%%% @returns ok
-%%% @end
--spec render(map()) -> ok.
-render(Widget) ->
+
+-spec render(map(), map()) -> map().
+render(Widget, Buffer) ->
     HasFocus = maps:get(has_focus, Widget, false),
     HasChildFocus = has_child_focus(Widget),
 
@@ -73,11 +71,11 @@ render(Widget) ->
 
     if
         Height > 0 andalso Width > 0 ->
-            table:draw_table(X, Y, Height - 1, Fg, Bg, BoxStyle, [Width - 2]);
+            table:draw_table(X, Y, Height - 1, Fg, Bg, BoxStyle, [Width - 2], Buffer);
         true ->
-            ok
-    end,
-    ok.
+            Buffer
+    end.
+
 
 has_child_focus(#{children := Children}) ->
     lists:any(fun(Child) -> 

@@ -1,5 +1,5 @@
 -module(text).
--export([render/1, new/1, new/2]).
+-export([render/2, new/1, new/2]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -15,9 +15,8 @@ new(Id, Content) ->
                     text => Content,
                     type => widget}.
 
--spec render(map()) -> ok.
-render(Widget) ->
+-spec render(map(), map()) -> map().
+render(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
     Text = maps:get(text, Widget, ""),
-    ?TERMBOX:tb_print(X, Y, Fg, Bg, Text),
-    ok.
+    cellium_buffer:put_string(X, Y, Fg, Bg, Text, Buffer).

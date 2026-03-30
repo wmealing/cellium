@@ -1,5 +1,5 @@
 -module(progress_bar).
--export([render/1, render_focused/1, new/1]).
+-export([render/2, render_focused/2, new/1]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -13,15 +13,15 @@ new(Id) ->
                     focusable => true,
                     type => widget}.
 
--spec render(map()) -> ok.
-render(Widget) ->
-    render_with_colors(Widget, false).
+-spec render(map(), map()) -> map().
+render(Widget, Buffer) ->
+    render_with_colors(Widget, false, Buffer).
 
--spec render_focused(map()) -> ok.
-render_focused(Widget) ->
-    render_with_colors(Widget, true).
+-spec render_focused(map(), map()) -> map().
+render_focused(Widget, Buffer) ->
+    render_with_colors(Widget, true, Buffer).
 
-render_with_colors(Widget, Focused) ->
+render_with_colors(Widget, Focused, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
     {FinalFg, FinalBg} = case Focused of
         true -> {Bg, Fg};
@@ -33,5 +33,4 @@ render_with_colors(Widget, Focused) ->
     Filled = round(Progress * BarWidth),
     Bar = lists:duplicate(Filled, "█") ++ lists:duplicate(BarWidth - Filled, "░"),
 
-    ?TERMBOX:tb_print(X, Y, FinalFg, FinalBg, "[" ++ Bar ++ "]"),
-    ok.
+    cellium_buffer:put_string(X, Y, FinalFg, FinalBg, "[" ++ Bar ++ "]", Buffer).

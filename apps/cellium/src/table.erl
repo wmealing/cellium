@@ -12,10 +12,10 @@
     get_top/2,
     get_row/3,
     get_bottom/2,
-    draw_table/7,
-    render/1,
-    draw_header/6,
-    draw_bottom/6
+    draw_table/8,
+    render/2,
+    draw_header/7,
+    draw_bottom/7
 
 ]).
 
@@ -107,20 +107,20 @@ get_bottom(Box, Widths) ->
 %%% @param ColumnWidths List of column widths
 %%% @returns ok
 %%% @end
--spec draw_header(integer(), integer(), atom(), atom(), #box{}, [non_neg_integer()]) -> ok.
-draw_header(X, Y, Fg, Bg, Box, ColumnWidths) ->
+-spec draw_header(integer(), integer(), atom(), atom(), #box{}, [non_neg_integer()], map()) -> map().
+draw_header(X, Y, Fg, Bg, Box, ColumnWidths, Buffer) ->
     Line = get_top(Box, ColumnWidths),
-    box_styles:drawline(X, Y, Fg, Bg, Line).
+    box_styles:drawline(X, Y, Fg, Bg, Line, Buffer).
 
 %%% @private
 %%% @doc Recursively draws row separator lines.
--spec draw_rows(integer(), integer(), atom(), atom(), #box{}, non_neg_integer(), [non_neg_integer()]) -> ok.
-draw_rows(_X, _Y, _Fg, _Bg, _Box, 0, _ColumnWidths) ->
-    ok;
-draw_rows(X, Y, Fg, Bg, Box, Height, ColumnWidths) ->
+-spec draw_rows(integer(), integer(), atom(), atom(), #box{}, non_neg_integer(), [non_neg_integer()], map()) -> map().
+draw_rows(_X, _Y, _Fg, _Bg, _Box, 0, _ColumnWidths, Buffer) ->
+    Buffer;
+draw_rows(X, Y, Fg, Bg, Box, Height, ColumnWidths, Buffer) ->
     Line = get_row(Box, mid, ColumnWidths),
-    box_styles:drawline(X, Y, Fg, Bg, Line),
-    draw_rows(X, Y + 1, Fg, Bg, Box, Height - 1, ColumnWidths).
+    Buffer1 = box_styles:drawline(X, Y, Fg, Bg, Line, Buffer),
+    draw_rows(X, Y + 1, Fg, Bg, Box, Height - 1, ColumnWidths, Buffer1).
 
 %%% @doc Draws the bottom line of a table.
 %%%
@@ -130,13 +130,13 @@ draw_rows(X, Y, Fg, Bg, Box, Height, ColumnWidths) ->
 %%% @param Bg Background color
 %%% @param Box Box style to use
 %%% @param ColumnWidths List of column widths
-%%% @returns ok
+%%% @param Buffer Current frame buffer
+%%% @returns Updated buffer
 %%% @end
--spec draw_bottom(integer(), integer(), atom(), atom(), #box{}, [non_neg_integer()]) -> ok.
-draw_bottom(X, Y, Fg, Bg, Box, ColumnWidths) ->
+-spec draw_bottom(integer(), integer(), atom(), atom(), #box{}, [non_neg_integer()], map()) -> map().
+draw_bottom(X, Y, Fg, Bg, Box, ColumnWidths, Buffer) ->
     Line = get_bottom(Box, ColumnWidths),
-    box_styles:drawline(X, Y, Fg, Bg, Line),
-    ok.
+    box_styles:drawline(X, Y, Fg, Bg, Line, Buffer).
 
 %%% @doc Draws a complete table with borders.
 %%%
@@ -150,24 +150,25 @@ draw_bottom(X, Y, Fg, Bg, Box, ColumnWidths) ->
 %%% @param Bg Background color
 %%% @param Box Box style record
 %%% @param ColumnWidths List of column widths
-%%% @returns ok
+%%% @param Buffer Current frame buffer
+%%% @returns Updated buffer
 %%% @end
--spec draw_table(integer(), integer(), integer(), atom(), atom(), #box{}, [non_neg_integer()]) -> ok.
-draw_table(X,Y, Height,Fg,Bg,Box,ColumnWidths) ->
-    draw_header(X, Y,          Fg, Bg, Box,         ColumnWidths),
-    draw_rows(X,   Y + 1,      Fg, Bg, Box, Height, ColumnWidths),
-    draw_bottom(X, Y + Height, Fg, Bg, Box, ColumnWidths).
+-spec draw_table(integer(), integer(), integer(), atom(), atom(), #box{}, [non_neg_integer()], map()) -> map().
+draw_table(X,Y, Height,Fg,Bg,Box,ColumnWidths, Buffer) ->
+    Buffer1 = draw_header(X, Y,          Fg, Bg, Box,         ColumnWidths, Buffer),
+    Buffer2 = draw_rows(X,   Y + 1,      Fg, Bg, Box, Height, ColumnWidths, Buffer1),
+    draw_bottom(X, Y + Height, Fg, Bg, Box, ColumnWidths, Buffer2).
 
 %%% @doc Renders a complete table widget with headers and data.
 %%%
 %%% Draws a full table including frame, optional headers, and data rows.
-%%% Headers and rows are rendered using the table_row widget.
 %%%
 %%% @param Widget Table widget map containing position, dimensions, headers, and rows
-%%% @returns ok
+%%% @param Buffer Current frame buffer
+%%% @returns Updated buffer
 %%% @end
--spec render(map()) -> ok.
-render(Widget) ->
+-spec render(map(), map()) -> map().
+render(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
 
     Width = maps:get(width, Widget, 0),
@@ -179,14 +180,15 @@ render(Widget) ->
     ColumnWidths = maps:get(column_widths, Widget, [Width - 1]),
 
     %% 1. Draw the table frame and grid lines
-    draw_table(X, Y, Height, Fg, Bg, Box, ColumnWidths),
+    Buffer1 = draw_table(X, Y, Height, Fg, Bg, Box, ColumnWidths, Buffer),
 
     %% 2. Render the header row, if it exists
     Headers = maps:get(headers, Widget, []),
-    HeaderOffset = case length(Headers) > 0 of
+    {HeaderOffset, Buffer2} = case length(Headers) > 0 of
         true ->
             HeaderWidget = #{
                 type => table_row,
+                widget_type => table_row,
                 x => X,
                 y => Y + 1,
                 row_data => Headers,
@@ -194,25 +196,24 @@ render(Widget) ->
                 color => Fg,
                 'background-color' => Bg
             },
-            table_row:render(HeaderWidget),
-            2; % Rows start at Y+2
+            {2, widgets:render(HeaderWidget, Buffer1)}; % Header is at Y+1, rows start at Y+2
         false ->
-            1  % Rows start at Y+1
+            {1, Buffer1}  % Rows start at Y+1
     end,
 
     %% 3. Render the data rows
     Rows = maps:get(rows, Widget, []),
-    render_rows(X, Y + HeaderOffset, Fg, Bg, ColumnWidths, Rows),
-    ok.
+    render_rows(X, Y + HeaderOffset, Fg, Bg, ColumnWidths, Rows, Buffer2).
 
 
 %%% @private
 %%% @doc Iterates over the list of rows and renders each one.
--spec render_rows(integer(), integer(), atom(), atom(), [non_neg_integer()], [[string()]]) -> ok.
-render_rows(_X, _Y, _Fg, _Bg, _CW, []) -> ok;
-render_rows(X, Y, Fg, Bg, CW, [Row | Rest]) ->
+-spec render_rows(integer(), integer(), atom(), atom(), [non_neg_integer()], [[string()]], map()) -> map().
+render_rows(_X, _Y, _Fg, _Bg, _CW, [], Buffer) -> Buffer;
+render_rows(X, Y, Fg, Bg, CW, [Row | Rest], Buffer) ->
     RowWidget = #{
         type => table_row,
+        widget_type => table_row,
         x => X,
         y => Y,
         row_data => Row,
@@ -220,5 +221,5 @@ render_rows(X, Y, Fg, Bg, CW, [Row | Rest]) ->
         color => Fg,
         'background-color' => Bg
     },
-    table_row:render(RowWidget),
-    render_rows(X, Y + 1, Fg, Bg, CW, Rest).
+    Buffer1 = widgets:render(RowWidget, Buffer),
+    render_rows(X, Y + 1, Fg, Bg, CW, Rest, Buffer1).

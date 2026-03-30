@@ -24,9 +24,9 @@
     double/0,
     double_edge/0,
     markdown/0,
-    drawline/5,
-    draw_horizontal_line/5,
-    draw_vertical_line/5
+    drawline/6,
+    draw_horizontal_line/6,
+    draw_vertical_line/6
 ]).
 
 
@@ -265,28 +265,20 @@ markdown() ->
         is_ascii = true
     }.
 
-drawline(X, Y, Fg, Bg, Line) ->
+drawline(X, Y, Fg, Bg, Line, Buffer) ->
     BinLine = unicode:characters_to_binary(Line),
-    ?TERMBOX:tb_print(X,
-                      Y,
-                      Fg,
-                      Bg,
-                      BinLine
-                      ).
+    cellium_buffer:put_string(X, Y, Fg, Bg, BinLine, Buffer).
 
+draw_horizontal_line(X1, _Y, X2, _Bg, _Fg, Buffer) when X1 > X2 ->
+    Buffer;
 
+draw_horizontal_line(X1, Y, X2, Bg, Fg, Buffer) ->
+    Buffer1 = cellium_buffer:set_cell(X1, Y, $─, Bg, Fg, Buffer),
+    draw_horizontal_line(X1 + 1, Y, X2, Bg, Fg, Buffer1).
 
+draw_vertical_line(Y1, _X, Y2, _Bg, _Fg, Buffer) when Y1 > Y2 ->
+    Buffer;
 
-draw_horizontal_line(X1, _Y, X2, _Bg, _Fg) when X1 > X2 ->
-    ok;
-
-draw_horizontal_line(X1, Y, X2, Bg, Fg) ->
-    ?TERMBOX:tb_set_cell(X1, Y, $─, Bg, Fg),
-    draw_horizontal_line(X1 + 1, Y, X2, Bg, Fg).
-
-draw_vertical_line(Y1, _X, Y2, _Bg, _Fg) when Y1 > Y2 ->
-    ok;
-
-draw_vertical_line(Y1, X, Y2, Bg, Fg) ->
-    ?TERMBOX:tb_set_cell(X, Y1, $│, Bg, Fg),
-    draw_vertical_line(Y1 + 1, X, Y2, Bg, Fg).
+draw_vertical_line(Y1, X, Y2, Bg, Fg, Buffer) ->
+    Buffer1 = cellium_buffer:set_cell(X, Y1, $│, Bg, Fg, Buffer),
+    draw_vertical_line(Y1 + 1, X, Y2, Bg, Fg, Buffer1).

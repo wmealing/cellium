@@ -1,37 +1,45 @@
 -module(widgets).
--export([render/1, render_focused/1]).
+-export([render/1, render/2, render_focused/1, render_focused/2]).
 
 %% @doc Renders a widget into a virtual screen representation.
-
-render(Widgets) when is_list(Widgets), length(Widgets) == 0 ->
-    ok;
-
+%% This is the entry point that initializes an empty buffer.
 render(Widget) ->
+    render(Widget, cellium_buffer:empty()).
+
+render(Widgets, Buffer) when is_list(Widgets), length(Widgets) == 0 ->
+    Buffer;
+
+render(Widget, Buffer) ->
     case maps:get(type, Widget, none) of
         container ->
             Mod = maps:get(widget_type, Widget, container),
-            case maps:get(focused, Widget, false) of
-                true -> render_maybe_focused(Mod, Widget);
-                false -> Mod:render(Widget)
+            Buffer1 = case maps:get(focused, Widget, false) of
+                true -> render_maybe_focused(Mod, Widget, Buffer);
+                false -> Mod:render(Widget, Buffer)
             end,
-            [render(Child) || Child <- maps:get(children, Widget, [])];
+            lists:foldl(fun(Child, AccBuffer) ->
+                render(Child, AccBuffer)
+            end, Buffer1, maps:get(children, Widget, []));
         widget ->
             Mod = maps:get(widget_type, Widget),
             case maps:get(focused, Widget, false) of
-                true -> render_maybe_focused(Mod, Widget);
-                false -> Mod:render(Widget)
+                true -> render_maybe_focused(Mod, Widget, Buffer);
+                false -> Mod:render(Widget, Buffer)
             end;
         _ ->
-            no_widgets
+            Buffer
     end.
 
 render_focused(Widget) ->
-    Mod = maps:get(widget_type, Widget),
-    render_maybe_focused(Mod, Widget).
+    render_focused(Widget, cellium_buffer:empty()).
 
-render_maybe_focused(Mod, Widget) ->
-    case erlang:function_exported(Mod, render_focused, 1) of
-        true -> Mod:render_focused(Widget);
-        false -> Mod:render(Widget)
+render_focused(Widget, Buffer) ->
+    Mod = maps:get(widget_type, Widget),
+    render_maybe_focused(Mod, Widget, Buffer).
+
+render_maybe_focused(Mod, Widget, Buffer) ->
+    case erlang:function_exported(Mod, render_focused, 2) of
+        true -> Mod:render_focused(Widget, Buffer);
+        false -> Mod:render(Widget, Buffer)
     end.
 

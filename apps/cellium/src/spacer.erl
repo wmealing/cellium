@@ -1,5 +1,5 @@
 -module(spacer).
--export([render/1, new/1]).
+-export([render/2, new/1]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -12,6 +12,6 @@ new(Id) ->
                     height => 1,
                     type => widget}.
 
--spec render(map()) -> ok.
-render(_Widget) ->
-    ok.
+-spec render(map(), map()) -> map().
+render(_Widget, Buffer) ->
+    Buffer.
