@@ -33,7 +33,7 @@ start(Args) ->
 -spec stop() -> ok.
 stop() ->
     logger:info("STOP() called"),
-    gen_server:cast(?MODULE, stop).
+    gen_server:cast(cellium_server, stop).
 
 render_caller(Module, Model) ->
     try
