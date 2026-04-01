@@ -81,6 +81,11 @@ from_dsl({status_bar, Props, Text}) ->
     W = status_bar:new(Id, Text),
     apply_leaf_props(W, Props);
 
+from_dsl({custom, Module, Props}) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = Module:new(Id),
+    apply_leaf_props(W, Props);
+
 from_dsl(Other) ->
     logger:warning("Unknown DSL element: ~p", [Other]),
     (widget:new())#{id => make_ref(), widget_type => spacer, type => widget}.
