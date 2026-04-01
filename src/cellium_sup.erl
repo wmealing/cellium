@@ -70,7 +70,30 @@ init([]) ->
     %%     shutdown => 5000
     %% },
 
+    %% Child: focus_manager
+    %% Manages widget focus and keyboard navigation
+    FocusManager = #{
+        id => focus_manager,
+        start => {focus_manager, start_link, []},
+        restart => permanent,
+        type => worker,
+        shutdown => 5000
+    },
+
+    %% Child: screen
+    %% Manages screen lifecycle and transitions
+    %% NOTE: Depends on focus_manager being started first
+    ScreenManager = #{
+        id => screen,
+        start => {screen, start_link, []},
+        restart => permanent,
+        type => worker,
+        shutdown => 5000
+    },
+
     ChildSpecs = [
+                  FocusManager,
+                  ScreenManager
                   %% #{id => cellium_state,
                   %%   start => {cellium_state, start_link_local, []}, %% The specified function call
                   %%   restart => permanent,                          %% Always restart if it dies

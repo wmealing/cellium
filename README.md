@@ -47,6 +47,70 @@ start() ->
     cellium:start(#{module => ?MODULE}).
 ```
 
+## Screen Management
+
+Cellium provides a screen management system for applications with multiple views (e.g., search screen, customer form, settings dialog). The `screen` module handles screen lifecycle, transitions, and automatic focus cleanup.
+
+### Screen Lifecycle
+
+Screens have four states:
+- **Created**: Widget tree built but not registered
+- **Shown**: Active, widgets registered with focus manager
+- **Hidden**: Inactive, widgets unregistered but preserved
+- **Destroyed**: Permanently removed
+
+### Basic Screen Transitions
+
+```erlang
+% Create screens
+SearchScreen = screen:new(search_screen,
+    cellium_dsl:from_dsl({vbox, [], [
+        {text_input, [{id, search_box}, {focusable, true}]},
+        {list, [{id, results_list}, {focusable, true}]}
+    ]})),
+
+CustomerScreen = screen:new(customer_form,
+    cellium_dsl:from_dsl({vbox, [], [
+        {text_input, [{id, name_field}, {focusable, true}]},
+        {button, [{id, save_btn}, {focusable, true}], "Save"}
+    ]})),
+
+% Transition between screens (automatic cleanup)
+NewScreen = screen:transition(SearchScreen, CustomerScreen)
+```
+
+### Screen Stack
+
+For modal dialogs or nested navigation, use the screen stack:
+
+```erlang
+% Push a dialog (current screen hidden but preserved)
+screen:push(ConfirmDialog),
+
+% Pop back to previous screen
+screen:pop(),
+
+% Replace current screen entirely
+screen:replace(NewScreen)
+```
+
+### Dynamic Screens with Builders
+
+For screens that need fresh data on each display:
+
+```erlang
+screen:new(
+    customer_form,
+    fun() ->
+        Data = fetch_customer_data(),
+        build_customer_form(Data)
+    end,
+    empty_widget()
+)
+```
+
+The builder function is called each time the screen is shown, ensuring data is current.
+
 ## UI Pipeline
 
 1.  **DSL**: The `render/1` function returns a high-level DSL (e.g., `{vbox, Props, Children}`).

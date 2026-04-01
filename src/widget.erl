@@ -44,7 +44,7 @@ button:new(my_button, "Click Me")
 ```
 """.
 
--export([new/0, create/1, get_common_props/1, color_to_int/1]).
+-export([new/0, create/1, destroy/1, destroy_tree/1, get_common_props/1, color_to_int/1]).
 
 -include("cellium.hrl").
 -import(focus_manager, [register_widget/1]).
@@ -123,6 +123,52 @@ create(WidgetMap) ->
             ok
     end,
     WidgetMap.
+
+-doc """
+Destroys a widget and unregisters it from the focus manager if it is focusable.
+
+This function should be called when a widget is being removed from the UI
+to ensure it is properly cleaned up. If the widget has `focusable => true`,
+it will be unregistered from the focus manager.
+
+This is the counterpart to `create/1` and should be called when transitioning
+between screens or removing widgets from the widget tree.
+""".
+-spec destroy(map()) -> ok.
+destroy(WidgetMap) ->
+    case maps:get(focusable, WidgetMap, false) of
+        true ->
+            case maps:get(id, WidgetMap, undefined) of
+                undefined ->
+                    ok;
+                Id ->
+                    focus_manager:unregister_widget(Id)
+            end;
+        false ->
+            ok
+    end,
+    ok.
+
+-doc """
+Destroys a widget tree recursively, including all children.
+
+This function destroys a widget and all its children (if it's a container).
+It walks the widget tree depth-first, destroying children before parents.
+Each focusable widget will be unregistered from the focus manager.
+
+Use this when removing an entire screen or container hierarchy.
+""".
+-spec destroy_tree(map()) -> ok.
+destroy_tree(WidgetMap) ->
+    % First destroy all children if this is a container
+    case maps:get(children, WidgetMap, undefined) of
+        undefined -> ok;
+        Children when is_list(Children) ->
+            lists:foreach(fun destroy_tree/1, Children);
+        _ -> ok
+    end,
+    % Then destroy this widget
+    destroy(WidgetMap).
 
 -spec brighten(atom()) -> atom().
 brighten(black) -> bright_black;

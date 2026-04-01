@@ -63,11 +63,12 @@ init(#{module := Module}= Args) ->
 
     cellium_event_manager:start_link(?MODULE),
 
+    %% NOTE: focus_manager is now started by cellium_sup
     case AutoFocus of
-        true ->  
-            logger:info("Auto focus requested.."),
-            focus_manager:start_link();
-        _ -> ok
+        true ->
+            logger:info("Auto focus enabled (managed by supervisor)");
+        _ ->
+            logger:warning("Auto focus disabled - focus_manager still runs but widgets won't be registered")
     end,
 
     case ReportMouse of
