@@ -11,20 +11,21 @@ start() ->
                    color_type => truecolor,
                    auto_focus => true}).
 
-label_and_input(IdAtom, LabelTextBinary)  ->
-    Label = (text:new(make_ref(), LabelTextBinary))#{size => 15,
-                                                     color => "FFFFFF"},
-    Field = (text:new(IdAtom, <<"_________________">>))#{size => 20,
-                                                         color => "000000"},
+%% %% Warning: Function label_and_input/2 is unused
+%% label_and_input(IdAtom, LabelTextBinary)  ->
+%%     Label = (text:new(make_ref(), LabelTextBinary))#{size => 15,
+%%                                                      color => "FFFFFF"},
+%%     Field = (text:new(IdAtom, <<"_________________">>))#{size => 20,
+%%                                                          color => "000000"},
 
-    (container:new(make_ref(), horizontal))#{ size => 1,
-                                              color => "0A0AFF",
-                                              'background-color' => "00FF00",
-                                              debug => true,
-                                              children => [
-                                                          Label,
-                                                          Field
-                                                         ]}.
+%%     (container:new(make_ref(), horizontal))#{ size => 1,
+%%                                               color => "0A0AFF",
+%%                                               'background-color' => "00FF00",
+%%                                               debug => true,
+%%                                               children => [
+%%                                                           Label,
+%%                                                           Field
+%%                                                          ]}.
 
 checkbox_for(Color) ->
     NameRef = make_ref(),

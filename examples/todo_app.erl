@@ -5,22 +5,25 @@
 
 -include_lib("cellium.hrl").
 
-rand_atom() ->
-     list_to_atom(lists:map(fun(_) -> rand:uniform($z - $a) + $a end, lists:seq(1, 10))).
+%% %% Warning: Function rand_atom/0 is unused
+%% rand_atom() ->
+%%      list_to_atom(lists:map(fun(_) -> rand:uniform($z - $a) + $a end, lists:seq(1, 10))).
 
-read_file_content(Filename) ->
-    case file:read_file(Filename) of
-        {ok, BinaryContent} ->
-            BinaryContent;
-        {error, Reason} ->
-            io:format("Error reading file ~s: ~p~n", [Filename, Reason]),
-            undefined % Or handle the error as needed
-    end.
+%% %% Warning: Function read_file_content/1 is unused
+%% read_file_content(Filename) ->
+%%     case file:read_file(Filename) of
+%%         {ok, BinaryContent} ->
+%%             BinaryContent;
+%%         {error, Reason} ->
+%%             io:format("Error reading file ~s: ~p~n", [Filename, Reason]),
+%%             undefined % Or handle the error as needed
+%%     end.
 
-write_terms(Filename, List) ->
-    Format = fun(Term) -> io_lib:format("~tp.~n", [Term]) end,
-    Text = unicode:characters_to_binary(lists:map(Format, List)),
-    file:write_file(Filename, Text).
+%% %% Warning: Function write_terms/2 is unused
+%% write_terms(Filename, List) ->
+%%     Format = fun(Term) -> io_lib:format("~tp.~n", [Term]) end,
+%%     Text = unicode:characters_to_binary(lists:map(Format, List)),
+%%     file:write_file(Filename, Text).
 
 placeholder_text() ->
     Text = (text:new(placeholder_add, <<"PLACEHOLDER TEXT">>))#{expand => true},
@@ -34,7 +37,7 @@ placeholder_text() ->
       children => [ Text ] }.
 
 
-task_entry(Model) ->
+task_entry(_Model) ->
     focus_manager:register_widget(add_task_button),
     #{ type => container,
        widget_type => frame,
@@ -79,7 +82,7 @@ sample_children() ->
        children => [sample_child(Foo1), sample_child(Foo2)] }.
 
 
-task_list(Model) ->
+task_list(_Model) ->
 
     CurrentChildren = sample_children(),
 

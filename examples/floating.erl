@@ -41,7 +41,7 @@ update(#{x_position := X, y_position := Y } = Model, Msg) ->
     end.
 
 
-render(#{x_position := X, y_position := Y} = Model) ->
+render(#{x_position := X, y_position := Y} = _Model) ->
     Boxes = boxes(),
     FloatingBox = floating_container:new(float_box, horizontal, 5, 5, 30, 8),
     FloatingBoxWithChildren =

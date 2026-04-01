@@ -171,7 +171,7 @@ calculate_layout(OriginalContainer) ->
 
             % Assign final coordinates and dimensions, including gaps
             {RealizedChildren, _} =
-                lists:foldl(fun({Index, Child}, {Acc, CurrentOffset}) ->
+                lists:foldl(fun({_Index, Child}, {Acc, CurrentOffset}) ->
                     % Check if child has absolute positioning
                     IsAbsolute = maps:get(position, Child, relative) =:= absolute,
 

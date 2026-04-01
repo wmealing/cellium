@@ -23,7 +23,7 @@ update(#{checkbox :=  S} = Model, Msg) ->
           Model
     end.
 
-render(#{checkbox :=  S} = Model) ->
+render(#{checkbox :=  S} = _Model) ->
 
     Checkbox1 = (checkbox:new(one, <<"CHECKBOX 1">>))#{checked => S,
                                                       expand => true},

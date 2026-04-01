@@ -21,9 +21,10 @@
 %% Internal management
 -export([set_backend/1, get_backend/0]).
 
--record(state, {
-    backend = native_terminal
-}).
+%% %% Warning: This record state is unused
+%% -record(state, {
+%%     backend = native_terminal
+%% }).
 
 %% This module maintains its own state for the backend.
 %% To keep it simple, we'll use a persistent term or just an environment variable.
