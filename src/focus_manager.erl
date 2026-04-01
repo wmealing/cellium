@@ -6,7 +6,7 @@
 %% API
 -export([start_link/0, start_link/1]).
 -export([register_widget/1, unregister_widget/1]).
--export([set_focused/1, get_focused/0]).
+-export([set_focus/1, get_focused/0]).
 -export([move_focus_forward/0, move_focus_backward/0]).
 -export([can_focus/1, remove_all/0, list_all/0]).
 
@@ -75,10 +75,10 @@ unregister_widget(WidgetId) ->
 %% Sends a focus_changed event with {lost, PreviousId} and {gained, NewId}.
 %% Returns ok on success or {error, not_found} if widget doesn't exist.
 %% @end
--spec set_focused(WidgetId :: term()) ->
+-spec set_focus(WidgetId :: term()) ->
     ok | {error, not_found}.
-set_focused(WidgetId) ->
-    gen_server:call(?SERVER, {set_focused, WidgetId}).
+set_focus(WidgetId) ->
+    gen_server:call(?SERVER, {set_focus, WidgetId}).
 
 %% @doc
 %% Returns the ID of the currently focused widget.
@@ -160,8 +160,8 @@ handle_call({register_widget, WidgetId}, _From, State) ->
 handle_call({unregister_widget, WidgetId}, _From, State) ->
     handle_unregister_widget(WidgetId, State);
 
-handle_call({set_focused, WidgetId}, _From, State) ->
-    handle_set_focused(WidgetId, State);
+handle_call({set_focus, WidgetId}, _From, State) ->
+    handle_set_focus(WidgetId, State);
 
 handle_call(get_focused, _From, State) ->
     Reply = {ok, State#state.current_focus},
@@ -273,9 +273,9 @@ handle_unregister_widget(WidgetId, #state{focusable_widgets = Widgets,
 %% Handles setting focus to a specific widget.
 %% Emits focus change events and updates internal state.
 %% @end
--spec handle_set_focused(WidgetId :: term(), State :: #state{}) ->
+-spec handle_set_focus(WidgetId :: term(), State :: #state{}) ->
     {reply, Reply :: ok | {error, not_found}, NewState :: #state{}}.
-handle_set_focused(WidgetId, State) ->
+handle_set_focus(WidgetId, State) ->
     case is_focusable(WidgetId, State) of
         false ->
             {reply, {error, not_found}, State};
