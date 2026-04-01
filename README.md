@@ -151,4 +151,4 @@ make run example=widgets_gallery
 ## Development
 
 - **Testing**: `rebar3 eunit`
-- **Logging**: Logs are written to `./logs/debug` by default. Logging configuration is managed in `src/logging.erl`.
+- **Logging**: Logs are written to `./logs/cellium-debug` by default. Logging configuration is managed in `src/logging.erl`.
