@@ -1,6 +1,6 @@
 -module(greedy_wrap).
 
--export([word_wrap/2, go/0]).
+-export([word_wrap/2]).
 
 word_wrap(Text, Width) ->
     Words = binary:split(Text, [<<" ">>], [global, trim]),
@@ -46,7 +46,4 @@ read_file_content(Filename) ->
             undefined % Or handle the error as needed
     end.
 
-go() ->
-    Content = read_file_content("foo.txt"),
-    Wrapped = word_wrap(Content, 20).
 
