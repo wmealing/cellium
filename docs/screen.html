@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.38.2">
+    <meta name="project" content="cellium v0.1.0">
+
+
+    <title>screen — cellium v0.1.0</title>
+
+    <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
+
+    <script defer src="dist/sidebar_items-90508C93.js"></script>
+    <script defer src="docs_config.js"></script>
+    <script defer src="dist/html-DPJLHKSM.js"></script>
+
+  </head>
+  <body>
+    <script>(()=>{var t="ex_doc:settings",e="dark";var o="dark",s="light";var E="sidebar_state",n="closed";var r="sidebar_width";var a="sidebar-open";var i=new URLSearchParams(window.location.search),S=i.get("theme")||JSON.parse(localStorage.getItem(t)||"{}").theme;(S===o||S!==s&&window.matchMedia("(prefers-color-scheme: dark)").matches)&&document.body.classList.add(e);var d=sessionStorage.getItem(E),A=d!==n&&!window.matchMedia(`screen and (max-width: ${768}px)`).matches;document.body.classList.toggle(a,A);var c=sessionStorage.getItem(r);c&&document.body.style.setProperty("--sidebarWidth",`${c}px`);var p=/(Macintosh|iPhone|iPad|iPod)/.test(window.navigator.userAgent);document.documentElement.classList.toggle("apple-os",p);})();
+</script>
+
+<div class="body-wrapper">
+
+<button id="sidebar-menu" class="sidebar-button sidebar-toggle" aria-label="toggle sidebar" aria-controls="sidebar">
+  <i class="ri-menu-line ri-lg" title="Collapse/expand sidebar"></i>
+</button>
+
+<nav id="sidebar" class="sidebar">
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectInfo">
+
+      <div>
+        <a href="readme.html" class="sidebar-projectName" translate="no">
+cellium
+        </a>
+        <div class="sidebar-projectVersion" translate="no">
+          v0.1.0
+        </div>
+      </div>
+    </div>
+    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras=""></ul>
+  </div>
+</nav>
+
+<output role="status" id="toast"></output>
+
+<main class="content page-module" id="main" data-type="modules">
+  <div id="content" class="content-inner">
+    <div class="top-search">
+      <div class="search-settings">
+        <form class="search-bar" action="search.html">
+          <label class="search-label">
+            <span class="sr-only">Search documentation of cellium</span>
+            <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          </label>
+          <button type="submit" class="search-button" aria-label="Submit Search" tabindex="-1">
+            <i class="ri-search-2-line ri-lg" aria-hidden="true"></i>
+          </button>
+          <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
+            <i class="ri-close-line ri-lg" title="Cancel search"></i>
+          </button>
+        </form>
+        <div class="autocomplete">
+        </div>
+        <button class="icon-settings display-settings">
+          <i class="ri-settings-3-line"></i>
+          <span class="sr-only">Settings</span>
+        </button>
+      </div>
+    </div>
+
+<div id="top-content">
+  <div class="heading-with-actions top-heading">
+    <h1>
+      <span translate="no">screen</span> 
+      <small class="app-vsn" translate="no">(cellium v0.1.0)</small>
+
+    </h1>
+
+      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L1" title="View Source" class="icon-action" rel="help">
+        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        <span class="sr-only">View Source</span>
+      </a>
+
+  </div>
+
+
+    <section id="moduledoc">
+<p>Screen management module for handling UI screen lifecycle and transitions.</p><p>This module provides a higher-level abstraction over widgets and focus management,
+allowing applications to manage distinct screens (like search, customer form, etc.)
+with automatic cleanup and focus handling.</p><h2 id="module-screen-lifecycle" class="section-heading"><a href="#module-screen-lifecycle" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Screen Lifecycle</span></h2><ol><li><strong>Create</strong>: Build a screen's widget tree using DSL or direct construction</li><li><strong>Show</strong>: Display the screen and register focusable widgets</li><li><strong>Hide</strong>: Hide the screen and unregister widgets (without destroying)</li><li><strong>Destroy</strong>: Permanently remove the screen and clean up resources</li></ol><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><p>Basic screen transition:</p><pre><code class="makeup erlang" translate="no"><span class="c1">% Build the new screen</span><span class="w">
+</span><span class="n">CustomerScreen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">screen</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="6934971647-1">(</span><span class="ss">customer_form</span><span class="p">,</span><span class="w"> </span><span class="nf">fun</span><span class="p" data-group-id="6934971647-2">(</span><span class="p" data-group-id="6934971647-2">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w">
+    </span><span class="nc">cellium_dsl</span><span class="p">:</span><span class="nf">from_dsl</span><span class="p" data-group-id="6934971647-3">(</span><span class="p" data-group-id="6934971647-4">{</span><span class="ss">vbox</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6934971647-5">[</span><span class="p" data-group-id="6934971647-6">{</span><span class="ss">id</span><span class="p">,</span><span class="w"> </span><span class="ss">customer_form</span><span class="p" data-group-id="6934971647-6">}</span><span class="p" data-group-id="6934971647-5">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6934971647-7">[</span><span class="w">
+        </span><span class="p" data-group-id="6934971647-8">{</span><span class="ss">text_input</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6934971647-9">[</span><span class="p" data-group-id="6934971647-10">{</span><span class="ss">id</span><span class="p">,</span><span class="w"> </span><span class="ss">name_field</span><span class="p" data-group-id="6934971647-10">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6934971647-11">{</span><span class="ss">focusable</span><span class="p">,</span><span class="w"> </span><span class="ss">true</span><span class="p" data-group-id="6934971647-11">}</span><span class="p" data-group-id="6934971647-9">]</span><span class="p" data-group-id="6934971647-8">}</span><span class="p">,</span><span class="w">
+        </span><span class="p" data-group-id="6934971647-12">{</span><span class="ss">button</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6934971647-13">[</span><span class="p" data-group-id="6934971647-14">{</span><span class="ss">id</span><span class="p">,</span><span class="w"> </span><span class="ss">save_btn</span><span class="p" data-group-id="6934971647-14">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6934971647-15">{</span><span class="ss">focusable</span><span class="p">,</span><span class="w"> </span><span class="ss">true</span><span class="p" data-group-id="6934971647-15">}</span><span class="p" data-group-id="6934971647-13">]</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Save&quot;</span><span class="p" data-group-id="6934971647-12">}</span><span class="w">
+    </span><span class="p" data-group-id="6934971647-7">]</span><span class="p" data-group-id="6934971647-4">}</span><span class="p" data-group-id="6934971647-3">)</span><span class="w">
+</span><span class="k">end</span><span class="p" data-group-id="6934971647-1">)</span><span class="p">,</span><span class="w">
+
+</span><span class="c1">% Switch from search to customer screen</span><span class="w">
+</span><span class="nc">screen</span><span class="p">:</span><span class="nf">transition</span><span class="p" data-group-id="6934971647-16">(</span><span class="n">SearchScreen</span><span class="p">,</span><span class="w"> </span><span class="n">CustomerScreen</span><span class="p" data-group-id="6934971647-16">)</span></code></pre><p>Using a screen stack:</p><pre><code class="makeup erlang" translate="no"><span class="c1">% Push a new screen (like opening a dialog)</span><span class="w">
+</span><span class="nc">screen</span><span class="p">:</span><span class="nf">push</span><span class="p" data-group-id="2565525298-1">(</span><span class="n">DialogScreen</span><span class="p" data-group-id="2565525298-1">)</span><span class="p">,</span><span class="w">
+
+</span><span class="c1">% Pop back to previous screen</span><span class="w">
+</span><span class="nc">screen</span><span class="p">:</span><span class="nf">pop</span><span class="p" data-group-id="2565525298-2">(</span><span class="p" data-group-id="2565525298-2">)</span></code></pre><h2 id="module-screen-structure" class="section-heading"><a href="#module-screen-structure" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Screen Structure</span></h2><p>A screen is a map containing:</p><ul><li><code class="inline">id</code>: Unique screen identifier</li><li><code class="inline">widget_tree</code>: The root widget (typically a container)</li><li><code class="inline">active</code>: Whether the screen is currently shown</li><li><code class="inline">builder</code>: Optional function to rebuild the screen</li></ul>
+    </section>
+
+</div>
+
+  <section id="summary" class="details-list">
+    <h1 class="section-heading">
+      <a class="hover-link" href="#summary">
+        <i class="ri-link-m" aria-hidden="true"></i>
+      </a>
+      <span class="text">Summary</span>
+    </h1>
+<div class="summary-functions summary">
+  <h2>
+    <a href="#functions">Functions</a>
+  </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#code_change/3" data-no-tooltip="" translate="no">code_change(OldVsn, State, Extra)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#current/0" data-no-tooltip="" translate="no">current()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the current active screen, if any.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#destroy/1" data-no-tooltip="" translate="no">destroy(Screen)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Destroys a screen permanently, cleaning up all widgets.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#get_widget_tree/1" data-no-tooltip="" translate="no">get_widget_tree(Screen)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Gets the widget tree from a screen.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_call/3" data-no-tooltip="" translate="no">handle_call/3</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_cast/2" data-no-tooltip="" translate="no">handle_cast(Request, State)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_info/2" data-no-tooltip="" translate="no">handle_info(Info, State)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#hide/1" data-no-tooltip="" translate="no">hide(Screen)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Hides a screen, unregistering all its focusable widgets from the focus manager.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#init/1" data-no-tooltip="" translate="no">init/1</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new/2" data-no-tooltip="" translate="no">new(ScreenId, WidgetTree)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates a new screen with a widget tree.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new/3" data-no-tooltip="" translate="no">new(ScreenId, BuilderFun, InitialTree)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates a new screen with a builder function.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#pop/0" data-no-tooltip="" translate="no">pop()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Pops the current screen from the stack, returning to the previous screen.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#push/1" data-no-tooltip="" translate="no">push(NewScreen)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Pushes a new screen onto the stack, hiding the current screen.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#replace/1" data-no-tooltip="" translate="no">replace(NewScreen)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Replaces the current screen in the managed stack with a new screen.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#show/1" data-no-tooltip="" translate="no">show(Screen)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Shows a screen, registering all its focusable widgets with the focus manager.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#stack/0" data-no-tooltip="" translate="no">stack()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Returns the entire screen stack for debugging purposes.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#start_link/0" data-no-tooltip="" translate="no">start_link()</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Starts the screen manager gen_server.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#terminate/2" data-no-tooltip="" translate="no">terminate(Reason, State)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#transition/2" data-no-tooltip="" translate="no">transition(OldScreen, NewScreen)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Transitions from one screen to another.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#update_widget_tree/2" data-no-tooltip="" translate="no">update_widget_tree(Screen, NewTree)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Updates the widget tree of a screen.</p></div>
+
+    </div>
+
+</div>
+
+  </section>
+
+
+  <section id="functions" class="details-list">
+    <h1 class="section-heading">
+      <a class="hover-link" href="#functions">
+        <i class="ri-link-m" aria-hidden="true"></i>
+      </a>
+      <span class="text">Functions</span>
+    </h1>
+    <div class="functions-list">
+<section class="detail" id="code_change/3">
+
+  <div class="detail-header">
+    <a href="#code_change/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">code_change(OldVsn, State, Extra)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L372" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="current/0">
+
+  <div class="detail-header">
+    <a href="#current/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">current()</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L240" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> current() -> {ok, <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()} | {error, no_screen}.</pre>
+
+      </div>
+
+<p>Returns the current active screen, if any.</p><p>Returns <code class="inline">{ok, Screen}</code> or <code class="inline">{error, no_screen}</code> if the stack is empty.</p>
+  </section>
+</section>
+<section class="detail" id="destroy/1">
+
+  <div class="detail-header">
+    <a href="#destroy/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">destroy(Screen)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L169" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> destroy(Screen :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> ok.</pre>
+
+      </div>
+
+<p>Destroys a screen permanently, cleaning up all widgets.</p><p>Use this when a screen will not be used again. For temporary hiding,
+use <a href="#hide/1"><code class="inline">screen:hide/1</code></a> instead.</p>
+  </section>
+</section>
+<section class="detail" id="get_widget_tree/1">
+
+  <div class="detail-header">
+    <a href="#get_widget_tree/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">get_widget_tree(Screen)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L259" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> get_widget_tree(Screen :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Gets the widget tree from a screen.</p><p>Returns the root widget map of the screen's widget tree.</p>
+  </section>
+</section>
+<section class="detail" id="handle_call/3">
+
+  <div class="detail-header">
+    <a href="#handle_call/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_call/3</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L288" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="handle_cast/2">
+
+  <div class="detail-header">
+    <a href="#handle_cast/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_cast(Request, State)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L360" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="handle_info/2">
+
+  <div class="detail-header">
+    <a href="#handle_info/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_info(Info, State)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L364" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="hide/1">
+
+  <div class="detail-header">
+    <a href="#hide/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">hide(Screen)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L157" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> hide(Screen :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Hides a screen, unregistering all its focusable widgets from the focus manager.</p><p>The widget tree is preserved so the screen can be shown again later.
+Returns the screen with <code class="inline">active =&gt; false</code>.</p>
+  </section>
+</section>
+<section class="detail" id="init/1">
+
+  <div class="detail-header">
+    <a href="#init/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">init/1</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L283" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="new/2">
+
+  <div class="detail-header">
+    <a href="#new/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(ScreenId, WidgetTree)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L102" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> new(ScreenId :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), WidgetTree :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Creates a new screen with a widget tree.</p><p>The widget tree should already be built but not yet &quot;created&quot; (widgets not registered).
+Call <a href="#show/1"><code class="inline">screen:show/1</code></a> to activate the screen and register its widgets.</p><h2 id="new/2-example" class="section-heading"><a href="#new/2-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup erlang" translate="no"><span class="n">SearchScreen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">screen</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="2439663945-1">(</span><span class="ss">search_screen</span><span class="p">,</span><span class="w">
+    </span><span class="nc">cellium_dsl</span><span class="p">:</span><span class="nf">from_dsl</span><span class="p" data-group-id="2439663945-2">(</span><span class="p" data-group-id="2439663945-3">{</span><span class="ss">vbox</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2439663945-4">[</span><span class="p" data-group-id="2439663945-4">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2439663945-5">[</span><span class="w">
+        </span><span class="p" data-group-id="2439663945-6">{</span><span class="ss">text_input</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2439663945-7">[</span><span class="p" data-group-id="2439663945-8">{</span><span class="ss">id</span><span class="p">,</span><span class="w"> </span><span class="ss">search_box</span><span class="p" data-group-id="2439663945-8">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2439663945-9">{</span><span class="ss">focusable</span><span class="p">,</span><span class="w"> </span><span class="ss">true</span><span class="p" data-group-id="2439663945-9">}</span><span class="p" data-group-id="2439663945-7">]</span><span class="p" data-group-id="2439663945-6">}</span><span class="w">
+    </span><span class="p" data-group-id="2439663945-5">]</span><span class="p" data-group-id="2439663945-3">}</span><span class="p" data-group-id="2439663945-2">)</span><span class="p" data-group-id="2439663945-1">)</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="new/3">
+
+  <div class="detail-header">
+    <a href="#new/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(ScreenId, BuilderFun, InitialTree)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L125" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> new(ScreenId :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), BuilderFun :: fun(() -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()), InitialTree :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Creates a new screen with a builder function.</p><p>The builder function will be called to create the widget tree when the screen is shown.
+This is useful for screens that need to rebuild with fresh data each time they're displayed.</p><h2 id="new/3-example" class="section-heading"><a href="#new/3-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup erlang" translate="no"><span class="nc">screen</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="4687859870-1">(</span><span class="ss">customer_form</span><span class="p">,</span><span class="w">
+    </span><span class="nf">fun</span><span class="p" data-group-id="4687859870-2">(</span><span class="p" data-group-id="4687859870-2">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nf">build_customer_form</span><span class="p" data-group-id="4687859870-3">(</span><span class="nf">get_customer_data</span><span class="p" data-group-id="4687859870-4">(</span><span class="p" data-group-id="4687859870-4">)</span><span class="p" data-group-id="4687859870-3">)</span><span class="w"> </span><span class="k">end</span><span class="p">,</span><span class="w">
+    </span><span class="nf">empty_widget</span><span class="p" data-group-id="4687859870-5">(</span><span class="p" data-group-id="4687859870-5">)</span><span class="p" data-group-id="4687859870-1">)</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="pop/0">
+
+  <div class="detail-header">
+    <a href="#pop/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">pop()</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L231" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> pop() -> {ok, ScreenId :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()} | {error, no_previous_screen}.</pre>
+
+      </div>
+
+<p>Pops the current screen from the stack, returning to the previous screen.</p><p>The popped screen is destroyed. The previous screen is shown and becomes current.
+Returns <code class="inline">{ok, PreviousScreenId}</code> or <code class="inline">{error, no_previous_screen}</code> if there is
+only one screen in the stack.</p>
+  </section>
+</section>
+<section class="detail" id="push/1">
+
+  <div class="detail-header">
+    <a href="#push/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">push(NewScreen)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L220" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> push(NewScreen :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> ok | {error, <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()}.</pre>
+
+      </div>
+
+<p>Pushes a new screen onto the stack, hiding the current screen.</p><p>The current screen remains in memory and can be returned to with <a href="#pop/0"><code class="inline">screen:pop/0</code></a>.
+This is useful for modal dialogs or nested navigation.</p><h2 id="push/1-example" class="section-heading"><a href="#push/1-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup erlang" translate="no"><span class="nc">screen</span><span class="p">:</span><span class="nf">push</span><span class="p" data-group-id="6954221775-1">(</span><span class="n">ConfirmDialog</span><span class="p" data-group-id="6954221775-1">)</span><span class="p">,</span><span class="w">  </span><span class="c1">% Shows dialog, hides current screen</span><span class="w">
+</span><span class="c1">% User interacts with dialog...</span><span class="w">
+</span><span class="nc">screen</span><span class="p">:</span><span class="nf">pop</span><span class="p" data-group-id="6954221775-2">(</span><span class="p" data-group-id="6954221775-2">)</span><span class="w">                  </span><span class="c1">% Returns to previous screen</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="replace/1">
+
+  <div class="detail-header">
+    <a href="#replace/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">replace(NewScreen)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L202" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> replace(NewScreen :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> ok | {error, <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()}.</pre>
+
+      </div>
+
+<p>Replaces the current screen in the managed stack with a new screen.</p><p>If there is a current screen, it is hidden and the new screen is shown.
+The current screen is replaced in the stack (not pushed).</p><p>Requires the screen manager to be running.</p>
+  </section>
+</section>
+<section class="detail" id="show/1">
+
+  <div class="detail-header">
+    <a href="#show/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">show(Screen)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L140" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> show(Screen :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Shows a screen, registering all its focusable widgets with the focus manager.</p><p>If the screen has a builder function, it will be called to rebuild the widget tree.
+Returns the screen with <code class="inline">active =&gt; true</code>.</p>
+  </section>
+</section>
+<section class="detail" id="stack/0">
+
+  <div class="detail-header">
+    <a href="#stack/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">stack()</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L250" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> stack() -> [<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()].</pre>
+
+      </div>
+
+<p>Returns the entire screen stack for debugging purposes.</p><p>The list is ordered with the current screen first, followed by previously
+pushed screens.</p>
+  </section>
+</section>
+<section class="detail" id="start_link/0">
+
+  <div class="detail-header">
+    <a href="#start_link/0" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">start_link()</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L83" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> start_link() -> {ok, Pid :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:pid/0">pid</a>()} | {error, <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()}.</pre>
+
+      </div>
+
+<p>Starts the screen manager gen_server.</p><p>The screen manager maintains a stack of screens and handles transitions
+between them. It is automatically started by the cellium supervisor.</p>
+  </section>
+</section>
+<section class="detail" id="terminate/2">
+
+  <div class="detail-header">
+    <a href="#terminate/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">terminate(Reason, State)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L368" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+
+  </section>
+</section>
+<section class="detail" id="transition/2">
+
+  <div class="detail-header">
+    <a href="#transition/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">transition(OldScreen, NewScreen)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L189" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> transition(OldScreen :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>(), NewScreen :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Transitions from one screen to another.</p><p>Hides the old screen (unregistering its widgets) and shows the new screen
+(registering its widgets). This is the recommended way to switch between screens.</p><p>Returns the new screen with <code class="inline">active =&gt; true</code>.</p><h2 id="transition/2-example" class="section-heading"><a href="#transition/2-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup erlang" translate="no"><span class="n">NewScreen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">screen</span><span class="p">:</span><span class="nf">transition</span><span class="p" data-group-id="5920643099-1">(</span><span class="n">SearchScreen</span><span class="p">,</span><span class="w"> </span><span class="n">CustomerFormScreen</span><span class="p" data-group-id="5920643099-1">)</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="update_widget_tree/2">
+
+  <div class="detail-header">
+    <a href="#update_widget_tree/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">update_widget_tree(Screen, NewTree)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/screen.erl#L271" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> update_widget_tree(Screen :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>(), NewTree :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Updates the widget tree of a screen.</p><p>If the screen is active, destroys the old tree and registers the new one.
+If the screen is inactive, just updates the tree without registration.</p><p>Returns the updated screen map.</p>
+  </section>
+</section>
+
+    </div>
+  </section>
+
+    <footer class="footer">
+      <p>
+
+          <span class="line">
+            <a href="https://hex.pm/packages/cellium/0.1.0" class="footer-hex-package">Hex Package</a>
+
+            <a href="https://preview.hex.pm/preview/cellium/0.1.0">Hex Preview</a>
+
+          </span>
+
+        <span class="line">
+          <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages">
+            Search HexDocs
+          </button>
+
+            <a href="cellium.epub" title="ePub version">
+              Download ePub version
+            </a>
+
+        </span>
+      </p>
+
+      <p class="built-using">
+        Built using
+        <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.38.2) for the
+
+          <a href="https://erlang.org" title="Erlang" target="_blank" translate="no">Erlang programming language</a>
+
+      </p>
+
+    </footer>
+  </div>
+</main>
+</div>
+
+  </body>
+</html>
