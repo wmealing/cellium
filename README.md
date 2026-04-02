@@ -155,3 +155,8 @@ make run example=widgets_gallery
 
 - **Testing**: `rebar3 eunit`
 - **Logging**: Logs are written to `./logs/cellium-debug` by default. Logging configuration is managed in `src/logging.erl`.
+
+### Documentation
+
+- **API docs** [https://wmealing.github.io/cellium/api-reference.html](https://wmealing.github.io/cellium/api-reference.html "API docs")
+- **Occasional discussions** [https://wmealing.github.io/](https://wmealing.github.io/cellium/api-reference.html "Ocassional posts")
