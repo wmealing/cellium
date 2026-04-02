@@ -1,4 +1,7 @@
-# Cellium
+
+![Cellium Project Logo](priv/logo.png)
+
+
 
 Cellium is a Terminal User Interface (TUI) framework for Erlang/OTP. It provides a declarative way to build interactive terminal applications using an architecture inspired by the Elm Architecture.
 
