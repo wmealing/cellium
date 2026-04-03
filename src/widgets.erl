@@ -17,9 +17,21 @@ render(Widget, Buffer) ->
                 true -> render_maybe_focused(Mod, Widget, Buffer);
                 false -> Mod:render(Widget, Buffer)
             end,
+            Children = case Mod of
+                tab ->
+                    ActiveIdx = maps:get(active_tab, Widget, 0),
+                    AllChildren = maps:get(children, Widget, []),
+                    if ActiveIdx >= 0 andalso ActiveIdx < length(AllChildren) ->
+                        [lists:nth(ActiveIdx + 1, AllChildren)];
+                    true ->
+                        []
+                    end;
+                _ ->
+                    maps:get(children, Widget, [])
+            end,
             lists:foldl(fun(Child, AccBuffer) ->
                 render(Child, AccBuffer)
-            end, Buffer1, maps:get(children, Widget, []));
+            end, Buffer1, Children);
         widget ->
             Mod = maps:get(widget_type, Widget),
             case maps:get(focused, Widget, false) of
