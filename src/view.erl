@@ -149,6 +149,7 @@ handle_resize(W, H, State) ->
     State#state{width = W, height = H}.
 
 render(W, H, RootWidget, State) ->
+    ?TERMBOX:tb_clear(),
     Layout = layout:calculate_layout(RootWidget, W, H),
     StyledLayout = css:style(Layout, State#state.stylesheet),
     Buffer = widgets:render(StyledLayout),
