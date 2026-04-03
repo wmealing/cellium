@@ -187,4 +187,4 @@ make run example=widgets_gallery
 ### Documentation
 
 - **API docs** [https://wmealing.github.io/cellium/api-reference.html](https://wmealing.github.io/cellium/api-reference.html "API docs")
-- **Occasional discussions** [https://wmealing.github.io/](https://wmealing.github.io/cellium/api-reference.html "Ocassional posts")
+- **Occasional discussions** [https://wmealing.github.io/](https://wmealing.github.io/ "Ocassional posts on cellium")
