@@ -34,6 +34,14 @@ render(_Model) ->
         {frame, [{id, right_frame}, {title, "Right Aligned"}, {size, 5}, {color, yellow}, {title_align, right}], [
             {text, [], "This frame has a right aligned title."}
         ]},
+        {hbox, [{size, 8}], [
+            {frame, [{id, hbox_frame1}, {title, "HBox 1"}, {expand, true}, {color, blue}], [
+                {text, [], "Left side"}
+            ]},
+            {frame, [{id, hbox_frame2}, {title, "HBox 2"}, {expand, true}, {color, red}], [
+                {text, [], "Right side"}
+            ]}
+        ]},
         {frame, [{id, nested_frame}, {title, "Nested Widgets"}, {expand, true}, {color, magenta}, {title_align, center}], [
             {vbox, [{expand, true}], [
                 {text, [], "Inside the frame we have more widgets:"},
