@@ -29,7 +29,7 @@ only sending diff updates to the terminal for changed cells.
 -export([start_link/0]).
 -export([init/1, handle_cast/2, handle_call/3, handle_info/2, terminate/2,
          code_change/3]).
--export([set_root_widget/1, update_now/0]).
+-export([set_root_widget/1, get_root_widget/0, update_now/0]).
 
 -include("cellium.hrl").
 
@@ -77,6 +77,9 @@ handle_call({set_root_widget, RootWidget}, _From, State) ->
     NewState = update(State#state{root_widget = RootWidget}),
     {reply, ok, NewState};
 
+handle_call(get_root_widget, _From, State) ->
+    {reply, State#state.root_widget, State};
+
 handle_call(update_now, _From, State) ->
     NewState = update(State#state{force_redraw = true}),
     {reply, ok, NewState};
@@ -107,6 +110,10 @@ code_change(_OldVsn, State, _Extra) ->
 -doc "Sets the root widget tree and triggers a render if it has changed.".
 set_root_widget(RootWidget) ->
     gen_server:call(?MODULE, {set_root_widget, RootWidget}).
+
+-doc "Returns the current root widget tree.".
+get_root_widget() ->
+    gen_server:call(?MODULE, get_root_widget).
 
 -doc "Forces an immediate re-render regardless of dirty state.".
 update_now() ->

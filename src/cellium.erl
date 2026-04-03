@@ -37,6 +37,9 @@ stop() ->
 
 render_caller(Module, Model) ->
     try
+        % Reset focusable widgets list for this render, but preserve current focus ID
+        focus_manager:remove_all(),
+
         Layout = Module:render(Model),
         ProcessedLayout = case is_tuple(Layout) of
             true -> cellium_dsl:from_dsl(Layout);

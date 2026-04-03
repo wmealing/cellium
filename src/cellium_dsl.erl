@@ -78,8 +78,20 @@ from_dsl({frame, Props}) ->
 
 from_dsl({tabs, Props, Children}) when is_list(Children) ->
     Id = proplists:get_value(id, Props, make_ref()),
+    ActiveIdx = proplists:get_value(active_tab, Props, 0),
+    
+    % Only convert the active child to a widget tree to ensure only visible 
+    % widgets are registered for focus.
+    RealChildren = [ 
+        case I == ActiveIdx of
+            true -> from_dsl(C);
+            false -> (widget:new())#{widget_type => spacer, id => make_ref()}
+        end
+        || {I, C} <- lists:zip(lists:seq(0, length(Children)-1), Children)
+    ],
+    
     W = tab:new(Id),
-    apply_leaf_props(W#{children => [from_dsl(Child) || Child <- Children], type => container}, Props);
+    apply_leaf_props(W#{children => RealChildren, type => container}, Props);
 
 from_dsl({tabs, Props}) ->
     Id = proplists:get_value(id, Props, make_ref()),
