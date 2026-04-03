@@ -66,6 +66,16 @@ from_dsl({box, Props}) ->
     W = box:new(Id),
     apply_leaf_props(W, Props);
 
+from_dsl({frame, Props, Children}) when is_list(Children) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = frame:new(Id),
+    apply_leaf_props(W#{children => [from_dsl(Child) || Child <- Children], type => container}, Props);
+
+from_dsl({frame, Props}) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = frame:new(Id),
+    apply_leaf_props(W, Props);
+
 from_dsl({spacer, Props}) ->
     Id = proplists:get_value(id, Props, make_ref()),
     W = spacer:new(Id),
