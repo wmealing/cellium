@@ -512,6 +512,11 @@ try_parse_sequence([?ESC, ?CSI_START, ?CHAR_A]) -> {complete, {key, false, false
 try_parse_sequence([?ESC, ?CSI_START, ?CHAR_B]) -> {complete, {key, false, false, false, false, down_key}};
 try_parse_sequence([?ESC, ?CSI_START, ?CHAR_C]) -> {complete, {key, false, false, false, false, right_key}};
 try_parse_sequence([?ESC, ?CSI_START, ?CHAR_D]) -> {complete, {key, false, false, false, false, left_key}};
+% Shift + Arrows (xterm/libvterm standard)
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?SEMICOLON, ?DIGIT_2, ?CHAR_A]) -> {complete, {key, true, false, false, false, up_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?SEMICOLON, ?DIGIT_2, ?CHAR_B]) -> {complete, {key, true, false, false, false, down_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?SEMICOLON, ?DIGIT_2, ?CHAR_C]) -> {complete, {key, true, false, false, false, right_key}};
+try_parse_sequence([?ESC, ?CSI_START, ?DIGIT_1, ?SEMICOLON, ?DIGIT_2, ?CHAR_D]) -> {complete, {key, true, false, false, false, left_key}};
 try_parse_sequence([?ESC, ?SS3_START, ?CHAR_A]) -> {complete, {key, false, false, false, false, up_key}};
 try_parse_sequence([?ESC, ?SS3_START, ?CHAR_B]) -> {complete, {key, false, false, false, false, down_key}};
 try_parse_sequence([?ESC, ?SS3_START, ?CHAR_C]) -> {complete, {key, false, false, false, false, right_key}};
