@@ -34,30 +34,29 @@ render(#{active_tab := Active}) ->
         {tabs, [{id, my_tabs}, {tabs, ["Dashboard", "Logs", "Settings"]}, {active_tab, Active}, {expand, true}], [
             % Dashboard Content
             {vbox, [{padding, 1}, {expand, true}], [
-                {frame, [{title, "Dashboard"}, {expand, true}], [
-                    {text, [], "Welcome to the dashboard. Monitor your system status here."}
-                ]}
+                {header, [], "Dashboard"},
+                {text, [], "Welcome to the dashboard. Monitor your system status here."},
+                {spacer, [{expand, true}]}
             ]},
             % Logs Content
             {vbox, [{padding, 1}, {expand, true}], [
-                {frame, [{title, "Logs"}, {expand, true}], [
-                    {text, [], "System logs are displayed here."},
-                    {text, [], "[INFO] System started"},
-                    {text, [], "[DEBUG] Loading components..."},
-                    {text, [], "[INFO] Ready."}
-                ]}
+                {header, [], "System Logs"},
+                {text, [], "[INFO] System started"},
+                {text, [], "[DEBUG] Loading components..."},
+                {text, [], "[INFO] Ready."},
+                {spacer, [{expand, true}]}
             ]},
             % Settings Content
             {vbox, [{padding, 1}, {expand, true}], [
-                {frame, [{title, "Settings"}, {expand, true}], [
-                    {text, [], "Configure your application preferences."},
-                    {hbox, [], [
-                        {checkbox, [{id, cb_notify}], "Enable Notifications"}
-                    ]},
-                    {hbox, [], [
-                        {checkbox, [{id, cb_darkmode}], "Dark Mode"}
-                    ]}
-                ]}
+                {header, [], "Settings"},
+                {text, [], "Configure your application preferences."},
+                {hbox, [], [
+                    {checkbox, [{id, cb_notify}], "Enable Notifications"}
+                ]},
+                {hbox, [], [
+                    {checkbox, [{id, cb_darkmode}], "Dark Mode"}
+                ]},
+                {spacer, [{expand, true}]}
             ]}
         ]},
         {status_bar, [], " Use Shift + Left/Right to switch tabs | 'q' to quit"}
