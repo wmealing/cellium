@@ -89,7 +89,6 @@ For modal dialogs or nested navigation, use the screen stack:
 ```erlang
 % Push a dialog (current screen hidden but preserved)
 screen:push(ConfirmDialog),
-
 % Pop back to previous screen
 screen:pop(),
 
@@ -113,6 +112,35 @@ screen:new(
 ```
 
 The builder function is called each time the screen is shown, ensuring data is current.
+
+## Layout System
+
+Cellium uses a flexible layout engine that calculates absolute coordinates and dimensions based on container constraints and widget properties.
+
+### Positioning Modes
+
+- **Relative (Default)**: Widgets are positioned by their parent container (`vbox`, `hbox`, `grid`, etc.) according to the container's orientation and expansion rules.
+- **Absolute**: By setting `{position, absolute}`, a widget bypasses the layout engine. You must manually provide `{x, X}`, `{y, Y}`, `{width, W}`, and `{height, H}`.
+
+### Space Distribution
+
+In relative layout, space is distributed along the container's primary axis (vertical for `vbox`, horizontal for `hbox`):
+
+1.  **Fixed Size**: Use `{size, N}` to request a fixed number of characters in the primary axis.
+2.  **Expansion**: Use `{expand, true}` to request that the widget fill the remaining available space.
+3.  **Automatic Splitting**: If multiple widgets have `{expand, true}`, they split the remaining space equally.
+4.  **Default Behavior**: If neither `size` nor `expand` is specified, a default `{size, 1}` is applied.
+
+### Padding
+
+Padding can be applied to any container or widget to create space between the border and the content:
+
+- **Uniform**: `{padding, 1}` (1 character on all four sides).
+- **Specific**: `{padding, #{top => 1, bottom => 1, left => 2, right => 2}}`.
+
+### Width and Height
+
+While `size` controls the dimension along the container's primary axis, `width` and `height` can be used to explicitly set the dimension along the cross-axis or for absolutely positioned widgets.
 
 ## UI Pipeline
 
