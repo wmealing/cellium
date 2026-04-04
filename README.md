@@ -21,6 +21,46 @@ To create an application, implement the following callbacks:
 - `update(Model, Msg)`: Processes events and returns the updated model.
 - `render(Model)`: Returns the UI structure as a DSL tree.
 
+## Automatic Component State
+
+Cellium simplifies interactive UIs by automatically managing the state of complex widgets (like `text_input`, `list`, `checkbox`, and `gauge`). This "Component Pattern" is inspired by modern frameworks like **React** (Controlled Components) and **Phoenix LiveView** (LiveComponents).
+
+Instead of manually threading every keypress and update:
+1. **Event Routing**: When a widget has focus, the framework automatically routes keyboard events to that widget's internal handler.
+2. **State Storage**: The framework stores the internal state of widgets in a `widget_states` map within your application's Model, keyed by the widget's `id`.
+3. **Automatic Injection**: During rendering, the DSL lookups the stored state by ID and merges it into the widget properties before drawing.
+
+### Example: Stateless Render
+Notice how `text_input` and `list` are defined with only an `id`. The framework "fills in" the text and scroll position automatically from the Model.
+
+```erlang
+render(Model) ->
+    {vbox, [], [
+        {text_input, [{id, my_search_box}, {expand, true}]},
+        {list, [{id, results_list}, {expand, true}]}
+    ]}.
+```
+
+### Initializing State
+You can provide initial values for components in your `init/1` function:
+
+```erlang
+init(_) ->
+    Model = #{
+        widget_states => #{
+            my_search_box => #{text => "Initial search..."},
+            results_list => #{items => ["Apple", "Banana", "Cherry"]}
+        }
+    },
+    {ok, Model}.
+```
+
+### Handling Custom Events
+Interactive widgets emit high-level events to your `update/2` function for application logic:
+*   `button`: Emits `{button_clicked, Id}`
+*   `radio`: Emits `{radio_selected, Id, Group}`
+*   `checkbox/text_input/list`: Their internal state (checked, text, selection) is updated automatically in the Model.
+
 ## Example
 
 ```erlang
@@ -29,21 +69,42 @@ To create an application, implement the following callbacks:
 -export([init/1, update/2, render/1, start/0]).
 
 init(_Args) ->
-    {ok, #{count => 0}}.
+    InitialCount = 0,
+    {ok, #{
+        count => InitialCount,
+        widget_states => #{
+            display => #{text => io_lib:format("Count: ~p", [InitialCount])}
+        }
+    }}.
 
-update(Model = #{count := Count}, Msg) ->
+update(Model = #{count := Count, widget_states := States}, Msg) ->
     case Msg of
-        {key, _, _, _, _, <<"+">>} -> Model#{count => Count + 1};
-        {key, _, _, _, _, <<"-">>} -> Model#{count => Count - 1};
+        {button_clicked, plus_btn} ->
+            NewCount = Count + 1,
+            Model#{
+                count => NewCount,
+                widget_states => States#{display => #{text => io_lib:format("Count: ~p", [NewCount])}}
+            };
+        {button_clicked, minus_btn} ->
+            NewCount = Count - 1,
+            Model#{
+                count => NewCount,
+                widget_states => States#{display => #{text => io_lib:format("Count: ~p", [NewCount])}}
+            };
         {key, _, _, _, _, <<"q">>} -> cellium:stop(), Model;
         _ -> Model
     end.
 
-render(#{count := Count}) ->
+render(_Model) ->
     {vbox, [{padding, 1}], [
         {header, [], "Counter Example"},
-        {text, [], io_lib:format("Count: ~p", [Count])},
-        {text, [], "Press + or - to change, 'q' to quit"}
+        {text, [{id, display}]},
+        {hbox, [{size, 1}], [
+            {button, [{id, plus_btn}, {size, 5}], "+"},
+            {spacer, [{size, 2}]},
+            {button, [{id, minus_btn}, {size, 5}], "-"}
+        ]},
+        {text, [], "Press Tab to focus, Space/Enter to click, 'q' to quit"}
     ]}.
 
 start() ->

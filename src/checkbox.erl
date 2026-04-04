@@ -77,10 +77,15 @@ render_focused(Widget, Buffer) ->
 -doc "Handles keyboard events for the checkbox. Toggles checked state on Space or Enter.".
 -spec handle_event(term(), map()) -> map().
 handle_event({key, _, _, _, _, <<" ">>}, State) ->
-    Checked = maps:get(checked, State, false),
-    State#{checked => not Checked};
+    toggle_checkbox(State);
 handle_event({key, _, _, _, _, enter_key}, State) ->
-    Checked = maps:get(checked, State, false),
-    State#{checked => not Checked};
+    toggle_checkbox(State);
 handle_event(_, State) ->
     State.
+
+toggle_checkbox(State) ->
+    Id = maps:get(id, State),
+    Checked = maps:get(checked, State, false),
+    NewChecked = not Checked,
+    self() ! {checkbox_toggled, Id, NewChecked},
+    State#{checked => NewChecked}.

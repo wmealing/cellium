@@ -1,11 +1,3 @@
-%%%-------------------------------------------------------------------
-%%% @author Wade Mealing <wmealing@gmail.com>
-%%% @copyright (C) 2025, Wade Mealing
-%%% @doc
-%%%
-%%% @end
-%%% Created : 17 Oct 2025 by Wade Mealing <wmealing@gmail.com>
-%%%-------------------------------------------------------------------
 -module(counter).
 
 %% API
@@ -19,35 +11,54 @@
 %%%===================================================================
 
 init(_Args) ->
-    Model = #{count => 1},
+    InitialCount = 0,
+    Model = #{
+        count => InitialCount,
+        widget_states => #{
+            display => #{text => format_count(InitialCount)}
+        }
+    },
     {ok, Model}.
 
-%% this function mutates the model.
-update(#{count := Count} = Model, Msg) ->
-    logger:info("COUNTER UPDATE MSG: ~p", [Msg]),
+update(Model = #{count := Count, widget_states := States}, Msg) ->
     case Msg of
-         {key, _, _, _, _, <<"+">>} ->
-            Model#{count => Count + 1};
-         {key, _, _, _, _, <<"=">>} -> %% Often same key as +
-            Model#{count => Count + 1};
-         {key, _, _, _, _, <<"-">>} ->
-            Model#{count => Count - 1};
-         {key, _, _, _, _, <<"q">>} ->
-            cellium:stop(),
-            Model;
-         {key, _, _, _, _, <<"Q">>} ->
+        {button_clicked, plus_btn} ->
+            Model#{
+                count => Count + 1,
+                widget_states => States#{display => #{text => format_count(Count + 1)}}
+            };
+        {button_clicked, minus_btn} ->
+            Model#{
+                count => Count - 1,
+                widget_states => States#{display => #{text => format_count(Count - 1)}}
+            };
+        {key, _, _, _, _, <<"q">>} ->
             cellium:stop(),
             Model;
         _AnythingElse ->
             Model
     end.
 
-
-render(#{count := Count}) ->
-    CounterLabel = io_lib:format("Counter: ~p (+/-)", [Count]),
+render(_Model) ->
     {vbox, [{padding, 1}], [
-        {text, [{id, demo1}], lists:flatten(CounterLabel)}
+        {header, [], "Counter Example (Component Pattern)"},
+        {spacer, [{size, 1}]},
+
+        % This text widget is automatically populated from widget_states by ID 'display'
+        {text, [{id, display}]},
+
+        {spacer, [{size, 1}]},
+        {hbox, [{size, 1}], [
+            {button, [{id, minus_btn}, {size, 5}], "-"},
+            {spacer, [{size, 2}]},
+            {button, [{id, plus_btn}, {size, 5}], "+"}
+        ]},
+        {spacer, [{size, 1}]},
+        {text, [], "Press Tab to switch focus, Enter/Space to click, 'q' to quit"}
     ]}.
+
+format_count(Count) ->
+    lists:flatten(io_lib:format("Current Count: ~p", [Count])).
 
 start() ->
    application:ensure_all_started(cellium),

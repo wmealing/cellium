@@ -109,10 +109,14 @@ handle_call(Msg, _From, State) ->
     #{module := Module, model := Model} = State,
 
     % 1. Try to handle component events automatically
-    NewModel = maybe_handle_component_event(Msg, Model),
+    Model1 = maybe_handle_component_event(Msg, Model),
 
-    % 2. Call user's update with (possibly) updated model
-    FinalModel = Module:update(NewModel, Msg),
+    % 2. Flush any messages sent to self() (like button_clicked)
+    % so they are processed in this same render cycle.
+    Model2 = flush_emitted_messages(Model1, Module),
+
+    % 3. Call user's update with (possibly) updated model
+    FinalModel = Module:update(Model2, Msg),
 
     case Msg of
         {resize, _, _} ->
@@ -127,6 +131,18 @@ handle_call(Msg, _From, State) ->
     NewState = State#{model := FinalModel},
     {reply, {ok, done}, NewState}.
 
+flush_emitted_messages(Model, Module) ->
+    receive
+        {button_clicked, _} = Msg ->
+            flush_emitted_messages(Module:update(Model, Msg), Module);
+        {radio_selected, _, _} = Msg ->
+            flush_emitted_messages(Module:update(Model, Msg), Module);
+        {checkbox_toggled, _, _} = Msg ->
+            flush_emitted_messages(Module:update(Model, Msg), Module)
+    after 0 ->
+        Model
+    end.
+
 handle_cast(stop, State) ->
     logger:info("CAST STOP - CELLIUM"),
     {stop, normal, State};
@@ -138,10 +154,13 @@ handle_info(Msg, State) ->
     #{module := Module, model := Model} = State,
 
     % 1. Try to handle component events automatically
-    NewModel = maybe_handle_component_event(Msg, Model),
+    Model1 = maybe_handle_component_event(Msg, Model),
 
-    % 2. Call user's update
-    FinalModel = Module:update(NewModel, Msg),
+    % 2. Flush emitted messages
+    Model2 = flush_emitted_messages(Model1, Module),
+
+    % 3. Call user's update
+    FinalModel = Module:update(Model2, Msg),
 
     render_caller(Module, FinalModel),
     {noreply, State#{model := FinalModel}}.

@@ -18,9 +18,19 @@ from_dsl({header, Props, Value}, Model) ->
     W = header:new(Id, Value),
     apply_leaf_props(inject_state(W, Id, Model), Props);
 
+from_dsl({header, Props}, Model) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = header:new(Id),
+    apply_leaf_props(inject_state(W, Id, Model), Props);
+
 from_dsl({text, Props, Value}, Model) ->
     Id = proplists:get_value(id, Props, make_ref()),
     W = text:new(Id, Value),
+    apply_leaf_props(inject_state(W, Id, Model), Props);
+
+from_dsl({text, Props}, Model) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = text:new(Id),
     apply_leaf_props(inject_state(W, Id, Model), Props);
 
 from_dsl({button, Props, Label}, Model) ->
@@ -28,14 +38,29 @@ from_dsl({button, Props, Label}, Model) ->
     W = button:new(Id, Label),
     apply_leaf_props(inject_state(W, Id, Model), Props);
 
+from_dsl({button, Props}, Model) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = button:new(Id),
+    apply_leaf_props(inject_state(W, Id, Model), Props);
+
 from_dsl({checkbox, Props, Label}, Model) ->
     Id = proplists:get_value(id, Props, make_ref()),
     W = checkbox:new(Id, Label),
     apply_leaf_props(inject_state(W, Id, Model), Props);
 
+from_dsl({checkbox, Props}, Model) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = checkbox:new(Id),
+    apply_leaf_props(inject_state(W, Id, Model), Props);
+
 from_dsl({radio, Props, Label}, Model) ->
     Id = proplists:get_value(id, Props, make_ref()),
     W = radio:new(Id, Label),
+    apply_leaf_props(inject_state(W, Id, Model), Props);
+
+from_dsl({radio, Props}, Model) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = radio:new(Id),
     apply_leaf_props(inject_state(W, Id, Model), Props);
 
 from_dsl({progress_bar, Props}, Model) ->
