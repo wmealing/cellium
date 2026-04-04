@@ -42,7 +42,7 @@ Widget#{progress => 0.5, width => 30}
 ```
 """.
 
--export([render/2, render_focused/2, new/1]).
+-export([render/2, render_focused/2, new/1, handle_event/2]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -60,6 +60,17 @@ new(Id) ->
                     width => 20,
                     focusable => true,
                     type => widget}.
+
+-doc "Handles keyboard events for the progress bar. Adjusts progress with Left/Right arrow keys.".
+-spec handle_event(term(), map()) -> map().
+handle_event({key, _, _, _, _, left_key}, State) ->
+    Progress = maps:get(progress, State, 0.0),
+    State#{progress => max(0.0, Progress - 0.05)};
+handle_event({key, _, _, _, _, right_key}, State) ->
+    Progress = maps:get(progress, State, 0.0),
+    State#{progress => min(1.0, Progress + 0.05)};
+handle_event(_, State) ->
+    State.
 
 -doc "Renders the progress bar in unfocused state.".
 -spec render(map(), map()) -> map().

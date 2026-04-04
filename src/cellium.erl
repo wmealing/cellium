@@ -42,7 +42,7 @@ render_caller(Module, Model) ->
 
         Layout = Module:render(Model),
         ProcessedLayout = case is_tuple(Layout) of
-            true -> cellium_dsl:from_dsl(Layout);
+            true -> cellium_dsl:from_dsl(Layout, Model);
             false -> Layout
         end,
         view:set_root_widget(ProcessedLayout),
@@ -108,8 +108,11 @@ init(#{module := Module}= Args) ->
 handle_call(Msg, _From, State) ->
     #{module := Module, model := Model} = State,
 
-    % update return the model.
-    NewModel = Module:update(Model, Msg),
+    % 1. Try to handle component events automatically
+    NewModel = maybe_handle_component_event(Msg, Model),
+
+    % 2. Call user's update with (possibly) updated model
+    FinalModel = Module:update(NewModel, Msg),
 
     case Msg of
         {resize, _, _} ->
@@ -119,9 +122,9 @@ handle_call(Msg, _From, State) ->
             ok
     end,
 
-    render_caller(Module, NewModel),
+    render_caller(Module, FinalModel),
 
-    NewState = State#{model := NewModel},
+    NewState = State#{model := FinalModel},
     {reply, {ok, done}, NewState}.
 
 handle_cast(stop, State) ->
@@ -133,9 +136,57 @@ handle_cast(_Msg, State) ->
 
 handle_info(Msg, State) ->
     #{module := Module, model := Model} = State,
-    NewModel = Module:update(Model, Msg),
-    render_caller(Module, NewModel),
-    {noreply, State#{model := NewModel}}.
+
+    % 1. Try to handle component events automatically
+    NewModel = maybe_handle_component_event(Msg, Model),
+
+    % 2. Call user's update
+    FinalModel = Module:update(NewModel, Msg),
+
+    render_caller(Module, FinalModel),
+    {noreply, State#{model := FinalModel}}.
+
+maybe_handle_component_event(Msg, Model) ->
+    case focus_manager:get_focused() of
+        {ok, none} -> Model;
+        {ok, Id} ->
+            case find_widget_by_id(Id, view:get_root_widget()) of
+                undefined -> Model;
+                Widget ->
+                    Type = maps:get(widget_type, Widget, undefined),
+                    case Type of
+                        undefined -> Model;
+                        _ ->
+                            % Check if Type module has handle_event/2
+                            try
+                                Exports = Type:module_info(exports),
+                                case lists:member({handle_event, 2}, Exports) of
+                                    true ->
+                                        States = maps:get(widget_states, Model, #{}),
+                                        CurrentState = maps:get(Id, States, Widget),
+                                        NewWidgetState = Type:handle_event(Msg, CurrentState),
+                                        Model#{widget_states => States#{Id => NewWidgetState}};
+                                    false -> Model
+                                end
+                            catch
+                                _:_ -> Model
+                            end
+                    end
+            end;
+        _ -> Model
+    end.
+
+find_widget_by_id(Id, #{id := Id} = Widget) ->
+    Widget;
+find_widget_by_id(Id, #{children := Children}) when is_list(Children) ->
+    lists:foldl(fun(Child, Acc) ->
+        case Acc of
+            undefined -> find_widget_by_id(Id, Child);
+            _ -> Acc
+        end
+    end, undefined, Children);
+find_widget_by_id(_Id, _Widget) ->
+    undefined.
 
 -doc "Sends an event to the application's `update/2` callback for processing.\nThis is the primary way to send messages to the running application.".
 -spec handle_event(Event :: term()) -> {ok, done}.

@@ -37,7 +37,7 @@ Set the selected state in your update function when handling space or enter
 key events. Remember to deselect other radio buttons in the same group.
 """.
 
--export([render/2, render_focused/2, new/1, new/2]).
+-export([render/2, render_focused/2, new/1, new/2, handle_event/2]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -56,6 +56,21 @@ new(Id, Label) ->
                     selected => false,
                     focusable => true,
                     type => widget}.
+
+-doc "Handles keyboard events for the radio button. Sets selected to true on Space or Enter.".
+-spec handle_event(term(), map()) -> map().
+handle_event({key, _, _, _, _, <<" ">>}, State) ->
+    select_radio(State);
+handle_event({key, _, _, _, _, enter_key}, State) ->
+    select_radio(State);
+handle_event(_, State) ->
+    State.
+
+select_radio(State) ->
+    Id = maps:get(id, State),
+    Group = maps:get(group, State, undefined),
+    self() ! {radio_selected, Id, Group},
+    State#{selected => true}.
 
 -doc "Renders the radio button in unfocused state.".
 -spec render(map(), map()) -> map().

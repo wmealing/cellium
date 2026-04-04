@@ -44,7 +44,7 @@ Widget#{label => <<"Vol">>, value => 50, width => 20}
 ```
 """.
 
--export([render/2, render_focused/2, new/1]).
+-export([render/2, render_focused/2, new/1, handle_event/2]).
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
 
@@ -61,6 +61,17 @@ new(Id) ->
                     value => 0,
                     label => <<>>,
                     focusable => true}.
+
+-doc "Handles keyboard events for the gauge. Adjusts value with Left/Right arrow keys.".
+-spec handle_event(term(), map()) -> map().
+handle_event({key, _, _, _, _, left_key}, State) ->
+    Value = maps:get(value, State, 0),
+    State#{value => max(0, Value - 5)};
+handle_event({key, _, _, _, _, right_key}, State) ->
+    Value = maps:get(value, State, 0),
+    State#{value => min(100, Value + 5)};
+handle_event(_, State) ->
+    State.
 
 -doc "Renders the gauge in unfocused state.".
 -spec render(map(), map()) -> map().

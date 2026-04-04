@@ -25,7 +25,7 @@ button:new(submit_btn, "Submit")
 - Focused state inverts foreground/background colors
 """.
 
--export([render/2, render_focused/2, new/1, new/2]).
+-export([render/2, render_focused/2, new/1, new/2, handle_event/2]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -46,6 +46,19 @@ new(Id, Label) ->
         focusable => true,
         type => widget
     }.
+
+-doc "Handles keyboard events for the button. Emits button_clicked event on Enter or Space.".
+-spec handle_event(term(), map()) -> map().
+handle_event({key, _, _, _, _, <<" ">>}, State) ->
+    Id = maps:get(id, State),
+    self() ! {button_clicked, Id},
+    State;
+handle_event({key, _, _, _, _, enter_key}, State) ->
+    Id = maps:get(id, State),
+    self() ! {button_clicked, Id},
+    State;
+handle_event(_, State) ->
+    State.
 
 -doc "Renders the button widget to the buffer.".
 -spec render(map(), map()) -> map().

@@ -36,7 +36,7 @@ Toggle the checkbox state in your update function when handling
 space or enter key events on this widget.
 """.
 
--export([render/2, render_focused/2, new/1, new/2]).
+-export([render/2, render_focused/2, new/1, new/2, handle_event/2]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -73,3 +73,14 @@ render_focused(Widget, Buffer) ->
     Checked = maps:get(checked, Widget, false),
     Mark = case Checked of true -> "X"; false -> " " end,
     cellium_buffer:put_string(X, Y, Bg, Fg, "[" ++ Mark ++ "] " ++ Label, Buffer).
+
+-doc "Handles keyboard events for the checkbox. Toggles checked state on Space or Enter.".
+-spec handle_event(term(), map()) -> map().
+handle_event({key, _, _, _, _, <<" ">>}, State) ->
+    Checked = maps:get(checked, State, false),
+    State#{checked => not Checked};
+handle_event({key, _, _, _, _, enter_key}, State) ->
+    Checked = maps:get(checked, State, false),
+    State#{checked => not Checked};
+handle_event(_, State) ->
+    State.

@@ -29,20 +29,20 @@ init(_Args) ->
         "Item 20 - WebBEAM"
     ],
     Model = #{
-        checked => true,
         selected_option => a,
-        progress => 30,
-        features => true,
-        advanced => false,
         spinner_frame => 0,
-        toggle_on => false,
-        input_text => text_input:state("Edit me!"),
-        gauge_value => 50,
         focused_id => undefined,
         active_tab => 0,
         list_items => ListItems,
-        list_selected => 0,
-        list_scroll => 0
+        % Initial states for components that need them
+        widget_states => #{
+            ti1 => #{text => "Edit me!", cursor_pos => 8},
+            li1 => #{items => ListItems, selected_index => 0, scroll_offset => 0},
+            g1 => #{value => 50, label => <<"Volume">>},
+            pb1 => #{progress => 0.3},
+            cb1 => #{checked => true},
+            cb2 => #{checked => false}
+        }
     },
     % Start a timer for the spinner
     erlang:send_after(100, self(), tick),
@@ -64,62 +64,19 @@ update(Model, Msg) ->
         tick ->
             erlang:send_after(100, self(), tick),
             Model#{spinner_frame => maps:get(spinner_frame, Model) + 1};
-        {focus_changed, NewFocusedId} ->
+        {focus_changed, #{to := NewFocusedId}} ->
             Model#{focused_id => NewFocusedId};
-        {key, _, _, _, _, _} = KeyEvent ->
-            case focus_manager:get_focused() of
-                {ok, Id} -> handle_focused_key(Id, KeyEvent, Model);
-                _ -> Model
-            end;
+        {radio_selected, r1, _} -> Model#{selected_option => a};
+        {radio_selected, r2, _} -> Model#{selected_option => b};
+        {button_clicked, btn1} -> 
+            logger:info("Submit clicked!"),
+            Model;
+        {button_clicked, btn2} -> 
+            logger:info("Cancel clicked!"),
+            Model;
         _ ->
             Model
     end.
-
-handle_focused_key(ti1, Event, Model) ->
-    NewTextState = text_input:handle_event(Event, maps:get(input_text, Model)),
-    Model#{input_text => NewTextState};
-handle_focused_key(li1, Event, Model) ->
-    % Get actual laid-out height from view to handle natural scrolling
-    Root = view:get_root_widget(),
-    Height = case widget:find_widget(li1, Root) of
-        undefined -> 0;
-        W -> maps:get(height, W, 0)
-    end,
-
-    ListState = #{
-        items => maps:get(list_items, Model),
-        selected_index => maps:get(list_selected, Model),
-        scroll_offset => maps:get(list_scroll, Model),
-        height => Height
-    },
-    NewState = list:handle_event(Event, ListState),
-    Model#{
-        list_selected => maps:get(selected_index, NewState),
-        list_scroll => maps:get(scroll_offset, NewState)
-    };
-handle_focused_key(g1, {key, _, _, _, _, left_key}, Model) ->
-    NewValue = max(0, maps:get(gauge_value, Model) - 5),
-    Model#{gauge_value => NewValue};
-handle_focused_key(g1, {key, _, _, _, _, right_key}, Model) ->
-    NewValue = min(100, maps:get(gauge_value, Model) + 5),
-    Model#{gauge_value => NewValue};
-handle_focused_key(pb1, {key, _, _, _, _, left_key}, Model) ->
-    NewValue = max(0, maps:get(progress, Model) - 5),
-    Model#{progress => NewValue};
-handle_focused_key(pb1, {key, _, _, _, _, right_key}, Model) ->
-    NewValue = min(100, maps:get(progress, Model) + 5),
-    Model#{progress => NewValue};
-handle_focused_key(Id, {key, _, _, _, _, Key}, Model) when Key == enter_key; Key == <<" ">> ->
-    case Id of
-        r1 -> Model#{selected_option => a};
-        r2 -> Model#{selected_option => b};
-        cb1 -> Model#{features => not maps:get(features, Model)};
-        cb2 -> Model#{advanced => not maps:get(advanced, Model)};
-        tg1 -> Model#{toggle_on => not maps:get(toggle_on, Model)};
-        _ -> Model
-    end;
-handle_focused_key(_Id, _Event, Model) ->
-    Model.
 
 render(Model) ->
     FocusedId = maps:get(focused_id, Model, undefined),
@@ -141,8 +98,8 @@ render(Model) ->
                     ]},
                     {vbox, [{id, col2}, {expand, true}], [
                         {text,  [{id, t_cb}], "Features:"},
-                        {checkbox, [{id, cb1}, {checked, maps:get(features, Model)}], "Enable Feature"},
-                        {checkbox, [{id, cb2}, {checked, not maps:get(advanced, Model)}], "Show Advanced"}
+                        {checkbox, [{id, cb1}], "Enable Feature"},
+                        {checkbox, [{id, cb2}], "Show Advanced"}
                     ]}
                 ]},
 
@@ -162,14 +119,14 @@ render(Model) ->
                 {spacer, [{size, 1}]},
                 {vbox, [{id, row3}, {size, 5}], [
                     {text, [{id, t2}], "Progress & Status indicators:"},
-                    {progress_bar, [{id, pb1}, {progress, maps:get(progress, Model) / 100.0}, {width, 40}]},
-                    {gauge, [{id, g1}, {value, maps:get(gauge_value, Model)}, {label, <<"Volume">>} , {width, 40}]},
+                    {progress_bar, [{id, pb1}, {width, 40}]},
+                    {gauge, [{id, g1}, {width, 40}]},
                     {hbox, [{id, row3b}], [
                         {text, [{id, t3}, {size, 9}], "Loading: "},
                         {spinner, [{id, s1}, {frame, maps:get(spinner_frame, Model)}]},
                         {spacer, [{size, 5}]},
                         {text, [{id, t4}, {size, 8}], "Switch: "},
-                        {toggle, [{id, tg1}, {on, maps:get(toggle_on, Model)}]}
+                        {toggle, [{id, tg1}]}
                     ]}
                 ]},
                 {spacer, [{expand, true}]}
@@ -182,7 +139,7 @@ render(Model) ->
                 {vbox, [{id, row4}, {expand, true}], [
                     {text, [{id, t5}], "Input Field inside a Frame:"},
                     {frame, [{id, f_input}, {title, "Input Frame"}, {size, 8}, {color, yellow}], [
-                        {text_input, [{id, ti1}, {state, maps:get(input_text, Model)}, {wrap, true}, {expand, true}]}
+                        {text_input, [{id, ti1}, {wrap, true}, {expand, true}]}
                     ]},
                     {spacer, [{size, 1}]}
                 ]},
@@ -194,10 +151,7 @@ render(Model) ->
                 {header, [{id, h4}, {color, magenta}], "Interactive List"},
                 {spacer, [{size, 1}]},
                 {frame, [{id, f_list}, {title, "BEAM Languages"}, {expand, true}], [
-                    {list, [{id, li1}, {items, maps:get(list_items, Model)}, 
-                            {selected_index, maps:get(list_selected, Model)},
-                            {scroll_offset, maps:get(list_scroll, Model)},
-                            {expand, true}]}
+                    {list, [{id, li1}, {expand, true}]}
                 ]}
             ]}
         ]},

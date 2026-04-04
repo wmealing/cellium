@@ -23,7 +23,7 @@ Format: `< ON >` or `< OFF >`
 When focused, colors are inverted to highlight the toggle.
 """.
 
--export([render/2, render_focused/2, new/1]).
+-export([render/2, render_focused/2, new/1, handle_event/2]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
@@ -36,6 +36,17 @@ new(Id) ->
                     on => false,
                     focusable => true,
                     type => widget}.
+
+-doc "Handles keyboard events for the toggle. Toggles ON/OFF state on Space or Enter.".
+-spec handle_event(term(), map()) -> map().
+handle_event({key, _, _, _, _, <<" ">>}, State) ->
+    On = maps:get(on, State, false),
+    State#{on => not On};
+handle_event({key, _, _, _, _, enter_key}, State) ->
+    On = maps:get(on, State, false),
+    State#{on => not On};
+handle_event(_, State) ->
+    State.
 
 -doc "Renders the toggle widget to the buffer.".
 -spec render(map(), map()) -> map().
