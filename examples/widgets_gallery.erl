@@ -136,7 +136,7 @@ render(Model) ->
                         {spinner, [{id, s1}, {frame, maps:get(spinner_frame, Model)}]},
                         {spacer, [{size, 5}]},
                         {text, [{id, t4}, {size, 8}], "Switch: "},
-                        {toggle, [{id, tg1}]}
+                        {toggle, [{id, tg1}, {size, 8}]}
                     ]}
                 ]},
                 {spacer, [{expand, true}]}

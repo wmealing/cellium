@@ -126,8 +126,14 @@ update_now() ->
 
 %% INTERNAL
 write_buffer_to_terminal(Buffer) ->
-    maps:foreach(fun({X, Y}, {Char, Fg, Bg}) ->
-        ?TERMBOX:tb_set_cell(X, Y, Char, Fg, Bg)
+    maps:foreach(fun(Key, Value) ->
+        case Key of
+            {X, Y} ->
+                {Char, Fg, Bg} = Value,
+                ?TERMBOX:tb_set_cell(X, Y, Char, Fg, Bg);
+            _ ->
+                ok
+        end
     end, Buffer).
 
 update(State) ->

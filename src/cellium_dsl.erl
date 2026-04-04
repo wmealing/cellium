@@ -136,6 +136,11 @@ from_dsl({spacer, Props}, Model) ->
     W = spacer:new(Id),
     apply_leaf_props(inject_state(W, Id, Model), Props);
 
+from_dsl({dialog, Props, Children}, Model) when is_list(Children) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = dialog:new(Id),
+    apply_leaf_props(inject_state(W#{children => [from_dsl(Child, Model) || Child <- Children], type => container}, Id, Model), Props);
+
 from_dsl({gauge, Props}, Model) ->
     Id = proplists:get_value(id, Props, make_ref()),
     W = gauge:new(Id),

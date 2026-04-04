@@ -10,13 +10,26 @@ render(Widgets, Buffer) when is_list(Widgets), length(Widgets) == 0 ->
     Buffer;
 
 render(Widget, Buffer) ->
-    case maps:get(type, Widget, none) of
+    X = maps:get(x, Widget, 0),
+    Y = maps:get(y, Widget, 0),
+    Width = maps:get(width, Widget, 0),
+    Height = maps:get(height, Widget, 0),
+    
+    % Save the incoming clip to restore it later
+    OldClip = maps:get(clip, Buffer, undefined),
+    
+    % Intersect current clip with this widget's bounds
+    BufferWithClip = cellium_buffer:set_clip(X, Y, Width, Height, Buffer),
+    
+    ResultBuffer = case maps:get(type, Widget, none) of
         container ->
             Mod = maps:get(widget_type, Widget, container),
             Buffer1 = case maps:get(focused, Widget, false) of
-                true -> render_maybe_focused(Mod, Widget, Buffer);
-                false -> Mod:render(Widget, Buffer)
+                true -> render_maybe_focused(Mod, Widget, BufferWithClip);
+                false -> Mod:render(Widget, BufferWithClip)
             end,
+            
+            % Render children. Note: each child will set/restore its own clip.
             Children = case Mod of
                 tab ->
                     ActiveIdx = maps:get(active_tab, Widget, 0),
@@ -35,11 +48,17 @@ render(Widget, Buffer) ->
         widget ->
             Mod = maps:get(widget_type, Widget),
             case maps:get(focused, Widget, false) of
-                true -> render_maybe_focused(Mod, Widget, Buffer);
-                false -> Mod:render(Widget, Buffer)
+                true -> render_maybe_focused(Mod, Widget, BufferWithClip);
+                false -> Mod:render(Widget, BufferWithClip)
             end;
         _ ->
-            Buffer
+            BufferWithClip
+    end,
+    
+    % Restore the parent's clip so siblings aren't affected by our bounds
+    case OldClip of
+        undefined -> maps:remove(clip, ResultBuffer);
+        _ -> ResultBuffer#{clip => OldClip}
     end.
 
 render_focused(Widget) ->
@@ -54,4 +73,3 @@ render_maybe_focused(Mod, Widget, Buffer) ->
         true -> Mod:render_focused(Widget, Buffer);
         false -> Mod:render(Widget, Buffer)
     end.
-
