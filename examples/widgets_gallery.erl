@@ -6,6 +6,28 @@
 -export([init/1, render/1, update/2, start/0]).
 
 init(_Args) ->
+    ListItems = [
+        "Item 01 - Erlang/OTP",
+        "Item 02 - Elixir",
+        "Item 03 - Gleam",
+        "Item 04 - LFE (Lisp Flavoured Erlang)",
+        "Item 05 - Alpaca",
+        "Item 06 - Efene",
+        "Item 07 - Joxa",
+        "Item 08 - Clojerl",
+        "Item 09 - Erlog",
+        "Item 10 - Hamler",
+        "Item 11 - Purerl",
+        "Item 12 - Caramel",
+        "Item 13 - Reia",
+        "Item 14 - Elchemy",
+        "Item 15 - Lumen",
+        "Item 16 - AtomVM",
+        "Item 17 - Enigma",
+        "Item 18 - Geoerl",
+        "Item 19 - Erlang.js",
+        "Item 20 - WebBEAM"
+    ],
     Model = #{
         checked => true,
         selected_option => a,
@@ -17,7 +39,10 @@ init(_Args) ->
         input_text => text_input:state("Edit me!"),
         gauge_value => 50,
         focused_id => undefined,
-        active_tab => 0
+        active_tab => 0,
+        list_items => ListItems,
+        list_selected => 0,
+        list_scroll => 0
     },
     % Start a timer for the spinner
     erlang:send_after(100, self(), tick),
@@ -28,14 +53,14 @@ update(Model, Msg) ->
         {key, _, _, _, _, <<"q">>} ->
             cellium:stop(),
             Model;
-        % Shift + Right Arrow to next tab
+        % Shift + Right Arrow to next tab (4 tabs now)
         {key, true, false, false, false, right_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 1) rem 3};
+            Model#{active_tab => (Active + 1) rem 4};
         % Shift + Left Arrow to previous tab
         {key, true, false, false, false, left_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 2) rem 3};
+            Model#{active_tab => (Active + 3) rem 4};
         tick ->
             erlang:send_after(100, self(), tick),
             Model#{spinner_frame => maps:get(spinner_frame, Model) + 1};
@@ -53,6 +78,25 @@ update(Model, Msg) ->
 handle_focused_key(ti1, Event, Model) ->
     NewTextState = text_input:handle_event(Event, maps:get(input_text, Model)),
     Model#{input_text => NewTextState};
+handle_focused_key(li1, Event, Model) ->
+    % Get actual laid-out height from view to handle natural scrolling
+    Root = view:get_root_widget(),
+    Height = case widget:find_widget(li1, Root) of
+        undefined -> 0;
+        W -> maps:get(height, W, 0)
+    end,
+
+    ListState = #{
+        items => maps:get(list_items, Model),
+        selected_index => maps:get(list_selected, Model),
+        scroll_offset => maps:get(list_scroll, Model),
+        height => Height
+    },
+    NewState = list:handle_event(Event, ListState),
+    Model#{
+        list_selected => maps:get(selected_index, NewState),
+        list_scroll => maps:get(scroll_offset, NewState)
+    };
 handle_focused_key(g1, {key, _, _, _, _, left_key}, Model) ->
     NewValue = max(0, maps:get(gauge_value, Model) - 5),
     Model#{gauge_value => NewValue};
@@ -83,7 +127,7 @@ render(Model) ->
     StatusText = io_lib:format("Shift+Arrows: Tabs | Q: Quit | Focused: ~p", [FocusedId]),
 
     {vbox, [{id, main}, {padding, 0}], [
-        {tabs, [{id, gallery_tabs}, {tabs, ["Basic", "Progress", "Input"]}, {active_tab, ActiveTab}, {expand, true}], [
+        {tabs, [{id, gallery_tabs}, {tabs, ["Basic", "Progress", "Input", "List"]}, {active_tab, ActiveTab}, {expand, true}], [
             % Tab 1: Basic Widgets
             {vbox, [{id, tab_basic}, {expand, true}, {padding, 1}], [
                 {header, [{id, h1}, {color, cyan}], "Basic Controls"},
@@ -143,6 +187,18 @@ render(Model) ->
                     {spacer, [{size, 1}]}
                 ]},
                 {spacer, [{expand, true}]}
+            ]},
+
+            % Tab 4: List Widget
+            {vbox, [{id, tab_list}, {expand, true}, {padding, 1}], [
+                {header, [{id, h4}, {color, magenta}], "Interactive List"},
+                {spacer, [{size, 1}]},
+                {frame, [{id, f_list}, {title, "BEAM Languages"}, {expand, true}], [
+                    {list, [{id, li1}, {items, maps:get(list_items, Model)}, 
+                            {selected_index, maps:get(list_selected, Model)},
+                            {scroll_offset, maps:get(list_scroll, Model)},
+                            {expand, true}]}
+                ]}
             ]}
         ]},
         {status_bar, [{id, sb1}, {color, white}], lists:flatten(StatusText)}

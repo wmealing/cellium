@@ -78,7 +78,11 @@ handle_call({set_root_widget, RootWidget}, _From, State) ->
     {reply, ok, NewState};
 
 handle_call(get_root_widget, _From, State) ->
-    {reply, State#state.root_widget, State};
+    Reply = case State#state.last_root_widget of
+        undefined -> State#state.root_widget;
+        Layout -> Layout
+    end,
+    {reply, Reply, State};
 
 handle_call(update_now, _From, State) ->
     NewState = update(State#state{force_redraw = true}),
@@ -162,5 +166,5 @@ render(W, H, RootWidget, State) ->
     Buffer = widgets:render(StyledLayout),
     write_buffer_to_terminal(Buffer),
     ?TERMBOX:tb_present(),
-    State#state{last_root_widget = RootWidget, force_redraw = false}.
+    State#state{last_root_widget = Layout, force_redraw = false}.
     

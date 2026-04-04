@@ -44,7 +44,7 @@ button:new(my_button, "Click Me")
 ```
 """.
 
--export([new/0, create/1, destroy/1, destroy_tree/1, get_common_props/1, color_to_int/1]).
+-export([new/0, create/1, destroy/1, destroy_tree/1, get_common_props/1, color_to_int/1, find_widget/2]).
 
 -include("cellium.hrl").
 -import(focus_manager, [register_widget/1]).
@@ -205,3 +205,23 @@ get_common_props(Widget) ->
     FgAtom = maps:get(color, Widget, ?DEFAULT_FG_COLOR),
 
     #{x => X, y => Y, fg => color_to_int(FgAtom), bg => color_to_int(BgAtom)}.
+
+-doc """
+Finds a widget with the given ID in a widget tree.
+Returns the widget map or undefined if not found.
+""".
+-spec find_widget(term(), map()) -> map() | undefined.
+find_widget(Id, #{id := Id} = Widget) ->
+    Widget;
+find_widget(Id, #{children := Children}) when is_list(Children) ->
+    find_in_children(Id, Children);
+find_widget(_, _) ->
+    undefined.
+
+find_in_children(_, []) ->
+    undefined;
+find_in_children(Id, [Child | Rest]) ->
+    case find_widget(Id, Child) of
+        undefined -> find_in_children(Id, Rest);
+        Found -> Found
+    end.

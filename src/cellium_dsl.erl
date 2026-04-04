@@ -46,6 +46,12 @@ from_dsl({toggle, Props}) ->
     W = toggle:new(Id),
     apply_leaf_props(W, Props);
 
+from_dsl({list, Props}) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    Items = proplists:get_value(items, Props, []),
+    W = list:new(Id, Items),
+    apply_leaf_props(W, Props);
+
 from_dsl({text_input, Props}) ->
     Id = proplists:get_value(id, Props, make_ref()),
     W = text_input:new(Id),
