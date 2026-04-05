@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
+    <script defer src="dist/sidebar_items-FBCC5B94.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -80,7 +80,7 @@ cellium
 
     </h1>
 
-      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L7" title="View Source" class="icon-action" rel="help">
+      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L1" title="View Source" class="icon-action" rel="help">
         <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         <span class="sr-only">View Source</span>
       </a>
@@ -89,7 +89,9 @@ cellium
 
 
     <section id="moduledoc">
-<p>Table widget module for rendering tabular data with borders.</p><p>This module provides functionality for rendering tables with configurable borders, headers, and rows. It supports various box styles and can render multi-column tables with different column widths.</p>
+<p>The table widget module provides functionality for rendering tabular data
+  with borders, headers, and rows. It supports various box styles and can
+  render multi-column tables with configurable column widths.</p>
     </section>
 
 </div>
@@ -168,7 +170,7 @@ cellium
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#handle_event/2" data-no-tooltip="" translate="no">handle_event(_, Widget)</a>
+        <a href="#handle_event/2" data-no-tooltip="" translate="no">handle_event/2</a>
 
       </div>
 
@@ -182,6 +184,8 @@ cellium
 
       </div>
 
+        <div class="summary-synopsis"><p>Creates a new table widget with default dimensions (0x0).</p></div>
+
     </div>
 
     <div class="summary-row">
@@ -189,6 +193,8 @@ cellium
         <a href="#new/3" data-no-tooltip="" translate="no">new(Id, Width, Height)</a>
 
       </div>
+
+        <div class="summary-synopsis"><p>Creates a new table widget with the specified identifier, width, and height.</p></div>
 
     </div>
 
@@ -235,7 +241,7 @@ cellium
       <h1 class="signature" translate="no">draw_bottom(X, Y, Fg, Bg, Box, ColumnWidths, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L146" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L158" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -286,7 +292,7 @@ cellium
 
       </div>
 
-<p>Draws the bottom line of a table.</p>
+<p>Draws the bottom line of a table.</p><ul><li><code class="inline">X</code>: Starting X coordinate</li><li><code class="inline">Y</code>: Starting Y coordinate</li><li><code class="inline">Fg</code>: Foreground color</li><li><code class="inline">Bg</code>: Background color</li><li><code class="inline">Box</code>: Box style to use</li><li><code class="inline">ColumnWidths</code>: List of column widths</li><li><code class="inline">Buffer</code>: Current frame buffer</li><li>Returns: Updated buffer</li></ul>
   </section>
 </section>
 <section class="detail" id="draw_header/7">
@@ -299,7 +305,7 @@ cellium
       <h1 class="signature" translate="no">draw_header(X, Y, Fg, Bg, Box, ColumnWidths, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L120" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L131" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -350,7 +356,7 @@ cellium
 
       </div>
 
-<p>Draws the header line of a table.</p>
+<p>Draws the header line of a table.</p><ul><li><code class="inline">X</code>: Starting X coordinate</li><li><code class="inline">Y</code>: Starting Y coordinate</li><li><code class="inline">Fg</code>: Foreground color</li><li><code class="inline">Bg</code>: Background color</li><li><code class="inline">Box</code>: Box style to use</li><li><code class="inline">ColumnWidths</code>: List of column widths</li></ul>
   </section>
 </section>
 <section class="detail" id="draw_table/8">
@@ -363,7 +369,7 @@ cellium
       <h1 class="signature" translate="no">draw_table(X, Y, Height, Fg, Bg, Box, ColumnWidths, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L166" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L179" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -415,7 +421,8 @@ cellium
 
       </div>
 
-<p>Draws a complete table with borders.</p><p>Renders a table frame consisting of header, row separators, and bottom. Does not render content, only the structural elements.</p>
+<p>Draws a complete table with borders.</p><p>  Renders a table frame consisting of header, row separators, and bottom.
+  Does not render content, only the structural elements.</p><ul><li><code class="inline">X</code>: Starting X coordinate</li><li><code class="inline">Y</code>: Starting Y coordinate</li><li><code class="inline">Height</code>: Number of rows to draw</li><li><code class="inline">Fg</code>: Foreground color</li><li><code class="inline">Bg</code>: Background color</li><li><code class="inline">Box</code>: Box style record</li><li><code class="inline">ColumnWidths</code>: List of column widths</li><li><code class="inline">Buffer</code>: Current frame buffer</li><li>Returns: Updated buffer</li></ul>
   </section>
 </section>
 <section class="detail" id="get_bottom/2">
@@ -428,7 +435,7 @@ cellium
       <h1 class="signature" translate="no">get_bottom(Box, Widths)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L106" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L117" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -474,7 +481,7 @@ cellium
 
       </div>
 
-<p>Generates the bottom border line of a table.</p>
+<p>Generates the bottom border line of a table.</p><ul><li><code class="inline">Box</code>: The box style record defining border characters</li><li><code class="inline">Widths</code>: List of column widths</li><li>Returns: A flattened iolist representing the bottom border</li></ul>
   </section>
 </section>
 <section class="detail" id="get_row/3">
@@ -487,7 +494,7 @@ cellium
       <h1 class="signature" translate="no">get_row(Box, Level, Widths)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L90" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L100" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -534,7 +541,7 @@ cellium
 
       </div>
 
-<p>Generates a row separator line for a table.</p><p>Different separator styles are available depending on the level: - <code>head</code>: Header row separator - <code>row</code>: Regular row separator - <code>mid</code>: Middle separator (minimal) - <code>foot</code>: Footer row separator</p>
+<p>Generates a row separator line for a table.</p><p>Different separator styles are available depending on the level:</p><ul><li><p><code class="inline">head</code>: Header row separator</p></li><li><p><code class="inline">row</code>: Regular row separator</p></li><li><p><code class="inline">mid</code>: Middle separator (minimal)</p></li><li><p><code class="inline">foot</code>: Footer row separator</p></li><li><p><code class="inline">Box</code>: The box style record defining border characters</p></li><li><p><code class="inline">Level</code>: The type of row separator to generate</p></li><li><p><code class="inline">Widths</code>: List of column widths</p></li><li><p>Returns: A flattened iolist representing the row separator</p></li></ul>
   </section>
 </section>
 <section class="detail" id="get_top/2">
@@ -547,7 +554,7 @@ cellium
       <h1 class="signature" translate="no">get_top(Box, Widths)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L70" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L79" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -593,7 +600,7 @@ cellium
 
       </div>
 
-<p>Generates the top border line of a table.</p>
+<p>Generates the top border line of a table.</p><ul><li><code class="inline">Box</code>: The box style record defining border characters</li><li><code class="inline">Widths</code>: List of column widths</li><li>Returns: A flattened iolist representing the top border</li></ul>
   </section>
 </section>
 <section class="detail" id="handle_event/2">
@@ -603,10 +610,10 @@ cellium
       <i class="ri-link-m" aria-hidden="true"></i>
     </a>
     <div class="heading-with-actions">
-      <h1 class="signature" translate="no">handle_event(_, Widget)</h1>
+      <h1 class="signature" translate="no">handle_event/2</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L373" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L387" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -649,7 +656,7 @@ cellium
 
       </div>
 
-
+<p>Creates a new table widget with default dimensions (0x0).</p>
   </section>
 </section>
 <section class="detail" id="new/3">
@@ -662,7 +669,7 @@ cellium
       <h1 class="signature" translate="no">new(Id, Width, Height)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L32" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L40" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -677,7 +684,7 @@ cellium
 
       </div>
 
-
+<p>Creates a new table widget with the specified identifier, width, and height.</p><p>  Parameters:</p><ul><li><code class="inline">Id</code>: A unique identifier for the widget.</li><li><code class="inline">Width</code>: Initial width of the table.</li><li><code class="inline">Height</code>: Initial height of the table.</li></ul>
   </section>
 </section>
 <section class="detail" id="render/2">
@@ -690,7 +697,7 @@ cellium
       <h1 class="signature" translate="no">render(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L180" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L194" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -705,7 +712,7 @@ cellium
 
       </div>
 
-<p>Renders a complete table widget with headers and data.</p><p>Draws a full table including frame, optional headers, and data rows.</p>
+<p>Renders a complete table widget with headers and data.</p><p>  Draws a full table including frame, optional headers, and data rows.</p><ul><li><code class="inline">Widget</code>: Table widget map containing position, dimensions, headers, and rows</li><li><code class="inline">Buffer</code>: Current frame buffer</li><li>Returns: Updated buffer</li></ul>
   </section>
 </section>
 <section class="detail" id="render_focused/2">
@@ -718,7 +725,7 @@ cellium
       <h1 class="signature" translate="no">render_focused(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L243" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/table.erl#L257" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 

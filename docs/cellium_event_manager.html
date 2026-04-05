@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
+    <script defer src="dist/sidebar_items-FBCC5B94.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -80,13 +80,17 @@ cellium
 
     </h1>
 
-      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L9" title="View Source" class="icon-action" rel="help">
+      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L1" title="View Source" class="icon-action" rel="help">
         <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         <span class="sr-only">View Source</span>
       </a>
 
   </div>
 
+
+    <section id="moduledoc">
+<p>Event manager for handling terminal and external events.</p>
+    </section>
 
 </div>
 
@@ -104,6 +108,56 @@ cellium
 
     <div class="summary-row">
       <div class="summary-signature">
+        <a href="#code_change/3" data-no-tooltip="" translate="no">code_change(OldVsn, State, Extra)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Convert process state when code is changed.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_call/3" data-no-tooltip="" translate="no">handle_call(Request, From, State)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Handling call messages.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_cast/2" data-no-tooltip="" translate="no">handle_cast(Request, State)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Handling cast messages.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_info/2" data-no-tooltip="" translate="no">handle_info(Info, State)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Handling all non call/cast messages.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#init/1" data-no-tooltip="" translate="no">init(Args)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Initializes the server.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
         <a href="#send_event/1" data-no-tooltip="" translate="no">send_event(Event)</a>
 
       </div>
@@ -116,7 +170,7 @@ cellium
 
       </div>
 
-        <div class="summary-synopsis"><p>Starts the server</p></div>
+        <div class="summary-synopsis"><p>Starts the server.</p></div>
 
     </div>
 
@@ -125,6 +179,19 @@ cellium
         <a href="#start_link/1" data-no-tooltip="" translate="no">start_link(CallBackModule)</a>
 
       </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#terminate/2" data-no-tooltip="" translate="no">terminate(Reason, State)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>This function is called by a gen_server when it is about to
+terminate. It should be the opposite of Module:init/1 and do any
+necessary cleaning up. When it returns, the gen_server terminates
+with Reason. The return value is ignored.</p></div>
 
     </div>
 
@@ -141,6 +208,168 @@ cellium
       <span class="text">Functions</span>
     </h1>
     <div class="functions-list">
+<section class="detail" id="code_change/3">
+
+  <div class="detail-header">
+    <a href="#code_change/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">code_change(OldVsn, State, Extra)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L166" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> code_change(OldVsn :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>() | {down, <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()}, State :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), Extra :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()) ->
+                     {ok, NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()} | {error, Reason :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()}.</pre>
+
+      </div>
+
+<p>Convert process state when code is changed.</p>
+  </section>
+</section>
+<section class="detail" id="handle_call/3">
+
+  <div class="detail-header">
+    <a href="#handle_call/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_call(Request, From, State)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L96" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> handle_call(Request :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), From :: {<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:pid/0">pid</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()}, State :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()) ->
+                     {reply, Reply :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()} |
+                     {reply, Reply :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), Timeout :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:timeout/0">timeout</a>()} |
+                     {reply, Reply :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), hibernate} |
+                     {noreply, NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()} |
+                     {noreply, NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), Timeout :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:timeout/0">timeout</a>()} |
+                     {noreply, NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), hibernate} |
+                     {stop, Reason :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), Reply :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()} |
+                     {stop, Reason :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()}.</pre>
+
+      </div>
+
+<p>Handling call messages.</p>
+  </section>
+</section>
+<section class="detail" id="handle_cast/2">
+
+  <div class="detail-header">
+    <a href="#handle_cast/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_cast(Request, State)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L108" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> handle_cast(Request :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), State :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()) ->
+                     {noreply, NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()} |
+                     {noreply, NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), Timeout :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:timeout/0">timeout</a>()} |
+                     {noreply, NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), hibernate} |
+                     {stop, Reason :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()}.</pre>
+
+      </div>
+
+<p>Handling cast messages.</p>
+  </section>
+</section>
+<section class="detail" id="handle_info/2">
+
+  <div class="detail-header">
+    <a href="#handle_info/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_info(Info, State)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L126" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> handle_info(Info :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:timeout/0">timeout</a>() | <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), State :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()) ->
+                     {noreply, NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()} |
+                     {noreply, NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), Timeout :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:timeout/0">timeout</a>()} |
+                     {noreply, NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), hibernate} |
+                     {stop, Reason :: normal | <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), NewState :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()}.</pre>
+
+      </div>
+
+<p>Handling all non call/cast messages.</p>
+  </section>
+</section>
+<section class="detail" id="init/1">
+
+  <div class="detail-header">
+    <a href="#init/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">init(Args)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L55" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> init(Args :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()) ->
+              {ok, State :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()} |
+              {ok, State :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), Timeout :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:timeout/0">timeout</a>()} |
+              {ok, State :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), hibernate} |
+              {stop, Reason :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()} |
+              ignore.</pre>
+
+      </div>
+
+<p>Initializes the server.</p>
+  </section>
+</section>
 <section class="detail" id="send_event/1">
 
   <div class="detail-header">
@@ -151,7 +380,7 @@ cellium
       <h1 class="signature" translate="no">send_event(Event)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L48" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L40" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -173,7 +402,7 @@ cellium
       <h1 class="signature" translate="no">start_link()</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L41" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L33" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -192,7 +421,7 @@ cellium
 
       </div>
 
-<p>Starts the server</p>
+<p>Starts the server.</p>
   </section>
 </section>
 <section class="detail" id="start_link/1">
@@ -205,7 +434,7 @@ cellium
       <h1 class="signature" translate="no">start_link(CallBackModule)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L44" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L36" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -215,6 +444,37 @@ cellium
   <section class="docstring">
 
 
+  </section>
+</section>
+<section class="detail" id="terminate/2">
+
+  <div class="detail-header">
+    <a href="#terminate/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">terminate(Reason, State)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_event_manager.erl#L157" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> terminate(Reason :: normal | shutdown | {shutdown, <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()} | <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), State :: <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:any/0">any</a>().</pre>
+
+      </div>
+
+<p>This function is called by a gen_server when it is about to
+terminate. It should be the opposite of Module:init/1 and do any
+necessary cleaning up. When it returns, the gen_server terminates
+with Reason. The return value is ignored.</p>
   </section>
 </section>
 

@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
+    <script defer src="dist/sidebar_items-FBCC5B94.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -88,6 +88,11 @@ cellium
   </div>
 
 
+    <section id="moduledoc">
+<p>The layout module is responsible for calculating the positions and dimensions
+  of all widgets in the tree.</p><p>  It supports:</p><ul><li><strong>Absolute Positioning</strong>: Widgets can be placed at specific coordinates.</li><li><strong>Relative Positioning</strong>: Widgets are laid out according to their container's orientation (vertical/horizontal).</li><li><strong>Centered Positioning</strong>: Widgets can be automatically centered on the screen.</li><li><strong>Flexible Sizing</strong>: Widgets can have a fixed size or expand to fill available space.</li><li><strong>Padding</strong>: Containers can define internal padding that affects child placement.</li></ul>
+    </section>
+
 </div>
 
   <section id="summary" class="details-list">
@@ -104,9 +109,13 @@ cellium
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#calculate_layout/1" data-no-tooltip="" translate="no">calculate_layout(Widget)</a>
+        <a href="#calculate_layout/1" data-no-tooltip="" translate="no">calculate_layout/1</a>
 
       </div>
+
+        <div class="summary-synopsis"><p>Recursively calculates the layout of a widget and its children.
+  This function is called internally by <a><code class="inline">calculate_layout/3</code></a> and during
+  the recursive traversal of the tree.</p></div>
 
     </div>
 
@@ -115,6 +124,9 @@ cellium
         <a href="#calculate_layout/3" data-no-tooltip="" translate="no">calculate_layout(Widget, Width, Height)</a>
 
       </div>
+
+        <div class="summary-synopsis"><p>Calculates the layout for a widget tree starting from the root, given specific
+  target dimensions.</p></div>
 
     </div>
 
@@ -138,10 +150,10 @@ cellium
       <i class="ri-link-m" aria-hidden="true"></i>
     </a>
     <div class="heading-with-actions">
-      <h1 class="signature" translate="no">calculate_layout(Widget)</h1>
+      <h1 class="signature" translate="no">calculate_layout/1</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/layout.erl#L15" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/layout.erl#L41" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -156,7 +168,9 @@ cellium
 
       </div>
 
-
+<p>Recursively calculates the layout of a widget and its children.
+  This function is called internally by <a href="#calculate_layout/3"><code class="inline">calculate_layout/3</code></a> and during
+  the recursive traversal of the tree.</p>
   </section>
 </section>
 <section class="detail" id="calculate_layout/3">
@@ -169,7 +183,7 @@ cellium
       <h1 class="signature" translate="no">calculate_layout(Widget, Width, Height)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/layout.erl#L7" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/layout.erl#L28" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -184,7 +198,8 @@ cellium
 
       </div>
 
-
+<p>Calculates the layout for a widget tree starting from the root, given specific
+  target dimensions.</p><p>  Parameters:</p><ul><li><code class="inline">Widget</code>: The root widget of the tree to lay out.</li><li><code class="inline">Width</code>: The total available width for the layout.</li><li><code class="inline">Height</code>: The total available height for the layout.</li></ul>
   </section>
 </section>
 

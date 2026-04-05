@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
+    <script defer src="dist/sidebar_items-FBCC5B94.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -80,7 +80,7 @@ cellium
 
     </h1>
 
-      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/container.erl#L7" title="View Source" class="icon-action" rel="help">
+      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/container.erl#L1" title="View Source" class="icon-action" rel="help">
         <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         <span class="sr-only">View Source</span>
       </a>
@@ -89,7 +89,9 @@ cellium
 
 
     <section id="moduledoc">
-<p>Container widget module for laying out child widgets.</p><p>Containers are special widgets that can hold and arrange other widgets. They support horizontal and vertical layout orientations and can optionally display debug visual aids to show their bounds.</p>
+<p>Container widgets are used to arrange other widgets in a specific layout.
+  They support both horizontal and vertical orientations and handle the
+  distribution of space among their children.</p>
     </section>
 
 </div>
@@ -132,6 +134,8 @@ cellium
 
       </div>
 
+        <div class="summary-synopsis"><p>Renders the container when it or one of its children has focus.</p></div>
+
     </div>
 
 </div>
@@ -157,7 +161,7 @@ cellium
       <h1 class="signature" translate="no">new(Id, Orientation)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/container.erl#L24" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/container.erl#L21" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -172,7 +176,7 @@ cellium
 
       </div>
 
-<p>Creates a new container widget.</p><p>Creates a container that can hold child widgets arranged in the specified orientation. By default, containers have no padding.</p>
+<p>Creates a new container widget.</p><p>  Parameters:</p><ul><li><code class="inline">Id</code>: A unique identifier for the container.</li><li><code class="inline">Orientation</code>: The layout direction, either <code class="inline">horizontal</code> or <code class="inline">vertical</code>.</li></ul>
   </section>
 </section>
 <section class="detail" id="render/2">
@@ -185,7 +189,7 @@ cellium
       <h1 class="signature" translate="no">render(Container, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/container.erl#L41" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/container.erl#L36" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -200,7 +204,9 @@ cellium
 
       </div>
 
-<p>Renders the container and its debug visualization if enabled.</p><p>Normally renders nothing visible. When debug mode is enabled, draws an underscore pattern filling the container's bounds to visualize its layout area.</p>
+<p>Renders the container and its debug visualization if enabled.</p><p>  Normally renders nothing visible. When debug mode is enabled, draws
+  an underscore pattern filling the container's bounds to visualize
+  its layout area.</p>
   </section>
 </section>
 <section class="detail" id="render_focused/2">
@@ -213,7 +219,7 @@ cellium
       <h1 class="signature" translate="no">render_focused(Container, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/container.erl#L58" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/container.erl#L54" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -228,7 +234,7 @@ cellium
 
       </div>
 
-
+<p>Renders the container when it or one of its children has focus.</p>
   </section>
 </section>
 
