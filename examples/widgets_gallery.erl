@@ -41,7 +41,17 @@ init(_Args) ->
             g1 => #{value => 50, label => <<"Volume">>},
             pb1 => #{progress => 0.3},
             cb1 => #{checked => true},
-            cb2 => #{checked => false}
+            cb2 => #{checked => false},
+            edit_tbl => #{
+                rows => [
+                    ["Alice", "28", "Engineer"],
+                    ["Bob", "35", "Designer"],
+                    ["Carol", "42", "Manager"]
+                ],
+                selected_row => 0,
+                selected_col => 0,
+                editing => false
+            }
         }
     },
     % Start a timer for the spinner
@@ -53,14 +63,14 @@ update(Model, Msg) ->
         {key, _, _, _, _, <<"q">>} ->
             cellium:stop(),
             Model;
-        % Shift + Right Arrow to next tab (5 tabs now)
+        % Shift + Right Arrow to next tab (6 tabs now)
         {key, true, false, false, false, right_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 1) rem 5};
+            Model#{active_tab => (Active + 1) rem 6};
         % Shift + Left Arrow to previous tab
         {key, true, false, false, false, left_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 4) rem 5};
+            Model#{active_tab => (Active + 5) rem 6};
         tick ->
             erlang:send_after(100, self(), tick),
             Model#{spinner_frame => maps:get(spinner_frame, Model) + 1};
@@ -84,7 +94,7 @@ render(Model) ->
     StatusText = io_lib:format("Shift+Arrows: Tabs | Q: Quit | Focused: ~p", [FocusedId]),
 
     {vbox, [{id, main}, {padding, 0}], [
-        {tabs, [{id, gallery_tabs}, {tabs, ["Basic", "Progress", "Input", "List", "Table"]}, {active_tab, ActiveTab}, {expand, true}], [
+        {tabs, [{id, gallery_tabs}, {tabs, ["Basic", "Progress", "Input", "List", "Table", "Edit Table"]}, {active_tab, ActiveTab}, {expand, true}], [
             % Tab 1: Basic Widgets
             {vbox, [{id, tab_basic}, {expand, true}, {padding, 1}], [
                 {header, [{id, h1}, {color, cyan}], "Basic Controls"},
@@ -172,6 +182,22 @@ render(Model) ->
                              ["Gleam", "2019", "Functional"],
                              ["LFE", "2008", "Functional"]
                          ]}]},
+                {spacer, [{expand, true}]}
+            ]},
+
+            % Tab 6: Editable Table
+            {vbox, [{id, tab_edit_table}, {expand, true}, {padding, 1}], [
+                {header, [{id, h6}, {color, green}], "Editable Table"},
+                {spacer, [{size, 1}]},
+                {text, [{id, t7}], "Arrow keys to navigate, Enter to edit, Tab to next cell:"},
+                {spacer, [{size, 1}]},
+                {table, [{id, edit_tbl},
+                         {style, rounded},
+                         {editable, true},
+                         {focusable, true},
+                         {size, 6},
+                         {headers, ["Name", "Age", "Role"]},
+                         {column_widths, [20, 8, 15]}]},
                 {spacer, [{expand, true}]}
             ]}
         ]},

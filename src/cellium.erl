@@ -182,8 +182,10 @@ maybe_handle_component_event(Msg, Model) ->
                                 case lists:member({handle_event, 2}, Exports) of
                                     true ->
                                         States = maps:get(widget_states, Model, #{}),
-                                        CurrentState = maps:get(Id, States, Widget),
-                                        NewWidgetState = Type:handle_event(Msg, CurrentState),
+                                        CurrentState = maps:get(Id, States, #{}),
+                                        % Merge widget properties with state so handle_event has full context
+                                        FullWidget = maps:merge(Widget, CurrentState),
+                                        NewWidgetState = Type:handle_event(Msg, FullWidget),
                                         Model#{widget_states => States#{Id => NewWidgetState}};
                                     false -> Model
                                 end
