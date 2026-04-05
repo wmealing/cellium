@@ -69,7 +69,7 @@ create_widget(Tag, Id, Props) ->
     case Tag of
         T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio; 
                T=:=progress_bar; T=:=toggle; T=:=text_input; T=:=spinner;
-               T=:=box; T=:=frame; T=:=spacer; T=:=gauge; T=:=table; T=:=custom_box ->
+               T=:=box; T=:=frame; T=:=spacer; T=:=gauge; T=:=table ->
             Tag:new(Id);
         tabs -> tab:new(Id);
         list -> list:new(Id, proplists:get_value(items, Props, []));
