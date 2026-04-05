@@ -81,7 +81,7 @@ render(Model) ->
                          {style, CurrentStyle},
                          {headers, Headers},
                          {column_widths, [20, 8, 20]},
-                         {size, 8},
+                         {size, 9},
                          {rows, [
                              ["Alice Johnson", "28", "San Francisco"],
                              ["Bob Smith", "35", "New York"],
@@ -100,7 +100,7 @@ render(Model) ->
                          {style, CurrentStyle},
                          {headers, ProgrammingHeaders},
                          {column_widths, [15, 8, 15, 12]},
-                         {size, 12},
+                         {size, 13},
                          {rows, [
                              ["Erlang", "1986", "Functional", "BEAM"],
                              ["Elixir", "2011", "Functional", "BEAM"],
@@ -124,7 +124,7 @@ render(Model) ->
                          {style, CurrentStyle},
                          {headers, MetricsHeaders},
                          {column_widths, [18, 12, 10, 10]},
-                         {size, 9},
+                         {size, 10},
                          {rows, [
                              ["CPU Usage", "45.2%", "+2.1%", "OK"],
                              ["Memory", "8.4 GB", "+0.3 GB", "OK"],

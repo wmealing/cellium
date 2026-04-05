@@ -165,8 +165,8 @@ draw_bottom(X, Y, Fg, Bg, Box, ColumnWidths, Buffer) ->
 -spec draw_table(integer(), integer(), integer(), atom(), atom(), #box{}, [non_neg_integer()], map()) -> map().
 draw_table(X,Y, Height,Fg,Bg,Box,ColumnWidths, Buffer) ->
     Buffer1 = draw_header(X, Y,          Fg, Bg, Box,         ColumnWidths, Buffer),
-    Buffer2 = draw_rows(X,   Y + 1,      Fg, Bg, Box, Height, ColumnWidths, Buffer1),
-    draw_bottom(X, Y + Height, Fg, Bg, Box, ColumnWidths, Buffer2).
+    Buffer2 = draw_rows(X,   Y + 1,      Fg, Bg, Box, max(0, Height - 2), ColumnWidths, Buffer1),
+    draw_bottom(X, Y + max(1, Height - 1), Fg, Bg, Box, ColumnWidths, Buffer2).
 
 %%% @doc Renders a complete table widget with headers and data.
 %%%
@@ -200,6 +200,8 @@ render(Widget, Buffer) ->
                 widget_type => table_row,
                 x => X,
                 y => Y + 1,
+                width => Width,
+                height => 1,
                 row_data => Headers,
                 column_widths => ColumnWidths,
                 color => Fg,
@@ -212,26 +214,28 @@ render(Widget, Buffer) ->
 
     %% 3. Render the data rows
     Rows = maps:get(rows, Widget, []),
-    render_rows(X, Y + HeaderOffset, Fg, Bg, ColumnWidths, Rows, Buffer2).
+    render_rows(X, Y + HeaderOffset, Width, Fg, Bg, ColumnWidths, Rows, Buffer2).
 
 
 %%% @private
 %%% @doc Iterates over the list of rows and renders each one.
--spec render_rows(integer(), integer(), atom(), atom(), [non_neg_integer()], [[string()]], map()) -> map().
-render_rows(_X, _Y, _Fg, _Bg, _CW, [], Buffer) -> Buffer;
-render_rows(X, Y, Fg, Bg, CW, [Row | Rest], Buffer) ->
+-spec render_rows(integer(), integer(), integer(), atom(), atom(), [non_neg_integer()], [[string()]], map()) -> map().
+render_rows(_X, _Y, _Width, _Fg, _Bg, _CW, [], Buffer) -> Buffer;
+render_rows(X, Y, Width, Fg, Bg, CW, [Row | Rest], Buffer) ->
     RowWidget = #{
         type => widget,
         widget_type => table_row,
         x => X,
         y => Y,
+        width => Width,
+        height => 1,
         row_data => Row,
         column_widths => CW,
         color => Fg,
         'background-color' => Bg
     },
     Buffer1 = widgets:render(RowWidget, Buffer),
-    render_rows(X, Y + 1, Fg, Bg, CW, Rest, Buffer1).
+    render_rows(X, Y + 1, Width, Fg, Bg, CW, Rest, Buffer1).
 %%% Editable table implementation to append to table.erl
 
 %%% @doc Renders the table when it has focus (shows selected cell highlight).
