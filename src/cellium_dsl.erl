@@ -3,179 +3,84 @@
 
 from_dsl(Dsl) -> from_dsl(Dsl, #{}).
 
-from_dsl({vbox, Props, Children}, Model) when is_list(Children) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    C = container:new(Id, vertical),
-    apply_leaf_props(inject_state(C#{children => [from_dsl(Child, Model) || Child <- Children]}, Id, Model), Props);
-
-from_dsl({hbox, Props, Children}, Model) when is_list(Children) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    C = container:new(Id, horizontal),
-    apply_leaf_props(inject_state(C#{children => [from_dsl(Child, Model) || Child <- Children]}, Id, Model), Props);
-
-from_dsl({header, Props, Value}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = header:new(Id, Value),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({header, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = header:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({text, Props, Value}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = text:new(Id, Value),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({text, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = text:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({button, Props, Label}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = button:new(Id, Label),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({button, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = button:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({checkbox, Props, Label}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = checkbox:new(Id, Label),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({checkbox, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = checkbox:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({radio, Props, Label}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = radio:new(Id, Label),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({radio, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = radio:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({progress_bar, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = progress_bar:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({toggle, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = toggle:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({list, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    Items = proplists:get_value(items, Props, []),
-    W = list:new(Id, Items),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({text_input, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = text_input:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({spinner, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = spinner:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({box, Props, Children}, Model) when is_list(Children) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = box:new(Id),
-    apply_leaf_props(inject_state(W#{children => [from_dsl(Child, Model) || Child <- Children], type => container}, Id, Model), Props);
-
-from_dsl({box, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = box:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({frame, Props, Children}, Model) when is_list(Children) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = frame:new(Id),
-    apply_leaf_props(inject_state(W#{children => [from_dsl(Child, Model) || Child <- Children], type => container}, Id, Model), Props);
-
-from_dsl({frame, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = frame:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({tabs, Props, Children}, Model) when is_list(Children) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    ActiveIdx = proplists:get_value(active_tab, Props, 0),
-    
-    % Only convert the active child to a widget tree to ensure only visible 
-    % widgets are registered for focus.
-    RealChildren = [ 
-        case I == ActiveIdx of
-            true -> from_dsl(C, Model);
-            false -> (widget:new())#{widget_type => spacer, id => make_ref()}
-        end
-        || {I, C} <- lists:zip(lists:seq(0, length(Children)-1), Children)
-    ],
-    
-    W = tab:new(Id),
-    apply_leaf_props(inject_state(W#{children => RealChildren, type => container}, Id, Model), Props);
-
-from_dsl({tabs, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = tab:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({spacer, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = spacer:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({dialog, Props, Children}, Model) when is_list(Children) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = dialog:new(Id),
-    apply_leaf_props(inject_state(W#{children => [from_dsl(Child, Model) || Child <- Children], type => container}, Id, Model), Props);
-
-from_dsl({gauge, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = gauge:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({table, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = table:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({status_bar, Props, Text}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = status_bar:new(Id, Text),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
-from_dsl({custom_box, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
-    W = custom_box:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
-
+%% Wrapper that extracts ID and finalizes the widget
 from_dsl({custom, Module, Props}, Model) ->
-    Id = proplists:get_value(id, Props, make_ref()),
+    Id = get_id(Props),
     W = Module:new(Id),
-    apply_leaf_props(inject_state(W, Id, Model), Props);
+    finalize_widget(W, Id, Props, Model);
+
+from_dsl({Tag, Props, Arg3}, Model) when is_list(Props) ->
+    Id = get_id(Props),
+    W = create_widget(Tag, Id, Props, Arg3, Model),
+    finalize_widget(W, Id, Props, Model);
+
+from_dsl({Tag, Props}, Model) when is_list(Props) ->
+    Id = get_id(Props),
+    W = create_widget(Tag, Id, Props),
+    finalize_widget(W, Id, Props, Model);
 
 from_dsl(Other, _Model) ->
     logger:warning("Unknown DSL element: ~p", [Other]),
     (widget:new())#{id => make_ref(), widget_type => spacer, type => widget}.
 
+%% Helper to get ID from props or generate a new one
+get_id(Props) -> proplists:get_value(id, Props, make_ref()).
+
+%% Finalize widget by injecting state and applying properties
+finalize_widget(Widget, Id, Props, Model) ->
+    W1 = inject_state(Widget, Id, Model),
+    apply_leaf_props(W1, Props).
+
+%% 3-tuple creation (Containers or widgets with primary value)
+create_widget(Tag, Id, Props, Arg3, Model) ->
+    case Tag of
+        % Containers with children
+        T when T=:=vbox; T=:=hbox; T=:=box; T=:=frame; T=:=dialog ->
+            W = case T of
+                vbox -> container:new(Id, vertical);
+                hbox -> container:new(Id, horizontal);
+                _    -> Tag:new(Id)
+            end,
+            IsContainer = (T =/= vbox andalso T =/= hbox),
+            W1 = if IsContainer -> W#{type => container}; true -> W end,
+            W1#{children => [from_dsl(C, Model) || C <- Arg3]};
+
+        tabs ->
+            ActiveIdx = proplists:get_value(active_tab, Props, 0),
+            RealChildren = [
+                case I == ActiveIdx of
+                    true -> from_dsl(C, Model);
+                    false -> (widget:new())#{widget_type => spacer, id => make_ref()}
+                end
+                || {I, C} <- lists:zip(lists:seq(0, length(Arg3)-1), Arg3)
+                ],
+            (tab:new(Id))#{children => RealChildren, type => container};
+
+        % Widgets with a primary value (label, text, etc.)
+        T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio; T=:=status_bar ->
+            Tag:new(Id, Arg3);
+        _ ->
+            logger:warning("Tag ~p does not support 3rd argument value, ignoring.", [Tag]),
+            create_widget(Tag, Id, Props)
+    end.
+
+%% 2-tuple creation (Standard leaf widgets)
+create_widget(Tag, Id, Props) ->
+    case Tag of
+        T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio; 
+               T=:=progress_bar; T=:=toggle; T=:=text_input; T=:=spinner;
+               T=:=box; T=:=frame; T=:=spacer; T=:=gauge; T=:=table; T=:=custom_box ->
+            Tag:new(Id);
+        tabs -> tab:new(Id);
+        list -> list:new(Id, proplists:get_value(items, Props, []));
+        _ ->
+            logger:warning("Unknown widget tag: ~p", [Tag]),
+            (widget:new())#{widget_type => spacer}
+    end.
 
 inject_state(Widget, Id, Model) ->
     States = maps:get(widget_states, Model, #{}),
     State = maps:get(Id, States, #{}),
-    % Ensure we don't overwrite the Id or widget_type with whatever is in state
-    % although they should match anyway.
     maps:merge(Widget, State).
 
 apply_leaf_props(Widget, Props) ->
@@ -188,21 +93,15 @@ apply_leaf_props(Widget, Props) ->
     apply_props(Widget, UpdatedProps).
 
 apply_props(Widget, []) -> widget:create(Widget);
-
 apply_props(Widget, [{id, _} | Rest]) -> apply_props(Widget, Rest);
-
 apply_props(Widget, [{padding, P} | Rest]) ->
     apply_props(Widget#{padding => parse_padding(P)}, Rest);
-
 apply_props(Widget, [{width, W} | Rest]) ->
     apply_props(Widget#{width => W, requested_width => W}, Rest);
-
 apply_props(Widget, [{height, H} | Rest]) ->
     apply_props(Widget#{size => H, requested_height => H}, Rest);
-
 apply_props(Widget, [{size, S} | Rest]) ->
     apply_props(Widget#{size => S, requested_size => S}, Rest);
-
 apply_props(Widget, [{Key, Val} | Rest]) ->
     apply_props(Widget#{Key => Val}, Rest).
 
