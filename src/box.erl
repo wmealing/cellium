@@ -109,7 +109,7 @@ render(Widget, Buffer) ->
 
     if
         Height > 0 andalso Width > 0 ->
-            table:draw_table(X, Y, Height - 1, Fg, Bg, BoxStyle, [Width - 2], Buffer);
+            box_styles:render_box(X, Y, Width, Height, BoxStyle, "", left, Fg, Bg, Buffer);
         true ->
             Buffer
     end.

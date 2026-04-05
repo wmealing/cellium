@@ -146,6 +146,11 @@ from_dsl({status_bar, Props, Text}, Model) ->
     W = status_bar:new(Id, Text),
     apply_leaf_props(inject_state(W, Id, Model), Props);
 
+from_dsl({custom_box, Props}, Model) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = custom_box:new(Id),
+    apply_leaf_props(inject_state(W, Id, Model), Props);
+
 from_dsl({custom, Module, Props}, Model) ->
     Id = proplists:get_value(id, Props, make_ref()),
     W = Module:new(Id),

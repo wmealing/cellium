@@ -107,52 +107,14 @@ render(Widget, Buffer) ->
 
     Width = min(maps:get(width, Widget, 0), maps:get(requested_width, Widget, maps:get(width, Widget, 0))),
     Height = min(maps:get(height, Widget, 0), maps:get(requested_height, Widget, maps:get(height, Widget, 0))),
+    Title = maps:get(title, Widget, ""),
+    TitleAlign = maps:get(title_align, Widget, left),
 
     if
         Height > 0 andalso Width > 0 ->
-            Buffer1 = table:draw_table(X, Y, Height - 1, Fg, Bg, BoxStyle, [Width - 2], Buffer),
-            render_title(Widget, Buffer1);
+            box_styles:render_box(X, Y, Width, Height, BoxStyle, Title, TitleAlign, Fg, Bg, Buffer);
         true ->
             Buffer
-    end.
-
-render_title(#{title := ""} = _Widget, Buffer) ->
-    Buffer;
-render_title(Widget, Buffer) ->
-    Title = maps:get(title, Widget, ""),
-    Align = maps:get(title_align, Widget, left),
-    Width = maps:get(width, Widget, 0),
-    #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
-
-    % Add spaces around title
-    FormattedTitle = " " ++ Title ++ " ",
-    TitleLen = length(FormattedTitle),
-
-    % Available space between corners is Width - 2
-    MaxLen = max(0, Width - 2),
-    
-    if MaxLen > 0 ->
-        FinalTitle = if TitleLen > MaxLen -> string:slice(FormattedTitle, 0, MaxLen);
-                        true -> FormattedTitle
-                     end,
-        FinalLen = length(FinalTitle),
-        
-        TitleX = case Align of
-            left -> 
-                % Start at X + 1, but if there's room, prefer X + 2 for style
-                if MaxLen > FinalLen -> X + 2;
-                   true -> X + 1
-                end;
-            center -> 
-                X + (Width - FinalLen) div 2;
-            right -> 
-                % End at X + Width - 2
-                X + Width - 1 - FinalLen
-        end,
-        
-        cellium_buffer:put_string(TitleX, Y, Fg, Bg, FinalTitle, Buffer);
-    true ->
-        Buffer
     end.
 
 has_child_focus(#{children := Children}) ->

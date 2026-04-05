@@ -48,7 +48,7 @@ render(Widget, Buffer) ->
             Style = box_styles:square(),
             % 1. Draw the main box starting at Y+1
             % We use Height-1 because the header (tabs) starts at Y, but the box frame is at Y+1
-            Buffer1 = table:draw_table(X, Y + 1, Height - 2, Fg, Bg, Style, [Width - 2], Buffer),
+            Buffer1 = box_styles:render_box(X, Y + 1, Width, Height - 1, Style, "", left, Fg, Bg, Buffer),
 
             % 2. Draw the tabs popping up from the top border line (Y and Y+1)
             draw_popped_tabs(X, Y, Width, Tabs, ActiveIdx, Fg, Bg, Buffer1);
