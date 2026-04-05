@@ -1,8 +1,9 @@
-%%% @doc Table row widget for rendering individual rows within a table.
-%%%
-%%% This module renders the data cells of a table row, distributing content
-%%% across columns with the specified widths.
-%%% @end
+-moduledoc """
+Table row widget for rendering individual rows within a table.
+
+This module renders the data cells of a table row, distributing content
+across columns with the specified widths.
+""".
 -module(table_row).
 
 -export([render/2]).
@@ -10,12 +11,13 @@
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
 
-%%% @doc Renders a table row with data cells.
-%%%
-%%% @param Widget Table row widget map containing row_data and column_widths
-%%% @param Buffer Current frame buffer
-%%% @returns Updated buffer
-%%% @end
+-doc """
+Renders a table row with data cells.
+
+- `Widget`: Table row widget map containing row_data and column_widths
+- `Buffer`: Current frame buffer
+- Returns: Updated buffer
+""".
 -spec render(map(), map()) -> map().
 render(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
@@ -26,7 +28,7 @@ render(Widget, Buffer) ->
     render_cells(X, Y, Fg, Bg, RowData, ColumnWidths, Buffer).
 
 %%% @private
-%%% @doc Renders each cell in the row at the appropriate column position.
+-doc "Renders each cell in the row at the appropriate column position.".
 -spec render_cells(integer(), integer(), atom(), atom(), [string()], [non_neg_integer()], map()) -> map().
 render_cells(_X, _Y, _Fg, _Bg, [], _, Buffer) ->
     Buffer;

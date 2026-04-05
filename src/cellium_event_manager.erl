@@ -1,11 +1,6 @@
-%%%-------------------------------------------------------------------
-%%% @author Wade Mealing <wmealing@gmail.com>
-%%% @copyright (C) 2025, Wade Mealing
-%%% @doc
-%%%
-%%% @end
-%%% Created : 27 Sep 2025 by Wade Mealing <wmealing@gmail.com>
-%%%-------------------------------------------------------------------
+-moduledoc """
+Event manager for handling terminal and external events.
+""".
 -module(cellium_event_manager).
 
 -behaviour(gen_server).
@@ -29,11 +24,7 @@
 %%% API
 %%%===================================================================
 
-%%--------------------------------------------------------------------
-%% @doc
-%% Starts the server
-%% @end
-%%--------------------------------------------------------------------
+-doc "Starts the server.".
 -spec start_link() -> {ok, Pid :: pid()} |
           {error, Error :: {already_started, pid()}} |
           {error, Error :: term()} |
@@ -52,12 +43,8 @@ send_event(Event) ->
 %%% gen_server callbacks
 %%%===================================================================
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Initializes the server
-%% @end
-%%--------------------------------------------------------------------
+%%% @private
+-doc "Initializes the server.".
 -spec init(Args :: term()) -> {ok, State :: term()} |
           {ok, State :: term(), Timeout :: timeout()} |
           {ok, State :: term(), hibernate} |
@@ -93,12 +80,8 @@ event_poller_loop(Parent) ->
             event_poller_loop(Parent)
     end.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Handling call messages
-%% @end
-%%--------------------------------------------------------------------
+%%% @private
+-doc "Handling call messages.".
 -spec handle_call(Request :: term(), From :: {pid(), term()}, State :: term()) ->
           {reply, Reply :: term(), NewState :: term()} |
           {reply, Reply :: term(), NewState :: term(), Timeout :: timeout()} |
@@ -113,12 +96,8 @@ handle_call(Msg, _From, State) ->
     logger:info("Weird msg: ~p", [Msg]),
     {reply, ok, State}.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Handling cast messages
-%% @end
-%%--------------------------------------------------------------------
+%%% @private
+-doc "Handling cast messages.".
 -spec handle_cast(Request :: term(), State :: term()) ->
           {noreply, NewState :: term()} |
           {noreply, NewState :: term(), Timeout :: timeout()} |
@@ -135,12 +114,8 @@ handle_cast({external_event, Event}, State) ->
 handle_cast(_Request, State) ->
     {noreply, State}.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Handling all non call/cast messages
-%% @end
-%%--------------------------------------------------------------------
+%%% @private
+-doc "Handling all non call/cast messages.".
 -spec handle_info(Info :: timeout() | term(), State :: term()) ->
           {noreply, NewState :: term()} |
           {noreply, NewState :: term(), Timeout :: timeout()} |
@@ -169,26 +144,20 @@ process_event(Event, _State) ->
     end,
     cellium:handle_event(Event).
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% This function is called by a gen_server when it is about to
-%% terminate. It should be the opposite of Module:init/1 and do any
-%% necessary cleaning up. When it returns, the gen_server terminates
-%% with Reason. The return value is ignored.
-%% @end
-%%--------------------------------------------------------------------
+%%% @private
+-doc """
+This function is called by a gen_server when it is about to
+terminate. It should be the opposite of Module:init/1 and do any
+necessary cleaning up. When it returns, the gen_server terminates
+with Reason. The return value is ignored.
+""".
 -spec terminate(Reason :: normal | shutdown | {shutdown, term()} | term(),
                 State :: term()) -> any().
 terminate(_Reason, _State) ->
     ok.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Convert process state when code is changed
-%% @end
-%%--------------------------------------------------------------------
+%%% @private
+-doc "Convert process state when code is changed.".
 -spec code_change(OldVsn :: term() | {down, term()},
                   State :: term(),
                   Extra :: term()) -> {ok, NewState :: term()} |

@@ -1,25 +1,22 @@
-%%% @doc Container widget module for laying out child widgets.
-%%%
-%%% Containers are special widgets that can hold and arrange other widgets.
-%%% They support horizontal and vertical layout orientations and can optionally
-%%% display debug visual aids to show their bounds.
-%%% @end
 -module(container).
+-moduledoc """
+  Container widgets are used to arrange other widgets in a specific layout.
+  They support both horizontal and vertical orientations and handle the
+  distribution of space among their children.
+""".
 
 -export([render/2, new/2, render_focused/2]).
 
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
 
-%%% @doc Creates a new container widget.
-%%%
-%%% Creates a container that can hold child widgets arranged in the specified
-%%% orientation. By default, containers have no padding.
-%%%
-%%% @param Id Unique identifier for the container
-%%% @param Orientation Layout direction: `horizontal' or `vertical'
-%%% @returns A container widget map
-%%% @end
+-doc """
+  Creates a new container widget.
+
+  Parameters:
+  - `Id`: A unique identifier for the container.
+  - `Orientation`: The layout direction, either `horizontal` or `vertical`.
+""".
 -spec new(term(), horizontal | vertical) -> map().
 new(Id, Orientation) ->
     (widget:new())#{orientation => Orientation,
@@ -28,15 +25,13 @@ new(Id, Orientation) ->
                     widget_type => container,
                     type => container }.
 
-%%% @doc Renders the container and its debug visualization if enabled.
-%%%
-%%% Normally renders nothing visible. When debug mode is enabled, draws
-%%% an underscore pattern filling the container's bounds to visualize
-%%% its layout area.
-%%%
-%%% @param Container The container widget map
-%%% @returns ok or hi (internal token)
-%%% @end
+-doc """
+  Renders the container and its debug visualization if enabled.
+
+  Normally renders nothing visible. When debug mode is enabled, draws
+  an underscore pattern filling the container's bounds to visualize
+  its layout area.
+""".
 -spec render(map(), map()) -> map().
 render(Container, Buffer) ->
     case maps:get(debug, Container, false) of
@@ -54,6 +49,7 @@ render(Container, Buffer) ->
             Buffer
     end.
 
+-doc "Renders the container when it or one of its children has focus.".
 -spec render_focused(map(), map()) -> map().
 render_focused(Container, Buffer) ->
     render(Container, Buffer).

@@ -1,10 +1,9 @@
-%%% @doc Table widget module for rendering tabular data with borders.
-%%%
-%%% This module provides functionality for rendering tables with configurable
-%%% borders, headers, and rows. It supports various box styles and can render
-%%% multi-column tables with different column widths.
-%%% @end
 -module(table).
+-moduledoc """
+  The table widget module provides functionality for rendering tabular data
+  with borders, headers, and rows. It supports various box styles and can
+  render multi-column tables with configurable column widths.
+""".
 
 -export([
     new/1,
@@ -24,10 +23,19 @@
 -include("cellium.hrl").
 -import(widget, [get_common_props/1]).
 
+-doc "Creates a new table widget with default dimensions (0x0).".
 -spec new(term()) -> map().
 new(Id) ->
     new(Id, 0, 0).
 
+-doc """
+  Creates a new table widget with the specified identifier, width, and height.
+
+  Parameters:
+  - `Id`: A unique identifier for the widget.
+  - `Width`: Initial width of the table.
+  - `Height`: Initial height of the table.
+""".
 -spec new(term(), non_neg_integer(), non_neg_integer()) -> map().
 new(Id, Width, Height) ->
     (widget:new())#{id => Id,
@@ -46,8 +54,8 @@ new(Id, Width, Height) ->
                     edit_cursor_pos => 0,
                     type => widget}.
 
-%%% @private
-%%% @doc Builds a horizontal line segment for table borders.
+%% @private
+-doc "Builds a horizontal line segment for table borders.".
 -spec build_line(#box{}, [non_neg_integer()], string(), string(), string(), string()) -> iolist().
 build_line(_Box, [], Left, _Horizontal, _Divider, Right) ->
     [Left, Right];
@@ -60,12 +68,13 @@ build_line(Box, [Width | Rest], Left, Horizontal, Divider, Right) when Width =< 
 build_line(Box, [Width | Rest], Left, Horizontal, Divider, Right) ->
     [Left, lists:duplicate(Width, Horizontal), Divider | build_line(Box, Rest, "", Horizontal, Divider, Right)].
 
-%%% @doc Generates the top border line of a table.
-%%%
-%%% @param Box The box style record defining border characters
-%%% @param Widths List of column widths
-%%% @returns A flattened iolist representing the top border
-%%% @end
+-doc """
+Generates the top border line of a table.
+
+- `Box`: The box style record defining border characters
+- `Widths`: List of column widths
+- Returns: A flattened iolist representing the top border
+""".
 -spec get_top(#box{}, [non_neg_integer()]) -> string().
 get_top(Box, Widths) ->
     lists:flatten(
@@ -73,19 +82,20 @@ get_top(Box, Widths) ->
                  Box#box.top_left, Box#box.top,
                  Box#box.top_divider, Box#box.top_right)).
 
-%%% @doc Generates a row separator line for a table.
-%%%
-%%% Different separator styles are available depending on the level:
-%%% - `head': Header row separator
-%%% - `row': Regular row separator
-%%% - `mid': Middle separator (minimal)
-%%% - `foot': Footer row separator
-%%%
-%%% @param Box The box style record defining border characters
-%%% @param Level The type of row separator to generate
-%%% @param Widths List of column widths
-%%% @returns A flattened iolist representing the row separator
-%%% @end
+-doc """
+Generates a row separator line for a table.
+
+Different separator styles are available depending on the level:
+- `head`: Header row separator
+- `row`: Regular row separator
+- `mid`: Middle separator (minimal)
+- `foot`: Footer row separator
+
+- `Box`: The box style record defining border characters
+- `Level`: The type of row separator to generate
+- `Widths`: List of column widths
+- Returns: A flattened iolist representing the row separator
+""".
 -spec get_row(#box{}, head | row | mid | foot, [non_neg_integer()]) -> string().
 get_row(Box, Level, Widths) ->
     {Left, Horizontal, Cross, Right} = case Level of
@@ -96,33 +106,34 @@ get_row(Box, Level, Widths) ->
     end,
     lists:flatten(build_line(Box, Widths, Left, Horizontal, Cross, Right)).
 
-%%% @doc Generates the bottom border line of a table.
-%%%
-%%% @param Box The box style record defining border characters
-%%% @param Widths List of column widths
-%%% @returns A flattened iolist representing the bottom border
-%%% @end
+-doc """
+Generates the bottom border line of a table.
+
+- `Box`: The box style record defining border characters
+- `Widths`: List of column widths
+- Returns: A flattened iolist representing the bottom border
+""".
 -spec get_bottom(#box{}, [non_neg_integer()]) -> string().
 get_bottom(Box, Widths) ->
     lists:flatten(build_line(Box, Widths, Box#box.bottom_left, Box#box.bottom, Box#box.bottom_divider, Box#box.bottom_right)).
 
-%%% @doc Draws the header line of a table.
-%%%
-%%% @param X Starting X coordinate
-%%% @param Y Starting Y coordinate
-%%% @param Fg Foreground color
-%%% @param Bg Background color
-%%% @param Box Box style to use
-%%% @param ColumnWidths List of column widths
-%%% @returns ok
-%%% @end
+-doc """
+  Draws the header line of a table.
+
+  - `X`: Starting X coordinate
+  - `Y`: Starting Y coordinate
+  - `Fg`: Foreground color
+  - `Bg`: Background color
+  - `Box`: Box style to use
+  - `ColumnWidths`: List of column widths
+""".
 -spec draw_header(integer(), integer(), atom(), atom(), #box{}, [non_neg_integer()], map()) -> map().
 draw_header(X, Y, Fg, Bg, Box, ColumnWidths, Buffer) ->
     Line = get_top(Box, ColumnWidths),
     box_styles:drawline(X, Y, Fg, Bg, Line, Buffer).
 
-%%% @private
-%%% @doc Recursively draws row separator lines.
+%% @private
+-doc "Recursively draws row separator lines.".
 -spec draw_rows(integer(), integer(), atom(), atom(), #box{}, non_neg_integer(), [non_neg_integer()], map()) -> map().
 draw_rows(_X, _Y, _Fg, _Bg, _Box, 0, _ColumnWidths, Buffer) ->
     Buffer;
@@ -131,51 +142,54 @@ draw_rows(X, Y, Fg, Bg, Box, Height, ColumnWidths, Buffer) ->
     Buffer1 = box_styles:drawline(X, Y, Fg, Bg, Line, Buffer),
     draw_rows(X, Y + 1, Fg, Bg, Box, Height - 1, ColumnWidths, Buffer1).
 
-%%% @doc Draws the bottom line of a table.
-%%%
-%%% @param X Starting X coordinate
-%%% @param Y Starting Y coordinate
-%%% @param Fg Foreground color
-%%% @param Bg Background color
-%%% @param Box Box style to use
-%%% @param ColumnWidths List of column widths
-%%% @param Buffer Current frame buffer
-%%% @returns Updated buffer
-%%% @end
+-doc """
+  Draws the bottom line of a table.
+
+  - `X`: Starting X coordinate
+  - `Y`: Starting Y coordinate
+  - `Fg`: Foreground color
+  - `Bg`: Background color
+  - `Box`: Box style to use
+  - `ColumnWidths`: List of column widths
+  - `Buffer`: Current frame buffer
+  - Returns: Updated buffer
+""".
 -spec draw_bottom(integer(), integer(), atom(), atom(), #box{}, [non_neg_integer()], map()) -> map().
 draw_bottom(X, Y, Fg, Bg, Box, ColumnWidths, Buffer) ->
     Line = get_bottom(Box, ColumnWidths),
     box_styles:drawline(X, Y, Fg, Bg, Line, Buffer).
 
-%%% @doc Draws a complete table with borders.
-%%%
-%%% Renders a table frame consisting of header, row separators, and bottom.
-%%% Does not render content, only the structural elements.
-%%%
-%%% @param X Starting X coordinate
-%%% @param Y Starting Y coordinate
-%%% @param Height Number of rows to draw
-%%% @param Fg Foreground color
-%%% @param Bg Background color
-%%% @param Box Box style record
-%%% @param ColumnWidths List of column widths
-%%% @param Buffer Current frame buffer
-%%% @returns Updated buffer
-%%% @end
+-doc """
+  Draws a complete table with borders.
+
+  Renders a table frame consisting of header, row separators, and bottom.
+  Does not render content, only the structural elements.
+
+  - `X`: Starting X coordinate
+  - `Y`: Starting Y coordinate
+  - `Height`: Number of rows to draw
+  - `Fg`: Foreground color
+  - `Bg`: Background color
+  - `Box`: Box style record
+  - `ColumnWidths`: List of column widths
+  - `Buffer`: Current frame buffer
+  - Returns: Updated buffer
+""".
 -spec draw_table(integer(), integer(), integer(), atom(), atom(), #box{}, [non_neg_integer()], map()) -> map().
 draw_table(X,Y, Height,Fg,Bg,Box,ColumnWidths, Buffer) ->
     Buffer1 = draw_header(X, Y,          Fg, Bg, Box,         ColumnWidths, Buffer),
     Buffer2 = draw_rows(X,   Y + 1,      Fg, Bg, Box, max(0, Height - 2), ColumnWidths, Buffer1),
     draw_bottom(X, Y + max(1, Height - 1), Fg, Bg, Box, ColumnWidths, Buffer2).
 
-%%% @doc Renders a complete table widget with headers and data.
-%%%
-%%% Draws a full table including frame, optional headers, and data rows.
-%%%
-%%% @param Widget Table widget map containing position, dimensions, headers, and rows
-%%% @param Buffer Current frame buffer
-%%% @returns Updated buffer
-%%% @end
+-doc """
+  Renders a complete table widget with headers and data.
+
+  Draws a full table including frame, optional headers, and data rows.
+
+  - `Widget`: Table widget map containing position, dimensions, headers, and rows
+  - `Buffer`: Current frame buffer
+  - Returns: Updated buffer
+""".
 -spec render(map(), map()) -> map().
 render(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
@@ -217,8 +231,8 @@ render(Widget, Buffer) ->
     render_rows(X, Y + HeaderOffset, Width, Fg, Bg, ColumnWidths, Rows, Buffer2).
 
 
-%%% @private
-%%% @doc Iterates over the list of rows and renders each one.
+%% @private
+-doc "Iterates over the list of rows and renders each one.".
 -spec render_rows(integer(), integer(), integer(), atom(), atom(), [non_neg_integer()], [[string()]], map()) -> map().
 render_rows(_X, _Y, _Width, _Fg, _Bg, _CW, [], Buffer) -> Buffer;
 render_rows(X, Y, Width, Fg, Bg, CW, [Row | Rest], Buffer) ->
@@ -238,7 +252,7 @@ render_rows(X, Y, Width, Fg, Bg, CW, [Row | Rest], Buffer) ->
     render_rows(X, Y + 1, Width, Fg, Bg, CW, Rest, Buffer1).
 %%% Editable table implementation to append to table.erl
 
-%%% @doc Renders the table when it has focus (shows selected cell highlight).
+-doc "Renders the table when it has focus (shows selected cell highlight).".
 -spec render_focused(map(), map()) -> map().
 render_focused(Widget, Buffer) ->
     % If editing, modify the rows to show edit_text in the cell
@@ -265,8 +279,8 @@ render_focused(Widget, Buffer) ->
         {true, false} -> render_selection(WidgetToRender, Buffer1)
     end.
 
-%%% @private
-%%% @doc Highlights the currently selected cell.
+%% @private
+-doc "Highlights the currently selected cell.".
 -spec render_selection(map(), map()) -> map().
 render_selection(Widget, Buffer) ->
     #{x := X, y := Y} = get_common_props(Widget),
@@ -368,7 +382,7 @@ extract_state(Widget) ->
         edit_cursor_pos => maps:get(edit_cursor_pos, Widget, 0)
     }.
 
-%%% @doc Handles keyboard events for editable tables.
+-doc "Handles keyboard events for editable tables.".
 -spec handle_event(term(), map()) -> map().
 handle_event({key, _, _, _, _, up_key}, Widget) ->
     case maps:get(editing, Widget, false) of

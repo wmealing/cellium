@@ -1,5 +1,8 @@
 %% -*- erlang-indent-level: 4;indent-tabs-mode: nil -*-
 %% ex: ts=4 sw=4 et
+-moduledoc """
+Box styles and rendering functions for various border types.
+""".
 -module(box_styles).
 
 -include("cellium.hrl").
@@ -284,23 +287,24 @@ draw_vertical_line(Y1, X, Y2, Bg, Fg, Buffer) ->
     Buffer1 = cellium_buffer:set_cell(X, Y1, $│, Bg, Fg, Buffer),
     draw_vertical_line(Y1 + 1, X, Y2, Bg, Fg, Buffer1).
 
-%%% @doc Renders a rectangular box with optional title in the top border.
-%%%
-%%% This is a generic box renderer that handles simple rectangular boxes
-%%% with optional title text interrupting the top border.
-%%%
-%%% @param X Starting X coordinate (left edge)
-%%% @param Y Starting Y coordinate (top edge)
-%%% @param Width Total width of the box (including borders)
-%%% @param Height Total height of the box (including borders)
-%%% @param BoxStyle Box style record defining border characters
-%%% @param Title Optional title text (empty string or binary for no title)
-%%% @param TitleAlign Title alignment (left | center | right)
-%%% @param Fg Foreground color
-%%% @param Bg Background color
-%%% @param Buffer Current frame buffer
-%%% @returns Updated buffer
-%%% @end
+-doc """
+Renders a rectangular box with optional title in the top border.
+
+This is a generic box renderer that handles simple rectangular boxes
+with optional title text interrupting the top border.
+
+- `X`: Starting X coordinate (left edge)
+- `Y`: Starting Y coordinate (top edge)
+- `Width`: Total width of the box (including borders)
+- `Height`: Total height of the box (including borders)
+- `BoxStyle`: Box style record defining border characters
+- `Title`: Optional title text (empty string or binary for no title)
+- `TitleAlign`: Title alignment (left | center | right)
+- `Fg`: Foreground color
+- `Bg`: Background color
+- `Buffer`: Current frame buffer
+- Returns: Updated buffer
+""".
 -spec render_box(integer(), integer(), integer(), integer(), #box{},
                  string() | binary(), left | center | right, atom(), atom(), map()) -> map().
 render_box(X, Y, Width, Height, BoxStyle, Title, TitleAlign, Fg, Bg, Buffer) ->
@@ -317,7 +321,7 @@ render_box(X, Y, Width, Height, BoxStyle, Title, TitleAlign, Fg, Bg, Buffer) ->
     end.
 
 %%% @private
-%%% @doc Draws the top border line with optional title interruption.
+-doc "Draws the top border line with optional title interruption.".
 -spec draw_top_border(integer(), integer(), integer(), #box{},
                       string() | binary(), left | center | right, atom(), atom(), map()) -> map().
 draw_top_border(X, Y, Width, BoxStyle, Title, TitleAlign, Fg, Bg, Buffer) ->
@@ -344,7 +348,7 @@ draw_top_border(X, Y, Width, BoxStyle, Title, TitleAlign, Fg, Bg, Buffer) ->
     end.
 
 %%% @private
-%%% @doc Draws vertical borders (left and right sides).
+-doc "Draws vertical borders (left and right sides).".
 -spec draw_vertical_borders(integer(), integer(), integer(), integer(), #box{},
                             atom(), atom(), map()) -> map().
 draw_vertical_borders(_X, _Y, _Width, 0, _BoxStyle, _Fg, _Bg, Buffer) ->
@@ -359,7 +363,7 @@ draw_vertical_borders(X, Y, Width, Height, BoxStyle, Fg, Bg, Buffer) ->
     draw_vertical_borders(X, Y + 1, Width, Height - 1, BoxStyle, Fg, Bg, Buffer2).
 
 %%% @private
-%%% @doc Draws the bottom border line.
+-doc "Draws the bottom border line.".
 -spec draw_bottom_border(integer(), integer(), integer(), #box{}, atom(), atom(), map()) -> map().
 draw_bottom_border(X, Y, Width, BoxStyle, Fg, Bg, Buffer) ->
     % Bottom left corner
@@ -374,7 +378,7 @@ draw_bottom_border(X, Y, Width, BoxStyle, Fg, Bg, Buffer) ->
     draw_top_line_segment(X + 1, Y, Width - 2, BoxStyle#box.bottom, Fg, Bg, Buffer2).
 
 %%% @private
-%%% @doc Draws a horizontal line segment.
+-doc "Draws a horizontal line segment.".
 -spec draw_top_line_segment(integer(), integer(), integer(), string(), atom(), atom(), map()) -> map().
 draw_top_line_segment(_X, _Y, Width, _Char, _Fg, _Bg, Buffer) when Width =< 0 ->
     Buffer;
@@ -390,7 +394,7 @@ draw_top_line_segment_loop(X, Y, EndX, Char, Fg, Bg, Buffer) ->
     draw_top_line_segment_loop(X + 1, Y, EndX, Char, Fg, Bg, Buffer1).
 
 %%% @private
-%%% @doc Draws the top line with title text interrupting it.
+-doc "Draws the top line with title text interrupting it.".
 -spec draw_top_with_title(integer(), integer(), integer(), string(),
                           string(), left | center | right, atom(), atom(), map()) -> map().
 draw_top_with_title(X, Y, AvailableWidth, LineChar, Title, Align, Fg, Bg, Buffer) ->
@@ -419,7 +423,7 @@ draw_top_with_title(X, Y, AvailableWidth, LineChar, Title, Align, Fg, Bg, Buffer
     end.
 
 %%% @private
-%%% @doc Calculates the X position and padding for the title based on alignment.
+-doc "Calculates the X position and padding for the title based on alignment.".
 -spec calculate_title_position(integer(), integer(), integer(), left | center | right)
     -> {integer(), integer(), integer()}.
 calculate_title_position(X, AvailableWidth, TitleLen, left) ->
@@ -442,7 +446,7 @@ calculate_title_position(X, AvailableWidth, TitleLen, right) ->
     {TitleX, LeftPadding, RightPadding}.
 
 %%% @private
-%%% @doc Normalizes title to a string, handling empty strings and binaries.
+-doc "Normalizes title to a string, handling empty strings and binaries.".
 -spec normalize_title(string() | binary()) -> string().
 normalize_title("") -> "";
 normalize_title(<<>>) -> "";

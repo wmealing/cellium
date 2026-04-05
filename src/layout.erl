@@ -1,8 +1,29 @@
 -module(layout).
+-moduledoc """
+  The layout module is responsible for calculating the positions and dimensions
+  of all widgets in the tree.
+
+  It supports:
+  - **Absolute Positioning**: Widgets can be placed at specific coordinates.
+  - **Relative Positioning**: Widgets are laid out according to their container's orientation (vertical/horizontal).
+  - **Centered Positioning**: Widgets can be automatically centered on the screen.
+  - **Flexible Sizing**: Widgets can have a fixed size or expand to fill available space.
+  - **Padding**: Containers can define internal padding that affects child placement.
+""".
+
 -export([calculate_layout/1, calculate_layout/3]).
 
 -include("cellium.hrl").
 
+-doc """
+  Calculates the layout for a widget tree starting from the root, given specific
+  target dimensions.
+
+  Parameters:
+  - `Widget`: The root widget of the tree to lay out.
+  - `Width`: The total available width for the layout.
+  - `Height`: The total available height for the layout.
+""".
 -spec calculate_layout(map(), integer(), integer()) -> map().
 calculate_layout(Widget, Width, Height) ->
     NewWidget = Widget#{width => Width,
@@ -11,6 +32,11 @@ calculate_layout(Widget, Width, Height) ->
                         parent_height => Height},
     calculate_layout(NewWidget).
 
+-doc """
+  Recursively calculates the layout of a widget and its children.
+  This function is called internally by `calculate_layout/3` and during
+  the recursive traversal of the tree.
+""".
 -spec calculate_layout(map()) -> map().
 calculate_layout(#{position := absolute} = Widget) ->
     %% Absolutely positioned widgets skip layout for themselves
