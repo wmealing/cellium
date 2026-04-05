@@ -141,6 +141,11 @@ from_dsl({gauge, Props}, Model) ->
     W = gauge:new(Id),
     apply_leaf_props(inject_state(W, Id, Model), Props);
 
+from_dsl({table, Props}, Model) ->
+    Id = proplists:get_value(id, Props, make_ref()),
+    W = table:new(Id),
+    apply_leaf_props(inject_state(W, Id, Model), Props);
+
 from_dsl({status_bar, Props, Text}, Model) ->
     Id = proplists:get_value(id, Props, make_ref()),
     W = status_bar:new(Id, Text),

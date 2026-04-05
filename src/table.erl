@@ -187,7 +187,7 @@ render(Widget, Buffer) ->
     {HeaderOffset, Buffer2} = case length(Headers) > 0 of
         true ->
             HeaderWidget = #{
-                type => table_row,
+                type => widget,
                 widget_type => table_row,
                 x => X,
                 y => Y + 1,
@@ -212,7 +212,7 @@ render(Widget, Buffer) ->
 render_rows(_X, _Y, _Fg, _Bg, _CW, [], Buffer) -> Buffer;
 render_rows(X, Y, Fg, Bg, CW, [Row | Rest], Buffer) ->
     RowWidget = #{
-        type => table_row,
+        type => widget,
         widget_type => table_row,
         x => X,
         y => Y,

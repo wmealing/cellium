@@ -53,14 +53,14 @@ update(Model, Msg) ->
         {key, _, _, _, _, <<"q">>} ->
             cellium:stop(),
             Model;
-        % Shift + Right Arrow to next tab (4 tabs now)
+        % Shift + Right Arrow to next tab (5 tabs now)
         {key, true, false, false, false, right_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 1) rem 4};
+            Model#{active_tab => (Active + 1) rem 5};
         % Shift + Left Arrow to previous tab
         {key, true, false, false, false, left_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 3) rem 4};
+            Model#{active_tab => (Active + 4) rem 5};
         tick ->
             erlang:send_after(100, self(), tick),
             Model#{spinner_frame => maps:get(spinner_frame, Model) + 1};
@@ -84,7 +84,7 @@ render(Model) ->
     StatusText = io_lib:format("Shift+Arrows: Tabs | Q: Quit | Focused: ~p", [FocusedId]),
 
     {vbox, [{id, main}, {padding, 0}], [
-        {tabs, [{id, gallery_tabs}, {tabs, ["Basic", "Progress", "Input", "List"]}, {active_tab, ActiveTab}, {expand, true}], [
+        {tabs, [{id, gallery_tabs}, {tabs, ["Basic", "Progress", "Input", "List", "Table"]}, {active_tab, ActiveTab}, {expand, true}], [
             % Tab 1: Basic Widgets
             {vbox, [{id, tab_basic}, {expand, true}, {padding, 1}], [
                 {header, [{id, h1}, {color, cyan}], "Basic Controls"},
@@ -153,6 +153,26 @@ render(Model) ->
                 {frame, [{id, f_list}, {title, "BEAM Languages"}, {expand, true}], [
                     {list, [{id, li1}, {expand, true}]}
                 ]}
+            ]},
+
+            % Tab 5: Table Widget
+            {vbox, [{id, tab_table}, {expand, true}, {padding, 1}], [
+                {header, [{id, h5}, {color, cyan}], "Table Widget"},
+                {spacer, [{size, 1}]},
+                {text, [{id, t6}], "Example table with headers and data:"},
+                {spacer, [{size, 1}]},
+                {table, [{id, tbl1},
+                         {style, double},
+                         {size, 8},
+                         {headers, ["Language", "Year", "Type"]},
+                         {column_widths, [20, 8, 12]},
+                         {rows, [
+                             ["Erlang", "1986", "Functional"],
+                             ["Elixir", "2011", "Functional"],
+                             ["Gleam", "2019", "Functional"],
+                             ["LFE", "2008", "Functional"]
+                         ]}]},
+                {spacer, [{expand, true}]}
             ]}
         ]},
         {status_bar, [{id, sb1}, {color, white}], lists:flatten(StatusText)}
