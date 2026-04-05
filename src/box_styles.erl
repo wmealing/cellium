@@ -75,24 +75,24 @@ ascii_double_head() ->
 square() ->
     #box{
         top_left = "┌", top = "─", top_divider = "┬", top_right = "┐",
-        head_left = "│", head_vertical = " ", head_right = "│",
+        head_left = "│", head_vertical = "│", head_right = "│",
         head_row_left = "├", head_row_horizontal = "─", head_row_cross = "┼", head_row_right = "┤",
-        mid_left = "│", mid_vertical = " ", mid_right = "│",
+        mid_left = "│", mid_vertical = "│", mid_right = "│",
         row_left = "├", row_horizontal = "─", row_cross = "┼", row_right = "┤",
         foot_row_left = "├", foot_row_horizontal = "─", foot_row_cross = "┼", foot_row_right = "┤",
-        foot_left = "│", foot_vertical = " ", foot_right = "│",
+        foot_left = "│", foot_vertical = "│", foot_right = "│",
         bottom_left = "└", bottom = "─", bottom_divider = "┴", bottom_right = "┘"
     }.
 
 square_double_head() ->
     #box{
         top_left = "┌", top = "─", top_divider = "┬", top_right = "┐",
-        head_left = "│", head_vertical = " ", head_right = "│",
+        head_left = "│", head_vertical = "│", head_right = "│",
         head_row_left = "╞", head_row_horizontal = "═", head_row_cross = "╪", head_row_right = "╡",
-        mid_left = "│", mid_vertical = " ", mid_right = "│",
+        mid_left = "│", mid_vertical = "│", mid_right = "│",
         row_left = "├", row_horizontal = "─", row_cross = "┼", row_right = "┤",
         foot_row_left = "├", foot_row_horizontal = "─", foot_row_cross = "┼", foot_row_right = "┤",
-        foot_left = "│", foot_vertical = " ", foot_right = "│",
+        foot_left = "│", foot_vertical = "│", foot_right = "│",
         bottom_left = "└", bottom = "─", bottom_divider = "┴", bottom_right = "┘"
     }.
 
@@ -135,19 +135,19 @@ minimal_double_head() ->
 simple() ->
     #box{
         top_left = " ", top = " ", top_divider = " ", top_right = " ",
-        head_left = " ", head_vertical = " ", head_right = " ",
+        head_left = " ", head_vertical = "│", head_right = " ",
         head_row_left = " ", head_row_horizontal = "─", head_row_cross = "─", head_row_right = " ",
-        mid_left = " ", mid_vertical = " ", mid_right = " ",
+        mid_left = " ", mid_vertical = "│", mid_right = " ",
         row_left = " ", row_horizontal = " ", row_cross = " ", row_right = " ",
         foot_row_left = " ", foot_row_horizontal = "─", foot_row_cross = "─", foot_row_right = " ",
-        foot_left = " ", foot_vertical = " ", foot_right = " ",
+        foot_left = " ", foot_vertical = "│", foot_right = " ",
         bottom_left = " ", bottom = " ", bottom_divider = " ", bottom_right = " "
     }.
 
 simple_head() ->
     #box{
         top_left = " ", top = " ", top_divider = " ", top_right = " ",
-        head_left = " ", head_vertical = " ", head_right = " ",
+        head_left = " ", head_vertical = "│", head_right = " ",
         head_row_left = " ", head_row_horizontal = "─", head_row_cross = "─", head_row_right = " ",
         mid_left = " ", mid_vertical = " ", mid_right = " ",
         row_left = " ", row_horizontal = " ", row_cross = " ", row_right = " ",
@@ -159,24 +159,24 @@ simple_head() ->
 simple_heavy() ->
     #box{
         top_left = " ", top = " ", top_divider = " ", top_right = " ",
-        head_left = " ", head_vertical = " ", head_right = " ",
+        head_left = " ", head_vertical = "┃", head_right = " ",
         head_row_left = " ", head_row_horizontal = "━", head_row_cross = "━", head_row_right = " ",
-        mid_left = " ", mid_vertical = " ", mid_right = " ",
+        mid_left = " ", mid_vertical = "┃", mid_right = " ",
         row_left = " ", row_horizontal = " ", row_cross = " ", row_right = " ",
         foot_row_left = " ", foot_row_horizontal = "━", foot_row_cross = "━", foot_row_right = " ",
-        foot_left = " ", foot_vertical = " ", foot_right = " ",
+        foot_left = " ", foot_vertical = "┃", foot_right = " ",
         bottom_left = " ", bottom = " ", bottom_divider = " ", bottom_right = " "
     }.
 
 horizontals() ->
     #box{
         top_left = " ", top = "─", top_divider = "─", top_right = " ",
-        head_left = " ", head_vertical = " ", head_right = " ",
+        head_left = " ", head_vertical = "│", head_right = " ",
         head_row_left = " ", head_row_horizontal = "─", head_row_cross = "─", head_row_right = " ",
-        mid_left = " ", mid_vertical = " ", mid_right = " ",
+        mid_left = " ", mid_vertical = "│", mid_right = " ",
         row_left = " ", row_horizontal = "─", row_cross = "─", row_right = " ",
         foot_row_left = " ", foot_row_horizontal = "─", foot_row_cross = "─", foot_row_right = " ",
-        foot_left = " ", foot_vertical = " ", foot_right = " ",
+        foot_left = " ", foot_vertical = "│", foot_right = " ",
         bottom_left = " ", bottom = "─", bottom_divider = "─", bottom_right = " "
     }.
 
@@ -184,84 +184,84 @@ horizontals() ->
 rounded() ->
     #box{
         top_left = "╭", top = "─", top_divider = "┬", top_right = "╮",
-        head_left = "│", head_vertical = " ", head_right = "│",
+        head_left = "│", head_vertical = "│", head_right = "│",
         head_row_left = "├", head_row_horizontal = "─", head_row_cross = "┼", head_row_right = "┤",
-        mid_left = "│", mid_vertical = " ", mid_right = "│",
+        mid_left = "│", mid_vertical = "│", mid_right = "│",
         row_left = "├", row_horizontal = "─", row_cross = "┼", row_right = "┤",
         foot_row_left = "├", foot_row_horizontal = "─", foot_row_cross = "┼", foot_row_right = "┤",
-        foot_left = "│", foot_vertical = " ", foot_right = "│",
+        foot_left = "│", foot_vertical = "│", foot_right = "│",
         bottom_left = "╰", bottom = "─", bottom_divider = "┴", bottom_right = "╯"
     }.
 
 heavy() ->
     #box{
         top_left = "┏", top = "━", top_divider = "┳", top_right = "┓",
-        head_left = "┃", head_vertical = " ", head_right = "┃",
+        head_left = "┃", head_vertical = "┃", head_right = "┃",
         head_row_left = "┣", head_row_horizontal = "━", head_row_cross = "╋", head_row_right = "┫",
-        mid_left = "┃", mid_vertical = " ", mid_right = "┃",
+        mid_left = "┃", mid_vertical = "┃", mid_right = "┃",
         row_left = "┣", row_horizontal = "━", row_cross = "╋", row_right = "┫",
         foot_row_left = "┣", foot_row_horizontal = "━", foot_row_cross = "╋", foot_row_right = "┫",
-        foot_left = "┃", foot_vertical = " ", foot_right = "┃",
+        foot_left = "┃", foot_vertical = "┃", foot_right = "┃",
         bottom_left = "┗", bottom = "━", bottom_divider = "┻", bottom_right = "┛"
     }.
 
 heavy_edge() ->
     #box{
         top_left = "┏", top = "━", top_divider = "┯", top_right = "┓",
-        head_left = "┃", head_vertical = " ", head_right = "┃",
+        head_left = "┃", head_vertical = "┃", head_right = "┃",
         head_row_left = "┠", head_row_horizontal = "─", head_row_cross = "┼", head_row_right = "┨",
-        mid_left = "┃", mid_vertical = " ", mid_right = "┃",
+        mid_left = "┃", mid_vertical = "┃", mid_right = "┃",
         row_left = "┠", row_horizontal = "─", row_cross = "┼", row_right = "┨",
         foot_row_left = "┠", foot_row_horizontal = "─", foot_row_right = "┨",
-        foot_left = "┃", foot_vertical = " ", foot_right = "┃",
+        foot_left = "┃", foot_vertical = "┃", foot_right = "┃",
         bottom_left = "┗", bottom = "━", bottom_divider = "┷", bottom_right = "┛"
     }.
 
 heavy_head() ->
     #box{
         top_left = "┏", top = "━", top_divider = "┳", top_right = "┓",
-        head_left = "┃", head_vertical = " ", head_right = "┃",
+        head_left = "┃", head_vertical = "┃", head_right = "┃",
         head_row_left = "┡", head_row_horizontal = "━", head_row_cross = "╇", head_row_right = "┩",
-        mid_left = "│", mid_vertical = " ", mid_right = "│",
+        mid_left = "│", mid_vertical = "│", mid_right = "│",
         row_left = "├", row_horizontal = "─", row_cross = "┼", row_right = "┤",
         foot_row_left = "├", foot_row_horizontal = "─", foot_row_cross = "┼", foot_row_right = "┤",
-        foot_left = "│", foot_vertical = " ", foot_right = "│",
+        foot_left = "│", foot_vertical = "│", foot_right = "│",
         bottom_left = "└", bottom = "─", bottom_divider = "┴", bottom_right = "┘"
     }.
 
 double() ->
     #box{
         top_left = "╔", top = "═", top_divider = "╦", top_right = "╗",
-        head_left = "║", head_vertical = " ", head_right = "║",
+        head_left = "║", head_vertical = "║", head_right = "║",
         head_row_left = "╠", head_row_horizontal = "═", head_row_cross = "╬", head_row_right = "╣",
         mid_left = "║", mid_vertical = "║", mid_right = "║",
         row_left = "╠", row_horizontal = "═", row_cross = "╬", row_right = "╣",
         foot_row_left = "╠", foot_row_horizontal = "═", foot_row_cross = "╬", foot_row_right = "╣",
-        foot_left = "║", foot_vertical = " ", foot_right = "║",
+        foot_left = "║", foot_vertical = "║", foot_right = "║",
         bottom_left = "╚", bottom = "═", bottom_divider = "╩", bottom_right = "╝"
     }.
 
 double_edge() ->
     #box{
         top_left = "╔", top = "═", top_divider = "╤", top_right = "╗",
-        head_left = "║", head_vertical = " ", head_right = "║",
+        head_left = "║", head_vertical = "║", head_right = "║",
         head_row_left = "╟", head_row_horizontal = "─", head_row_cross = "┼", head_row_right = "╢",
-        mid_left = "║", mid_vertical = " ", mid_right = "║",
+        mid_left = "║", mid_vertical = "║", mid_right = "║",
         row_left = "╟", row_horizontal = "─", row_cross = "┼", row_right = "╢",
         foot_row_left = "╟", foot_row_horizontal = "─", foot_row_right = "╢",
-        foot_left = "║", foot_vertical = " ", foot_right = "║",
+        foot_left = "║", foot_vertical = "║", foot_right = "║",
         bottom_left = "╚", bottom = "═", bottom_divider = "╧", bottom_right = "╝"
     }.
 
 markdown() ->
     #box{
         top_left = " ", top = " ", top_divider = " ", top_right = " ",
-        head_left = "|", head_vertical = " ", head_right = "|",
+        head_left = "|", head_vertical = "|", head_right = "|",
         head_row_left = "|", head_row_horizontal = "-", head_row_cross = "|", head_row_right = "|",
-        mid_left = "|", mid_vertical = " ", mid_right = "|",
+        mid_left = "|", mid_vertical = "|", mid_right = "|",
         row_left = "|", row_horizontal = "-", row_cross = "|", row_right = "|",
         foot_row_left = "|",
-        foot_left = "|", foot_vertical = " ", foot_right = "|",
+        foot_left = "|", foot_vertical = "|", foot_right = "|",
         bottom_left = " ", bottom = " ", bottom_divider = " ", bottom_right = " ",
         is_ascii = true
     }.
