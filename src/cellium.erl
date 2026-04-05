@@ -77,20 +77,20 @@ init(#{module := Module}= Args) ->
     case ReportMouse of
         true ->
             logger:debug("ENABLED MOUSE REPORTING"),
-            ?TERMBOX:tb_set_input_mode(4);
+            ?TERMINAL:term_set_input_mode(4);
         _ ->
             logger:debug("NO MOUSE REPORTING")
     end,
 
     case ColorType of
         none ->
-            ?TERMBOX:tb_set_output_mode(4);
+            ?TERMINAL:term_set_output_mode(4);
         truecolor ->
-            ?TERMBOX:tb_set_output_mode(5);
+            ?TERMINAL:term_set_output_mode(5);
         256  ->
-            ?TERMBOX:tb_set_output_mode(2);
+            ?TERMINAL:term_set_output_mode(2);
 	normal ->
-          ?TERMBOX:tb_set_output_mode(4);
+          ?TERMINAL:term_set_output_mode(4);
         _AnythingElse ->
             logger:debug("Weird color format set")
     end,
@@ -121,7 +121,7 @@ handle_call(Msg, _From, State) ->
     case Msg of
         {resize, _, _} ->
             % Also ensure the view is updated immediately for resize
-            ?TERMBOX:tb_force_redraw();
+            ?TERMINAL:term_force_redraw();
         _ ->
             ok
     end,
@@ -216,7 +216,7 @@ handle_event(Event) ->
 
 terminate(Reason, _State) ->
     logger:info("Terminating cellium with reason: ~p", [Reason]),
-    ?TERMBOX:tb_shutdown(),
+    ?TERMINAL:term_shutdown(),
 
     % set this as on option in a future verrsion.
     init:stop(),

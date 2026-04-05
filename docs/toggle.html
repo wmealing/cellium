@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-90508C93.js"></script>
+    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -90,7 +90,7 @@ cellium
 
     <section id="moduledoc">
 <p>Toggle widget module for on/off switches.</p><p>Toggles are focusable widgets that can be switched with Enter or Space.
-They display as <code class="inline">&lt; ON &gt;</code> or <code class="inline">&lt; OFF &gt;</code>.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><pre><code class="makeup erlang" translate="no"><span class="nc">toggle</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="9821548652-1">(</span><span class="ss">feature_toggle</span><span class="p" data-group-id="9821548652-1">)</span></code></pre><h2 id="module-properties" class="section-heading"><a href="#module-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Properties</span></h2><ul><li><code class="inline">on</code> (boolean): Whether the toggle is on. Default: false</li><li><code class="inline">focusable</code> (boolean): Always true for toggles</li><li><code class="inline">focused</code> (boolean): Set by focus manager when toggle has focus</li></ul><h2 id="module-rendering" class="section-heading"><a href="#module-rendering" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Rendering</span></h2><p>Format: <code class="inline">&lt; ON &gt;</code> or <code class="inline">&lt; OFF &gt;</code>
+They display as <code class="inline">&lt; ON &gt;</code> or <code class="inline">&lt; OFF &gt;</code>.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><pre><code class="makeup erlang" translate="no"><span class="nc">toggle</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="4873859470-1">(</span><span class="ss">feature_toggle</span><span class="p" data-group-id="4873859470-1">)</span></code></pre><h2 id="module-properties" class="section-heading"><a href="#module-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Properties</span></h2><ul><li><code class="inline">on</code> (boolean): Whether the toggle is on. Default: false</li><li><code class="inline">focusable</code> (boolean): Always true for toggles</li><li><code class="inline">focused</code> (boolean): Set by focus manager when toggle has focus</li></ul><h2 id="module-rendering" class="section-heading"><a href="#module-rendering" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Rendering</span></h2><p>Format: <code class="inline">&lt; ON &gt;</code> or <code class="inline">&lt; OFF &gt;</code>
 When focused, colors are inverted to highlight the toggle.</p>
     </section>
 
@@ -107,6 +107,16 @@ When focused, colors are inverted to highlight the toggle.</p>
   <h2>
     <a href="#functions">Functions</a>
   </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_event/2" data-no-tooltip="" translate="no">handle_event/2</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Handles keyboard events for the toggle. Toggles ON/OFF state on Space or Enter.</p></div>
+
+    </div>
 
     <div class="summary-row">
       <div class="summary-signature">
@@ -151,6 +161,34 @@ When focused, colors are inverted to highlight the toggle.</p>
       <span class="text">Functions</span>
     </h1>
     <div class="functions-list">
+<section class="detail" id="handle_event/2">
+
+  <div class="detail-header">
+    <a href="#handle_event/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_event/2</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/toggle.erl#L42" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> handle_event(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Handles keyboard events for the toggle. Toggles ON/OFF state on Space or Enter.</p>
+  </section>
+</section>
 <section class="detail" id="new/1">
 
   <div class="detail-header">
@@ -189,7 +227,7 @@ When focused, colors are inverted to highlight the toggle.</p>
       <h1 class="signature" translate="no">render(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/toggle.erl#L42" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/toggle.erl#L53" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -217,7 +255,7 @@ When focused, colors are inverted to highlight the toggle.</p>
       <h1 class="signature" translate="no">render_focused(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/toggle.erl#L50" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/toggle.erl#L61" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 

@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-90508C93.js"></script>
+    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -90,9 +90,9 @@ cellium
 
     <section id="moduledoc">
 <p>Progress bar widget module for displaying task completion.</p><p>This module provides a visual progress bar widget that displays completion
-percentage using filled and unfilled block characters.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><p>Basic progress bar:</p><pre><code class="makeup erlang" translate="no"><span class="nc">progress_bar</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="3522470499-1">(</span><span class="ss">my_progress</span><span class="p" data-group-id="3522470499-1">)</span></code></pre><p>Progress bar with custom width and progress:</p><pre><code class="makeup erlang" translate="no"><span class="n">Widget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">progress_bar</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="2373206438-1">(</span><span class="ss">my_progress</span><span class="p" data-group-id="2373206438-1">)</span><span class="p">,</span><span class="w">
-</span><span class="n">CustomWidget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Widget</span><span class="p" data-group-id="2373206438-2">#{</span><span class="ss">width</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="ss">progress</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mf">0.75</span><span class="p" data-group-id="2373206438-2">}</span></code></pre><h2 id="module-properties" class="section-heading"><a href="#module-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Properties</span></h2><ul><li><code class="inline">progress</code> (float): Completion percentage from 0.0 to 1.0. Default: 0.0</li><li><code class="inline">width</code> (integer): Total width of the progress bar including brackets. Default: 20</li><li><code class="inline">focusable</code> (boolean): Set to true by default</li></ul><h2 id="module-display" class="section-heading"><a href="#module-display" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Display</span></h2><p>The progress bar uses Unicode block characters:</p><ul><li><code class="inline">█</code> for filled portion (completed)</li><li><code class="inline">░</code> for unfilled portion (remaining)</li><li>Format: <code class="inline">[████████░░░░░░░░░░]</code></li></ul><p>When focused, foreground and background colors are swapped.</p><h2 id="module-example" class="section-heading"><a href="#module-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup erlang" translate="no"><span class="c1">% 50% complete with width of 30</span><span class="w">
-</span><span class="n">Widget</span><span class="p" data-group-id="6948167831-1">#{</span><span class="ss">progress</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="ss">width</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">30</span><span class="p" data-group-id="6948167831-1">}</span><span class="w">
+percentage using filled and unfilled block characters.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><p>Basic progress bar:</p><pre><code class="makeup erlang" translate="no"><span class="nc">progress_bar</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="1789596897-1">(</span><span class="ss">my_progress</span><span class="p" data-group-id="1789596897-1">)</span></code></pre><p>Progress bar with custom width and progress:</p><pre><code class="makeup erlang" translate="no"><span class="n">Widget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">progress_bar</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="9077796272-1">(</span><span class="ss">my_progress</span><span class="p" data-group-id="9077796272-1">)</span><span class="p">,</span><span class="w">
+</span><span class="n">CustomWidget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Widget</span><span class="p" data-group-id="9077796272-2">#{</span><span class="ss">width</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="ss">progress</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mf">0.75</span><span class="p" data-group-id="9077796272-2">}</span></code></pre><h2 id="module-properties" class="section-heading"><a href="#module-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Properties</span></h2><ul><li><code class="inline">progress</code> (float): Completion percentage from 0.0 to 1.0. Default: 0.0</li><li><code class="inline">width</code> (integer): Total width of the progress bar including brackets. Default: 20</li><li><code class="inline">focusable</code> (boolean): Set to true by default</li></ul><h2 id="module-display" class="section-heading"><a href="#module-display" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Display</span></h2><p>The progress bar uses Unicode block characters:</p><ul><li><code class="inline">█</code> for filled portion (completed)</li><li><code class="inline">░</code> for unfilled portion (remaining)</li><li>Format: <code class="inline">[████████░░░░░░░░░░]</code></li></ul><p>When focused, foreground and background colors are swapped.</p><h2 id="module-example" class="section-heading"><a href="#module-example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h2><pre><code class="makeup erlang" translate="no"><span class="c1">% 50% complete with width of 30</span><span class="w">
+</span><span class="n">Widget</span><span class="p" data-group-id="6826730624-1">#{</span><span class="ss">progress</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="ss">width</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="mi">30</span><span class="p" data-group-id="6826730624-1">}</span><span class="w">
 </span><span class="c1">% Displays: [██████████████░░░░░░░░░░░░░░]</span></code></pre>
     </section>
 
@@ -109,6 +109,16 @@ percentage using filled and unfilled block characters.</p><h2 id="module-usage" 
   <h2>
     <a href="#functions">Functions</a>
   </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_event/2" data-no-tooltip="" translate="no">handle_event/2</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Handles keyboard events for the progress bar. Adjusts progress with Left/Right arrow keys.</p></div>
+
+    </div>
 
     <div class="summary-row">
       <div class="summary-signature">
@@ -153,6 +163,34 @@ percentage using filled and unfilled block characters.</p><h2 id="module-usage" 
       <span class="text">Functions</span>
     </h1>
     <div class="functions-list">
+<section class="detail" id="handle_event/2">
+
+  <div class="detail-header">
+    <a href="#handle_event/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_event/2</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/progress_bar.erl#L66" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> handle_event(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Handles keyboard events for the progress bar. Adjusts progress with Left/Right arrow keys.</p>
+  </section>
+</section>
 <section class="detail" id="new/1">
 
   <div class="detail-header">
@@ -191,7 +229,7 @@ percentage using filled and unfilled block characters.</p><h2 id="module-usage" 
       <h1 class="signature" translate="no">render(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/progress_bar.erl#L66" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/progress_bar.erl#L77" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -219,7 +257,7 @@ percentage using filled and unfilled block characters.</p><h2 id="module-usage" 
       <h1 class="signature" translate="no">render_focused(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/progress_bar.erl#L71" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/progress_bar.erl#L82" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 

@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-90508C93.js"></script>
+    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -91,19 +91,19 @@ cellium
     <section id="moduledoc">
 <p>This module defines the <code class="inline">cellium</code> behaviour, which is the core of a Cellium application.</p><p>It's a <code class="inline">gen_server</code> that manages the application's state, event handling, and rendering
 loop. To create an application, you must implement the callback functions defined in this
-behaviour.</p><p>The three main callbacks are:</p><ul><li><a href="#c:init/1"><code class="inline">init/1</code></a>: To set up the initial state of the application (the model).</li><li><a href="#c:update/2"><code class="inline">update/2</code></a>: To handle events and update the application model.</li><li><a href="#c:render/1"><code class="inline">render/1</code></a>: To define the UI by transforming the model into a widget tree.</li></ul><p>A simple application would look like this:</p><pre><code class="makeup erlang" translate="no"><span class="p">-</span><span class="na">module</span><span class="p" data-group-id="4950119914-1">(</span><span class="ss">my_app</span><span class="p" data-group-id="4950119914-1">)</span><span class="p">.</span><span class="w">
-</span><span class="p">-</span><span class="na">behaviour</span><span class="p" data-group-id="4950119914-2">(</span><span class="ss">cellium</span><span class="p" data-group-id="4950119914-2">)</span><span class="p">.</span><span class="w">
+behaviour.</p><p>The three main callbacks are:</p><ul><li><a href="#c:init/1"><code class="inline">init/1</code></a>: To set up the initial state of the application (the model).</li><li><a href="#c:update/2"><code class="inline">update/2</code></a>: To handle events and update the application model.</li><li><a href="#c:render/1"><code class="inline">render/1</code></a>: To define the UI by transforming the model into a widget tree.</li></ul><p>A simple application would look like this:</p><pre><code class="makeup erlang" translate="no"><span class="p">-</span><span class="na">module</span><span class="p" data-group-id="1155481822-1">(</span><span class="ss">my_app</span><span class="p" data-group-id="1155481822-1">)</span><span class="p">.</span><span class="w">
+</span><span class="p">-</span><span class="na">behaviour</span><span class="p" data-group-id="1155481822-2">(</span><span class="ss">cellium</span><span class="p" data-group-id="1155481822-2">)</span><span class="p">.</span><span class="w">
 </span><span class="w">
-</span><span class="p">-</span><span class="na">export</span><span class="p" data-group-id="4950119914-3">(</span><span class="p" data-group-id="4950119914-4">[</span><span class="ss">init</span><span class="p">/</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">update</span><span class="p">/</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="ss">render</span><span class="p">/</span><span class="mi">1</span><span class="p" data-group-id="4950119914-4">]</span><span class="p" data-group-id="4950119914-3">)</span><span class="p">.</span><span class="w">
+</span><span class="p">-</span><span class="na">export</span><span class="p" data-group-id="1155481822-3">(</span><span class="p" data-group-id="1155481822-4">[</span><span class="ss">init</span><span class="p">/</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">update</span><span class="p">/</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="ss">render</span><span class="p">/</span><span class="mi">1</span><span class="p" data-group-id="1155481822-4">]</span><span class="p" data-group-id="1155481822-3">)</span><span class="p">.</span><span class="w">
 
-</span><span class="nf">init</span><span class="p" data-group-id="4950119914-5">(</span><span class="p">_</span><span class="n">Args</span><span class="p" data-group-id="4950119914-5">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w">
-    </span><span class="p" data-group-id="4950119914-6">{</span><span class="ss">ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="4950119914-7">#{</span><span class="ss">text</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="4950119914-8">&lt;&lt;</span><span class="s">&quot;Hello, World!&quot;</span><span class="p" data-group-id="4950119914-8">&gt;&gt;</span><span class="p" data-group-id="4950119914-7">}</span><span class="p" data-group-id="4950119914-6">}</span><span class="p">.</span><span class="w">
+</span><span class="nf">init</span><span class="p" data-group-id="1155481822-5">(</span><span class="p">_</span><span class="n">Args</span><span class="p" data-group-id="1155481822-5">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w">
+    </span><span class="p" data-group-id="1155481822-6">{</span><span class="ss">ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="1155481822-7">#{</span><span class="ss">text</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p" data-group-id="1155481822-8">&lt;&lt;</span><span class="s">&quot;Hello, World!&quot;</span><span class="p" data-group-id="1155481822-8">&gt;&gt;</span><span class="p" data-group-id="1155481822-7">}</span><span class="p" data-group-id="1155481822-6">}</span><span class="p">.</span><span class="w">
 
-</span><span class="nf">update</span><span class="p" data-group-id="4950119914-9">(</span><span class="n">Model</span><span class="p">,</span><span class="w"> </span><span class="p">_</span><span class="n">Msg</span><span class="p" data-group-id="4950119914-9">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w">
+</span><span class="nf">update</span><span class="p" data-group-id="1155481822-9">(</span><span class="n">Model</span><span class="p">,</span><span class="w"> </span><span class="p">_</span><span class="n">Msg</span><span class="p" data-group-id="1155481822-9">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w">
     </span><span class="n">Model</span><span class="p">.</span><span class="w">
 
-</span><span class="nf">render</span><span class="p" data-group-id="4950119914-10">(</span><span class="p" data-group-id="4950119914-11">#{</span><span class="ss">text</span><span class="w"> </span><span class="p">:=</span><span class="w"> </span><span class="n">Text</span><span class="p" data-group-id="4950119914-11">}</span><span class="p" data-group-id="4950119914-10">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w">
-    </span><span class="nc">text</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="4950119914-12">(</span><span class="ss">my_text</span><span class="p">,</span><span class="w"> </span><span class="n">Text</span><span class="p" data-group-id="4950119914-12">)</span><span class="p">.</span></code></pre>
+</span><span class="nf">render</span><span class="p" data-group-id="1155481822-10">(</span><span class="p" data-group-id="1155481822-11">#{</span><span class="ss">text</span><span class="w"> </span><span class="p">:=</span><span class="w"> </span><span class="n">Text</span><span class="p" data-group-id="1155481822-11">}</span><span class="p" data-group-id="1155481822-10">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w">
+    </span><span class="nc">text</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="1155481822-12">(</span><span class="ss">my_text</span><span class="p">,</span><span class="w"> </span><span class="n">Text</span><span class="p" data-group-id="1155481822-12">)</span><span class="p">.</span></code></pre>
     </section>
 
 </div>
@@ -369,7 +369,7 @@ This function defines the UI of the application.</p>
       <h1 class="signature" translate="no">code_change(OldVsn, State, Extra)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L151" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L226" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -391,7 +391,7 @@ This function defines the UI of the application.</p>
       <h1 class="signature" translate="no">handle_call(Msg, From, State)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L105" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L108" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -413,7 +413,7 @@ This function defines the UI of the application.</p>
       <h1 class="signature" translate="no">handle_cast/2</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L124" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L146" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -435,7 +435,7 @@ This function defines the UI of the application.</p>
       <h1 class="signature" translate="no">handle_event(Event)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L139" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L214" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -464,7 +464,7 @@ This is the primary way to send messages to the running application.</p>
       <h1 class="signature" translate="no">handle_info(Msg, State)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L131" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L153" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -486,7 +486,7 @@ This is the primary way to send messages to the running application.</p>
       <h1 class="signature" translate="no">init(Args)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L57" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L60" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -587,7 +587,7 @@ This is the primary way to send messages to the running application.</p>
       <h1 class="signature" translate="no">terminate(Reason, State)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L142" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium.erl#L217" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 

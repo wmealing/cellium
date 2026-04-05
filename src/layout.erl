@@ -21,8 +21,8 @@ calculate_layout(#{position := absolute} = Widget) ->
 
 calculate_layout(#{position := centered} = Widget) ->
     %% Centered widgets are positioned relative to the screen dimensions
-    W_Total = ?TERMBOX:tb_width(),
-    H_Total = ?TERMBOX:tb_height(),
+    W_Total = ?TERMINAL:term_width(),
+    H_Total = ?TERMINAL:term_height(),
     
     Width = maps:get(requested_width, Widget, maps:get(width, Widget, 40)),
     Height = maps:get(requested_height, Widget, maps:get(height, Widget, maps:get(size, Widget, 10))),
@@ -71,8 +71,8 @@ do_calculate_layout(OriginalContainer) ->
     X = maps:get(x, Container, 0),
     Y = maps:get(y, Container, 0),
     
-    ContainerWidth = maps:get(width, Container, maps:get(parent_width, Container, ?TERMBOX:tb_width())),
-    ContainerHeight = maps:get(height, Container, maps:get(parent_height, Container, ?TERMBOX:tb_height())),
+    ContainerWidth = maps:get(width, Container, maps:get(parent_width, Container, ?TERMINAL:term_width())),
+    ContainerHeight = maps:get(height, Container, maps:get(parent_height, Container, ?TERMINAL:term_height())),
 
     Width = max(0, ContainerWidth - PaddingLeft - PaddingRight),
     Height = max(0, ContainerHeight - PaddingTop - PaddingBottom),

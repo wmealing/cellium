@@ -60,7 +60,7 @@ render(Widget, Buffer) ->
     case Wrap of
         true ->
             % Wrap text at widget width (set by layout) and render each line
-            Width = maps:get(width, Widget, ?TERMBOX:tb_width()),
+            Width = maps:get(width, Widget, ?TERMINAL:term_width()),
             TextBin = list_to_binary(Text),
             Lines = case Width > 0 of
                 true -> greedy_wrap:word_wrap(TextBin, Width);

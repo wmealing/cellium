@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-90508C93.js"></script>
+    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -90,7 +90,7 @@ cellium
 
     <section id="moduledoc">
 <p>Button widget module for interactive clickable buttons.</p><p>Buttons are focusable widgets that can be activated with Enter or Space.
-When focused, they display with inverted colors or a border to indicate selection.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><pre><code class="makeup erlang" translate="no"><span class="nc">button</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="6043181855-1">(</span><span class="ss">submit_btn</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Submit&quot;</span><span class="p" data-group-id="6043181855-1">)</span></code></pre><h2 id="module-properties" class="section-heading"><a href="#module-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Properties</span></h2><ul><li><code class="inline">label</code> (string): The text displayed on the button</li><li><code class="inline">focusable</code> (boolean): Always true for buttons</li><li><code class="inline">focused</code> (boolean): Set by focus manager when button has focus</li><li><code class="inline">height</code> (integer): If &gt;= 3, renders with a box border</li></ul><h2 id="module-rendering" class="section-heading"><a href="#module-rendering" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Rendering</span></h2><ul><li>Height &lt; 3: Simple text with brackets when focused: <code class="inline">[Submit]</code></li><li>Height &gt;= 3: Bordered box with centered label (double border when focused)</li><li>Focused state inverts foreground/background colors</li></ul>
+When focused, they display with inverted colors or a border to indicate selection.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><pre><code class="makeup erlang" translate="no"><span class="nc">button</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="9475572148-1">(</span><span class="ss">submit_btn</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Submit&quot;</span><span class="p" data-group-id="9475572148-1">)</span></code></pre><h2 id="module-properties" class="section-heading"><a href="#module-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Properties</span></h2><ul><li><code class="inline">label</code> (string): The text displayed on the button</li><li><code class="inline">focusable</code> (boolean): Always true for buttons</li><li><code class="inline">focused</code> (boolean): Set by focus manager when button has focus</li><li><code class="inline">height</code> (integer): If &gt;= 3, renders with a box border</li></ul><h2 id="module-rendering" class="section-heading"><a href="#module-rendering" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Rendering</span></h2><ul><li>Height &lt; 3: Simple text with brackets when focused: <code class="inline">[Submit]</code></li><li>Height &gt;= 3: Bordered box with centered label (double border when focused)</li><li>Focused state inverts foreground/background colors</li></ul>
     </section>
 
 </div>
@@ -106,6 +106,16 @@ When focused, they display with inverted colors or a border to indicate selectio
   <h2>
     <a href="#functions">Functions</a>
   </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#handle_event/2" data-no-tooltip="" translate="no">handle_event/2</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Handles keyboard events for the button. Emits button_clicked event on Enter or Space.</p></div>
+
+    </div>
 
     <div class="summary-row">
       <div class="summary-signature">
@@ -158,6 +168,34 @@ When focused, they display with inverted colors or a border to indicate selectio
       <span class="text">Functions</span>
     </h1>
     <div class="functions-list">
+<section class="detail" id="handle_event/2">
+
+  <div class="detail-header">
+    <a href="#handle_event/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_event/2</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/button.erl#L52" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> handle_event(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Handles keyboard events for the button. Emits button_clicked event on Enter or Space.</p>
+  </section>
+</section>
 <section class="detail" id="new/1">
 
   <div class="detail-header">
@@ -224,7 +262,7 @@ When focused, they display with inverted colors or a border to indicate selectio
       <h1 class="signature" translate="no">render(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/button.erl#L52" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/button.erl#L65" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -252,7 +290,7 @@ When focused, they display with inverted colors or a border to indicate selectio
       <h1 class="signature" translate="no">render_focused(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/button.erl#L90" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/button.erl#L103" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 

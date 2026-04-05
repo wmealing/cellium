@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-90508C93.js"></script>
+    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -91,7 +91,7 @@ cellium
     <section id="moduledoc">
 <p>Base widget module providing common widget functionality.</p><p>This module defines the fundamental widget structure and common operations
 used by all widget types in Cellium. Every widget is represented as a map
-with specific required and optional keys.</p><h2 id="module-widget-structure" class="section-heading"><a href="#module-widget-structure" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Widget Structure</span></h2><p>All widgets are maps containing:</p><ul><li><code class="inline">type</code>: Either <code class="inline">widget</code> or <code class="inline">container</code></li><li><code class="inline">widget_type</code>: Specific widget type (text, button, checkbox, etc.)</li><li><code class="inline">id</code>: Unique identifier</li><li><code class="inline">color</code>: Foreground color (default: white)</li><li><code class="inline">background-color</code>: Background color (default: from ?DEFAULT_BG_COLOR)</li><li><code class="inline">padding</code>: Padding map with top, bottom, left, right</li><li><code class="inline">focusable</code>: Whether the widget can receive focus</li></ul><h2 id="module-common-properties" class="section-heading"><a href="#module-common-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Common Properties</span></h2><h3 id="module-layout-properties" class="section-heading"><a href="#module-layout-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Layout Properties</span></h3><ul><li><code class="inline">x</code>, <code class="inline">y</code>: Position (set by layout system)</li><li><code class="inline">width</code>, <code class="inline">height</code>: Dimensions (set by layout system)</li><li><code class="inline">size</code>: Fixed size in layout direction</li><li><code class="inline">expand</code>: Request to fill available space</li></ul><h3 id="module-visual-properties" class="section-heading"><a href="#module-visual-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Visual Properties</span></h3><ul><li><code class="inline">color</code>: Foreground color atom (black, red, green, yellow, blue, magenta, cyan, white)</li><li><code class="inline">background-color</code>: Background color atom</li><li>Bright variants: <code class="inline">bright_black</code>, <code class="inline">bright_red</code>, etc.</li></ul><h3 id="module-focus-properties" class="section-heading"><a href="#module-focus-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Focus Properties</span></h3><ul><li><code class="inline">focusable</code>: Can this widget receive focus?</li><li><code class="inline">focused</code>: Is this widget currently focused? (set by layout)</li><li><code class="inline">has_focus</code>: Does this widget or a child have focus? (set by layout)</li></ul><h2 id="module-creating-widgets" class="section-heading"><a href="#module-creating-widgets" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Creating Widgets</span></h2><p>Specific widget modules call <code class="inline">widget:new()</code> and add their own properties:</p><pre><code class="makeup erlang" translate="no"><span class="nc">button</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="6091473889-1">(</span><span class="ss">my_button</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Click Me&quot;</span><span class="p" data-group-id="6091473889-1">)</span><span class="w">
+with specific required and optional keys.</p><h2 id="module-widget-structure" class="section-heading"><a href="#module-widget-structure" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Widget Structure</span></h2><p>All widgets are maps containing:</p><ul><li><code class="inline">type</code>: Either <code class="inline">widget</code> or <code class="inline">container</code></li><li><code class="inline">widget_type</code>: Specific widget type (text, button, checkbox, etc.)</li><li><code class="inline">id</code>: Unique identifier</li><li><code class="inline">color</code>: Foreground color (default: white)</li><li><code class="inline">background-color</code>: Background color (default: from ?DEFAULT_BG_COLOR)</li><li><code class="inline">padding</code>: Padding map with top, bottom, left, right</li><li><code class="inline">focusable</code>: Whether the widget can receive focus</li></ul><h2 id="module-common-properties" class="section-heading"><a href="#module-common-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Common Properties</span></h2><h3 id="module-layout-properties" class="section-heading"><a href="#module-layout-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Layout Properties</span></h3><ul><li><code class="inline">x</code>, <code class="inline">y</code>: Position (set by layout system)</li><li><code class="inline">width</code>, <code class="inline">height</code>: Dimensions (set by layout system)</li><li><code class="inline">size</code>: Fixed size in layout direction</li><li><code class="inline">expand</code>: Request to fill available space</li></ul><h3 id="module-visual-properties" class="section-heading"><a href="#module-visual-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Visual Properties</span></h3><ul><li><code class="inline">color</code>: Foreground color atom (black, red, green, yellow, blue, magenta, cyan, white)</li><li><code class="inline">background-color</code>: Background color atom</li><li>Bright variants: <code class="inline">bright_black</code>, <code class="inline">bright_red</code>, etc.</li></ul><h3 id="module-focus-properties" class="section-heading"><a href="#module-focus-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Focus Properties</span></h3><ul><li><code class="inline">focusable</code>: Can this widget receive focus?</li><li><code class="inline">focused</code>: Is this widget currently focused? (set by layout)</li><li><code class="inline">has_focus</code>: Does this widget or a child have focus? (set by layout)</li></ul><h2 id="module-creating-widgets" class="section-heading"><a href="#module-creating-widgets" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Creating Widgets</span></h2><p>Specific widget modules call <code class="inline">widget:new()</code> and add their own properties:</p><pre><code class="makeup erlang" translate="no"><span class="nc">button</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="5235440209-1">(</span><span class="ss">my_button</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Click Me&quot;</span><span class="p" data-group-id="5235440209-1">)</span><span class="w">
 </span><span class="c1">% Calls widget:new() internally and adds button-specific fields</span></code></pre>
     </section>
 
@@ -146,6 +146,17 @@ with specific required and optional keys.</p><h2 id="module-widget-structure" cl
       </div>
 
         <div class="summary-synopsis"><p>Destroys a widget tree recursively, including all children.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#find_widget/2" data-no-tooltip="" translate="no">find_widget/2</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Finds a widget with the given ID in a widget tree.
+Returns the widget map or undefined if not found.</p></div>
 
     </div>
 
@@ -300,6 +311,35 @@ between screens or removing widgets from the widget tree.</p>
 <p>Destroys a widget tree recursively, including all children.</p><p>This function destroys a widget and all its children (if it's a container).
 It walks the widget tree depth-first, destroying children before parents.
 Each focusable widget will be unregistered from the focus manager.</p><p>Use this when removing an entire screen or container hierarchy.</p>
+  </section>
+</section>
+<section class="detail" id="find_widget/2">
+
+  <div class="detail-header">
+    <a href="#find_widget/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">find_widget/2</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/widget.erl#L214" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> find_widget(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>() | undefined.</pre>
+
+      </div>
+
+<p>Finds a widget with the given ID in a widget tree.
+Returns the widget map or undefined if not found.</p>
   </section>
 </section>
 <section class="detail" id="get_common_props/1">

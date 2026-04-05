@@ -46,12 +46,12 @@ start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 init([]) ->
-    _Initiated = ?TERMBOX:tb_init(),
-    _Cleared = ?TERMBOX:tb_clear(),
-    _Presented = ?TERMBOX:tb_present(),
+    _Initiated = ?TERMINAL:term_init(),
+    _Cleared = ?TERMINAL:term_clear(),
+    _Presented = ?TERMINAL:term_present(),
 
-    W = ?TERMBOX:tb_width(),
-    H = ?TERMBOX:tb_height(),
+    W = ?TERMINAL:term_width(),
+    H = ?TERMINAL:term_height(),
 
     % Load stylesheet once at startup
     StylesheetPath = "priv/default_theme.css",
@@ -103,7 +103,7 @@ handle_info(_Info, State) ->
     {noreply, State}.
 
 terminate(_Reason, _State) ->
-    ?TERMBOX:tb_shutdown(),
+    ?TERMINAL:term_shutdown(),
     ok.
 
 code_change(_OldVsn, State, _Extra) ->
@@ -130,15 +130,15 @@ write_buffer_to_terminal(Buffer) ->
         case Key of
             {X, Y} ->
                 {Char, Fg, Bg} = Value,
-                ?TERMBOX:tb_set_cell(X, Y, Char, Fg, Bg);
+                ?TERMINAL:term_set_cell(X, Y, Char, Fg, Bg);
             _ ->
                 ok
         end
     end, Buffer).
 
 update(State) ->
-    W = ?TERMBOX:tb_width(),
-    H = ?TERMBOX:tb_height(),
+    W = ?TERMINAL:term_width(),
+    H = ?TERMINAL:term_height(),
     RootWidget = State#state.root_widget,
 
     % Determine what changed
@@ -161,16 +161,16 @@ update(State) ->
 handle_resize(W, H, State) ->
     logger:info("View detected resize: ~p x ~p (was ~p x ~p)",
                [W, H, State#state.width, State#state.height]),
-    ?TERMBOX:tb_clear(),
-    ?TERMBOX:tb_force_redraw(),
+    ?TERMINAL:term_clear(),
+    ?TERMINAL:term_force_redraw(),
     State#state{width = W, height = H}.
 
 render(W, H, RootWidget, State) ->
-    ?TERMBOX:tb_clear(),
+    ?TERMINAL:term_clear(),
     Layout = layout:calculate_layout(RootWidget, W, H),
     StyledLayout = css:style(Layout, State#state.stylesheet),
     Buffer = widgets:render(StyledLayout),
     write_buffer_to_terminal(Buffer),
-    ?TERMBOX:tb_present(),
+    ?TERMINAL:term_present(),
     State#state{last_root_widget = Layout, force_redraw = false}.
     

@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-90508C93.js"></script>
+    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -80,17 +80,13 @@ cellium
 
     </h1>
 
-      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/layout.erl#L20" title="View Source" class="icon-action" rel="help">
+      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/layout.erl#L1" title="View Source" class="icon-action" rel="help">
         <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         <span class="sr-only">View Source</span>
       </a>
 
   </div>
 
-
-    <section id="moduledoc">
-<p>Layout Engine Module</p><p>This module implements the core layout calculation engine for Cellium. It transforms a widget tree with relative dimensions and positioning into an absolute coordinate system ready for rendering.</p><p>The layout engine supports: - Horizontal and vertical container orientation - Fixed-size and expanding children - Padding and spacing - Absolute and relative positioning - Nested container layouts</p><p>Layout calculation proceeds recursively from parent containers to their children, distributing available space according to size constraints and expand properties.</p>
-    </section>
 
 </div>
 
@@ -112,8 +108,6 @@ cellium
 
       </div>
 
-        <div class="summary-synopsis"><p>Recursively calculates layout for a widget tree.</p></div>
-
     </div>
 
     <div class="summary-row">
@@ -121,8 +115,6 @@ cellium
         <a href="#calculate_layout/3" data-no-tooltip="" translate="no">calculate_layout(Widget, Width, Height)</a>
 
       </div>
-
-        <div class="summary-synopsis"><p>Calculates layout with explicit dimensions.</p></div>
 
     </div>
 
@@ -149,7 +141,7 @@ cellium
       <h1 class="signature" translate="no">calculate_layout(Widget)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/layout.erl#L63" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/layout.erl#L15" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -164,7 +156,7 @@ cellium
 
       </div>
 
-<p>Recursively calculates layout for a widget tree.</p><p>This is the main layout calculation function that transforms a widget tree with relative dimensions into absolute coordinates. The function:</p><p>1. Handles absolutely-positioned widgets by skipping layout 2. Applies container padding (frames get default padding) 3. Separates children into fixed-size and expanding categories 4. Distributes available space among expanding children 5. Assigns final coordinates based on container orientation 6. Recursively processes nested containers</p><p>Children with the expand property share remaining space equally after accounting for fixed-size children. The last expanding child receives any remaining pixels from integer division.</p>
+
   </section>
 </section>
 <section class="detail" id="calculate_layout/3">
@@ -177,7 +169,7 @@ cellium
       <h1 class="signature" translate="no">calculate_layout(Widget, Width, Height)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/layout.erl#L37" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/layout.erl#L7" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -192,7 +184,7 @@ cellium
 
       </div>
 
-<p>Calculates layout with explicit dimensions.</p><p>Wrapper function that sets explicit width and height on a widget before performing layout calculation. Useful for setting root container dimensions.</p>
+
   </section>
 </section>
 

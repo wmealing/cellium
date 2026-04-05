@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-90508C93.js"></script>
+    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -143,7 +143,8 @@ cellium
   </div>
 
     <div class="summary-synopsis"><p>Shared logic for managing a virtual terminal buffer (shadow buffer).
-  Operates on a Map where keys are {X, Y} and values are {Char, Fg, Bg}.</p></div>
+  Operates on a Map where keys are {X, Y} and values are {Char, Fg, Bg}.
+  Supports nested clipping to restrict drawing to specific rectangular areas.</p></div>
 
 </div>
 <div class="summary-row">
@@ -196,9 +197,34 @@ cellium
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="custom_box.html" translate="no">custom_box</a>
+
+  </div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="dialog.html" translate="no">dialog</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Dialog widget module for floating, centered containers.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="focus_manager.html" translate="no">focus_manager</a>
 
   </div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="frame.html" translate="no">frame</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Frame widget module for rendering rectangular containers with borders and titles.</p></div>
 
 </div>
 <div class="summary-row">
@@ -246,7 +272,14 @@ cellium
 
   </div>
 
-    <div class="summary-synopsis"><p>Layout Engine Module</p></div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="list.html" translate="no">list</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>List widget module for rendering scrollable lists of items.</p></div>
 
 </div>
 <div class="summary-row">
@@ -342,6 +375,8 @@ cellium
 
   </div>
 
+    <div class="summary-synopsis"><p>Tab widget module for rendering tabbed containers.</p></div>
+
 </div>
 <div class="summary-row">
   <div class="summary-signature">
@@ -354,7 +389,16 @@ cellium
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="termbox_dummy.html" translate="no">termbox_dummy</a>
+    <a href="table_row.html" translate="no">table_row</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Table row widget for rendering individual rows within a table.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="terminal_dummy.html" translate="no">terminal_dummy</a>
 
   </div>
 
@@ -363,7 +407,7 @@ cellium
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="termbox_mock.html" translate="no">termbox_mock</a>
+    <a href="terminal_mock.html" translate="no">terminal_mock</a>
 
   </div>
 
@@ -373,7 +417,7 @@ cellium
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="termbox_wrapper.html" translate="no">termbox_wrapper</a>
+    <a href="terminal_wrapper.html" translate="no">terminal_wrapper</a>
 
   </div>
 

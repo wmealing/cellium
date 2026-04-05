@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-90508C93.js"></script>
+    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -90,7 +90,8 @@ cellium
 
     <section id="moduledoc">
 <p>Shared logic for managing a virtual terminal buffer (shadow buffer).
-  Operates on a Map where keys are {X, Y} and values are {Char, Fg, Bg}.</p>
+  Operates on a Map where keys are {X, Y} and values are {Char, Fg, Bg}.
+  Supports nested clipping to restrict drawing to specific rectangular areas.</p>
     </section>
 
 </div>
@@ -106,6 +107,16 @@ cellium
   <h2>
     <a href="#functions">Functions</a>
   </h2>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#clear_clip/1" data-no-tooltip="" translate="no">clear_clip(Buffer)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Clears the clipping area on the buffer.</p></div>
+
+    </div>
 
     <div class="summary-row">
       <div class="summary-signature">
@@ -153,7 +164,7 @@ cellium
 
       </div>
 
-        <div class="summary-synopsis"><p>Puts a string into the buffer starting at X, Y.</p></div>
+        <div class="summary-synopsis"><p>Puts a string into the buffer starting at X, Y, respecting clip if set.</p></div>
 
     </div>
 
@@ -163,7 +174,18 @@ cellium
 
       </div>
 
-        <div class="summary-synopsis"><p>Sets a single cell in the buffer.</p></div>
+        <div class="summary-synopsis"><p>Sets a single cell in the buffer, respecting clip if set.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#set_clip/5" data-no-tooltip="" translate="no">set_clip(X, Y, W, H, Buffer)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Sets a rectangular clipping area on the buffer.
+If a clip already exists, it intersects the new area with the existing one.</p></div>
 
     </div>
 
@@ -180,6 +202,28 @@ cellium
       <span class="text">Functions</span>
     </h1>
     <div class="functions-list">
+<section class="detail" id="clear_clip/1">
+
+  <div class="detail-header">
+    <a href="#clear_clip/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">clear_clip(Buffer)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L34" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Clears the clipping area on the buffer.</p>
+  </section>
+</section>
 <section class="detail" id="empty/0">
 
   <div class="detail-header">
@@ -190,7 +234,7 @@ cellium
       <h1 class="signature" translate="no">empty()</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L10" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L12" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -212,7 +256,7 @@ cellium
       <h1 class="signature" translate="no">get_cell(X, Y, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L25" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L61" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -234,7 +278,7 @@ cellium
       <h1 class="signature" translate="no">get_row(Y, Width, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L32" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L68" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -256,7 +300,7 @@ cellium
       <h1 class="signature" translate="no">get_row(StartX, Y, Length, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L36" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L72" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -278,7 +322,7 @@ cellium
       <h1 class="signature" translate="no">put_string(X, Y, Fg, Bg, Str, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L18" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L54" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -287,7 +331,7 @@ cellium
 
   <section class="docstring">
 
-<p>Puts a string into the buffer starting at X, Y.</p>
+<p>Puts a string into the buffer starting at X, Y, respecting clip if set.</p>
   </section>
 </section>
 <section class="detail" id="set_cell/6">
@@ -300,7 +344,7 @@ cellium
       <h1 class="signature" translate="no">set_cell(X, Y, Char, Fg, Bg, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L13" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L38" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -309,7 +353,30 @@ cellium
 
   <section class="docstring">
 
-<p>Sets a single cell in the buffer.</p>
+<p>Sets a single cell in the buffer, respecting clip if set.</p>
+  </section>
+</section>
+<section class="detail" id="set_clip/5">
+
+  <div class="detail-header">
+    <a href="#set_clip/5" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">set_clip(X, Y, W, H, Buffer)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_buffer.erl#L18" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Sets a rectangular clipping area on the buffer.
+If a clip already exists, it intersects the new area with the existing one.</p>
   </section>
 </section>
 

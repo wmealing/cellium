@@ -7,22 +7,22 @@
 """.
 
 -export([
-    tb_init/0,
-    tb_shutdown/0,
-    tb_width/0,
-    tb_height/0,
-    tb_clear/0,
-    tb_present/0,
-    tb_set_cell/5,
-    tb_print/5,
+    term_init/0,
+    term_shutdown/0,
+    term_width/0,
+    term_height/0,
+    term_clear/0,
+    term_present/0,
+    term_set_cell/5,
+    term_print/5,
     get_cell/2,
-    tb_get_row/2,
-    tb_get_row/3,
-    tb_poll_event/0,
+    term_get_row/2,
+    term_get_row/3,
+    term_poll_event/0,
     get_next_event/0,
-    tb_set_input_mode/1,
-    tb_set_output_mode/1,
-    tb_force_redraw/0
+    term_set_input_mode/1,
+    term_set_output_mode/1,
+    term_force_redraw/0
 ]).
 
 %% Internal state management
@@ -122,7 +122,7 @@
 %% ===================================================================
 
 -doc "Initializes the terminal. Enables the alternate screen buffer and hides the cursor.".
-tb_init() ->
+term_init() ->
     case whereis(?SERVER) of
         undefined ->
             {ok, _} = start_link();
@@ -132,65 +132,65 @@ tb_init() ->
     gen_server:call(?SERVER, init_term).
 
 -doc "Shuts down the terminal. Resets attributes, shows the cursor, and disables the alternate screen buffer.".
-tb_shutdown() ->
+term_shutdown() ->
     gen_server:call(?SERVER, shutdown_term).
 
 -doc "Returns the width of the terminal in columns.".
-tb_width() ->
+term_width() ->
     gen_server:call(?SERVER, get_width).
 
 -doc "Returns the height of the terminal in rows.".
-tb_height() ->
+term_height() ->
     gen_server:call(?SERVER, get_height).
 
 -doc "Clears the entire terminal screen.".
-tb_clear() ->
-    gen_server:call(?SERVER, tb_clear).
+term_clear() ->
+    gen_server:call(?SERVER, term_clear).
 
 -doc "Flushes pending output to the terminal using synchronized updates if supported.".
-tb_present() ->
-    gen_server:call(?SERVER, tb_present).
+term_present() ->
+    gen_server:call(?SERVER, term_present).
 
 -doc "Sets a single character at the specified (X, Y) position with given foreground and background colors.".
-tb_set_cell(X, Y, Char, Fg, Bg) ->
-    gen_server:call(?SERVER, {tb_set_cell, X, Y, Char, Fg, Bg}).
+term_set_cell(X, Y, Char, Fg, Bg) ->
+    gen_server:call(?SERVER, {term_set_cell, X, Y, Char, Fg, Bg}).
 
 
 -doc "Prints a string at the specified (X, Y) position with given foreground and background colors.".
-tb_print(X, Y, Fg, Bg, Str) ->
-    gen_server:call(?SERVER, {tb_print, X, Y, Fg, Bg, Str}).
+term_print(X, Y, Fg, Bg, Str) ->
+    gen_server:call(?SERVER, {term_print, X, Y, Fg, Bg, Str}).
 
 -doc "Returns the character and colors at the specified (X, Y) position from the internal shadow buffer.".
 get_cell(X, Y) ->
     gen_server:call(?SERVER, {get_cell, X, Y}).
 
 -doc "Returns an entire row of cells.".
-tb_get_row(Y, Width) ->
+term_get_row(Y, Width) ->
     gen_server:call(?SERVER, {get_row, Y, Width}).
 
 -doc "Returns a segment of a row of cells.".
-tb_get_row(X, Y, Length) ->
+term_get_row(X, Y, Length) ->
     gen_server:call(?SERVER, {get_row, X, Y, Length}).
 
 -doc "Polls for a terminal event. This function blocks until an event occurs.".
-tb_poll_event() ->
+term_poll_event() ->
     gen_server:call(?SERVER, get_event, infinity).
 
--doc "Alias for tb_poll_event/0. Polls for a terminal event.".
+-doc "Alias for term_poll_event/0. Polls for a terminal event.".
 get_next_event() ->
     gen_server:call(?SERVER, get_event, infinity).
 
 -doc "Sets the input mode for the terminal. Mode can be 'default' or 'alt'.".
-tb_set_input_mode(Mode) ->
+term_set_input_mode(Mode) ->
     gen_server:call(?SERVER, {set_input_mode, Mode}).
 
 -doc "Sets the output mode for the terminal. Mode can be 'default', 2 (256-color) 4, or 5 (truecolor).".
-tb_set_output_mode(Mode) ->
-    gen_server:call(?SERVER, {tb_set_output_mode, Mode}).
+term_set_output_mode(Mode) ->
+    gen_server:call(?SERVER, {term_set_output_mode, Mode}).
 
--doc "Forces a full redraw on the next tb_present call by clearing the front buffer.".
-tb_force_redraw() ->
-    gen_server:call(?SERVER, tb_force_redraw).
+-doc "Forces a full redraw on the next term_present call by clearing the front buffer.".
+term_force_redraw() ->
+    gen_server:call(?SERVER, term_force_redraw).
 
 %% ===================================================================
 %% Server implementation
@@ -224,10 +224,10 @@ handle_call(shutdown_term, _From, State) ->
     io:put_chars(?ALT_SCREEN_DISABLE), % Disable alternate screen buffer
     {reply, ok, State};
 
-handle_call(tb_clear, _From, State) ->
+handle_call(term_clear, _From, State) ->
     {reply, ok, State#state{back_buffer = cellium_buffer:empty()}};
 
-handle_call(tb_present, _From, State) ->
+handle_call(term_present, _From, State) ->
     #state{back_buffer = Back, front_buffer = Front, output_mode = OutputMode} = State,
 
     % Start synchronized update
@@ -242,11 +242,11 @@ handle_call(tb_present, _From, State) ->
 
     {reply, ok, State#state{front_buffer = Back}};
 
-handle_call({tb_set_cell, X, Y, Char, Fg, Bg}, _From, State) ->
+handle_call({term_set_cell, X, Y, Char, Fg, Bg}, _From, State) ->
     NewBuffer = cellium_buffer:set_cell(X, Y, Char, Fg, Bg, State#state.back_buffer),
     {reply, ok, State#state{back_buffer = NewBuffer}};
 
-handle_call({tb_print, X, Y, Fg, Bg, Str}, _From, State) ->
+handle_call({term_print, X, Y, Fg, Bg, Str}, _From, State) ->
     NewBuffer = cellium_buffer:put_string(X, Y, Fg, Bg, Str, State#state.back_buffer),
     {reply, ok, State#state{back_buffer = NewBuffer}};
 
@@ -293,7 +293,7 @@ handle_call(get_event, From, State) ->
             {noreply, State#state{waiting_client = From}}
     end;
 
-handle_call(tb_force_redraw, _From, State) ->
+handle_call(term_force_redraw, _From, State) ->
     io:put_chars(?CLEAR),
     {reply, ok, State#state{front_buffer = cellium_buffer:empty()}};
 

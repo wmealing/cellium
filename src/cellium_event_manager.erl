@@ -71,7 +71,7 @@ init(Target) ->
     logger:info("Cellium event manager - init/1"),
     process_flag(trap_exit, true),
     
-    %% Start a dedicated poller process that blocks on ?TERMBOX:tb_poll_event()
+    %% Start a dedicated poller process that blocks on ?TERMINAL:term_poll_event()
     %% This keeps the gen_server responsive to cast/call while we wait for input.
     Self = self(),
     spawn_link(fun() -> event_poller_loop(Self) end),
@@ -82,7 +82,7 @@ init(Target) ->
 %% --- Poller Process ---
 
 event_poller_loop(Parent) ->
-    case ?TERMBOX:tb_poll_event() of
+    case ?TERMINAL:term_poll_event() of
         {error, _} = Error ->
             %% If the backend doesn't support polling (like mock), don't crash
             logger:debug("Terminal poll error: ~p", [Error]),
@@ -162,7 +162,7 @@ process_event(Event, _State) ->
             focus_manager:move_focus_backward();
         {key, false, false, true, false, <<"l">>} -> % Ctrl-L
             logger:info("Ctrl-L detected, forcing redraw"),
-            ?TERMBOX:tb_force_redraw(),
+            ?TERMINAL:term_force_redraw(),
             view:update_now();
         _ ->
             ok

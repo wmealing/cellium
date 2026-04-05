@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-90508C93.js"></script>
+    <script defer src="dist/sidebar_items-8DAD7CC8.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -80,13 +80,18 @@ cellium
 
     </h1>
 
-      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tab.erl#L1" title="View Source" class="icon-action" rel="help">
+      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tab.erl#L3" title="View Source" class="icon-action" rel="help">
         <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         <span class="sr-only">View Source</span>
       </a>
 
   </div>
 
+
+    <section id="moduledoc">
+<p>Tab widget module for rendering tabbed containers.</p><p>This module provides a container widget that displays a tab bar integrated
+into the top border of the container with a &quot;popped-up&quot; cap for each tab.</p>
+    </section>
 
 </div>
 
@@ -108,6 +113,18 @@ cellium
 
       </div>
 
+        <div class="summary-synopsis"><p>Creates a new tab widget with default properties.</p></div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#new/3" data-no-tooltip="" translate="no">new(Id, Width, Height)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Creates a new tab widget with specified dimensions.</p></div>
+
     </div>
 
     <div class="summary-row">
@@ -115,6 +132,8 @@ cellium
         <a href="#render/2" data-no-tooltip="" translate="no">render(Widget, Buffer)</a>
 
       </div>
+
+        <div class="summary-synopsis"><p>Renders the integrated tab bar with caps and the content area.</p></div>
 
     </div>
 
@@ -141,7 +160,7 @@ cellium
       <h1 class="signature" translate="no">new(Id)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tab.erl#L8" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tab.erl#L18" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -156,7 +175,35 @@ cellium
 
       </div>
 
+<p>Creates a new tab widget with default properties.</p>
+  </section>
+</section>
+<section class="detail" id="new/3">
 
+  <div class="detail-header">
+    <a href="#new/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(Id, Width, Height)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tab.erl#L23" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> new(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:non_neg_integer/0">non_neg_integer</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:non_neg_integer/0">non_neg_integer</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Creates a new tab widget with specified dimensions.</p>
   </section>
 </section>
 <section class="detail" id="render/2">
@@ -169,7 +216,7 @@ cellium
       <h1 class="signature" translate="no">render(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tab.erl#L17" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tab.erl#L39" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -184,7 +231,7 @@ cellium
 
       </div>
 
-
+<p>Renders the integrated tab bar with caps and the content area.</p>
   </section>
 </section>
 

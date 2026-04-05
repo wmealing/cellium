@@ -5,18 +5,18 @@
 %%% Test suite for button widget
 %%%
 %%% Note: Requires cellium.hrl to have:
-%%% -define(TERMBOX, termbox_dummy).
+%%% -define(TERMINAL, terminal_dummy).
 
 %% Helper Functions
 
 setup_dummy_terminal() ->
-    termbox_dummy:start_link(),
-    ?TERMBOX:tb_init(),
-    ?TERMBOX:tb_clear().
+    terminal_dummy:start_link(),
+    ?TERMINAL:term_init(),
+    ?TERMINAL:term_clear().
 
 teardown_dummy_terminal(_) ->
-    ?TERMBOX:tb_shutdown(),
-    termbox_dummy:stop().
+    ?TERMINAL:term_shutdown(),
+    terminal_dummy:stop().
 
 render_widget_to_buffer(Widget) ->
     Buffer = cellium_buffer:empty(),
