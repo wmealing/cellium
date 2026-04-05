@@ -1,7 +1,8 @@
+-module(cellium_event_manager).
+
 -moduledoc """
 Event manager for handling terminal and external events.
 """.
--module(cellium_event_manager).
 
 -behaviour(gen_server).
 

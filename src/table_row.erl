@@ -1,10 +1,12 @@
+
+-module(table_row).
 -moduledoc """
 Table row widget for rendering individual rows within a table.
 
 This module renders the data cells of a table row, distributing content
 across columns with the specified widths.
 """.
--module(table_row).
+
 
 -export([render/2]).
 

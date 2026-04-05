@@ -1,9 +1,10 @@
 %% -*- erlang-indent-level: 4;indent-tabs-mode: nil -*-
 %% ex: ts=4 sw=4 et
+
+-module(box_styles).
 -moduledoc """
 Box styles and rendering functions for various border types.
 """.
--module(box_styles).
 
 -include("cellium.hrl").
 
