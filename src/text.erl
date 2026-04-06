@@ -56,21 +56,29 @@ render(Widget, Buffer) ->
     #{x := X, y := Y, fg := Fg, bg := Bg} = get_common_props(Widget),
     Text = maps:get(text, Widget, ""),
     Wrap = maps:get(wrap, Widget, false),
+    Width = maps:get(width, Widget, ?TERMINAL:term_width()),
 
-    case Wrap of
-        true ->
-            % Wrap text at widget width (set by layout) and render each line
-            Width = maps:get(width, Widget, ?TERMINAL:term_width()),
-            TextBin = list_to_binary(Text),
-            Lines = case Width > 0 of
-                true -> greedy_wrap:word_wrap(TextBin, Width);
-                false -> [TextBin]
-            end,
-            render_lines(X, Y, Fg, Bg, Lines, Buffer);
-        false ->
-            % No wrapping - render as single line
-            cellium_buffer:put_string(X, Y, Fg, Bg, Text, Buffer)
-    end.
+    % Split by newline first to preserve user-defined lines
+    TextLines = string:split(Text, "\n", all),
+    
+    {_, FinalBuffer} = lists:foldl(fun(Line, {CurrentY, AccBuffer}) ->
+        case Wrap of
+            true ->
+                % Wrap this specific line at widget width
+                LineBin = list_to_binary(Line),
+                WrappedLines = case Width > 0 of
+                    true -> greedy_wrap:word_wrap(LineBin, Width);
+                    false -> [LineBin]
+                end,
+                NewBuffer = render_lines(X, CurrentY, Fg, Bg, WrappedLines, AccBuffer),
+                {CurrentY + length(WrappedLines), NewBuffer};
+            false ->
+                % No wrapping - render as single line
+                NewBuffer = cellium_buffer:put_string(X, CurrentY, Fg, Bg, Line, AccBuffer),
+                {CurrentY + 1, NewBuffer}
+        end
+    end, {Y, Buffer}, TextLines),
+    FinalBuffer.
 
 render_lines(_X, _Y, _Fg, _Bg, [], Buffer) ->
     Buffer;

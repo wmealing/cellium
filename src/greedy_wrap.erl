@@ -2,11 +2,15 @@
 
 -export([word_wrap/2]).
 
+word_wrap(<<>>, _Width) -> [<<>>];
 word_wrap(Text, Width) ->
     Words = binary:split(Text, [<<" ">>], [global, trim]),
     % Filter out empty binaries that might result from extra spaces
     FilteredWords = [W || W <- Words, W =/= <<>>],
-    lists:reverse(do_wrap(FilteredWords, Width, <<>>, [])).
+    case FilteredWords of
+        [] -> [<<>>];
+        _ -> lists:reverse(do_wrap(FilteredWords, Width, <<>>, []))
+    end.
 
 % The main recursive function
 do_wrap([], _Width, CurrentLine, Lines) ->
