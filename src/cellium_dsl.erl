@@ -56,6 +56,11 @@ create_widget(Tag, Id, Props, Arg3, Model) ->
                 ],
             (tab:new(Id))#{children => RealChildren, type => container};
 
+        % radiogroup takes its options list as Arg3
+        radiogroup ->
+            Orientation = proplists:get_value(orientation, Props, vertical),
+            radiogroup:new(Id, Arg3, Orientation);
+
         % Widgets with a primary value (label, text, etc.)
         T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio; T=:=status_bar ->
             Tag:new(Id, Arg3);
@@ -67,10 +72,14 @@ create_widget(Tag, Id, Props, Arg3, Model) ->
 %% 2-tuple creation (Standard leaf widgets)
 create_widget(Tag, Id, Props) ->
     case Tag of
-        T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio; 
+        T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio;
                T=:=progress_bar; T=:=toggle; T=:=text_input; T=:=spinner;
                T=:=box; T=:=frame; T=:=spacer; T=:=gauge; T=:=table ->
             Tag:new(Id);
+        radiogroup ->
+            Options = proplists:get_value(options, Props, []),
+            Orientation = proplists:get_value(orientation, Props, vertical),
+            radiogroup:new(Id, Options, Orientation);
         tabs -> tab:new(Id);
         list -> list:new(Id, proplists:get_value(items, Props, []));
         _ ->
