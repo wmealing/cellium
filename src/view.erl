@@ -170,7 +170,7 @@ render(W, H, RootWidget, State) ->
     Layout = layout:calculate_layout(RootWidget, W, H),
     StyledLayout = css:style(Layout, State#state.stylesheet),
     Buffer = widgets:render(StyledLayout),
-    write_buffer_to_terminal(Buffer),
+    BufferWithOverlays = widgets:render_overlays(StyledLayout, Buffer),
+    write_buffer_to_terminal(BufferWithOverlays),
     ?TERMINAL:term_present(),
     State#state{last_root_widget = Layout, force_redraw = false}.
-    

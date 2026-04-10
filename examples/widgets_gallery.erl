@@ -100,13 +100,14 @@ render(Model) ->
     {vbox, [{id, main}, {padding, 0}], [
         {tabs,
             [{id, gallery_tabs},
-             {tabs, ["Basic", "Progress", "Input", "List", "Table", "Edit Table", "Radio Group", "Memory"]},
+             {tabs, ["Basic", "Progress", "Input", "Dropdown", "List", "Table", "Edit Table", "Radio Group", "Memory"]},
              {active_tab, ActiveTab},
              {expand, true}],
             [
                 tab_basic(Model),
                 tab_progress(Model),
                 tab_input(),
+                tab_dropdown(Model),
                 tab_list(),
                 tab_table(),
                 tab_edit_table(),
@@ -179,6 +180,22 @@ tab_input() ->
             {spacer, [{size, 1}]}
         ]},
         {spacer, [{expand, true}]}
+    ]}.
+
+tab_dropdown(Model) ->
+    Selected = maps:get(gallery_selected, Model, "None"),
+    {vbox, [{id, tab_dropdown}, {expand, true}, {padding, 1}], [
+        {header, [{id, h_dropdown}, {color, cyan}], "Dropdown (Select) Widget"},
+        {spacer, [{size, 1}]},
+        {text, [], "The dropdown below draws over other widgets when opened:"},
+        {spacer, [{size, 1}]},
+        {select, [{id, gallery_sel}, {options, ["Red", "Green", "Blue", "Yellow", "Cyan", "Magenta"]}]},
+        {spacer, [{size, 2}]},
+        {text, [], lists:flatten(io_lib:format("Selected color: ~p", [Selected]))},
+        {spacer, [{size, 1}]},
+        {frame, [{title, "Overlapped Frame"}, {expand, true}], [
+            {text, [], "This frame will be drawn behind the dropdown list."}
+        ]}
     ]}.
 
 tab_list() ->

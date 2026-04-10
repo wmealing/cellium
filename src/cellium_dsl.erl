@@ -1,57 +1,5 @@
 -module(cellium_dsl).
--moduledoc """
-The `cellium_dsl` module provides a Domain Specific Language (DSL) for defining UI layouts in Cellium.
-
-## How the DSL works
-
-The DSL uses Erlang tuples to represent widgets and their properties. A UI layout is defined as a recursive structure of these tuples.
-
-There are three main forms of DSL elements:
-1. **Standard leaf widgets**: `{Tag, Props}`
-   - Example: `{button, [{id, my_button}, {label, "Click Me"}]}`
-2. **Widgets with a primary value or containers**: `{Tag, Props, Arg3}`
-   - For containers like `vbox` or `hbox`, `Arg3` is a list of child DSL elements.
-   - For widgets like `button` or `text`, `Arg3` is the primary value (e.g., label string).
-3. **Custom widgets**: `{custom, Module, Props}`
-   - Allows using a custom module that implements a `new(Id)` function.
-
-## Recursive State Handling
-
-The DSL transformation is state-aware. When calling `from_dsl/2`, you provide a `Model` which may contain a `widget_states` map.
-
-During the recursive traversal of the DSL:
-1. An `Id` is determined for each widget (either from `Props` or auto-generated).
-2. The widget is created.
-3. If the `Model` contains state for that `Id`, it is "injected" into the widget's internal map using `inject_state/3`. This allows the DSL to preserve UI state (like text input content or toggle positions) across re-renders.
-
-## Sizing and Expansion
-
-The DSL handles layout properties that control how widgets occupy space:
-
-- `width`: Sets the fixed width of a widget.
-- `height` or `size`: Sets the fixed height (or primary dimension) of a widget.
-- `expand`: Indicates if a widget should grow to fill available space in its parent container.
-- **Constraints**: Fixed-size widgets should not exceed the available dimensions of their parent container. If a widget is too large, it may be clipped or cause layout inconsistencies.
-- **Defaults**: If neither a fixed size nor `expand` is specified, the DSL automatically applies a default `{size, 1}` to ensure the widget is visible and participates in the layout.
-
-## Special Cases
-
-Certain tags have specialized behavior in the DSL:
-
-### Containers (`vbox`, `hbox`, `box`, `frame`, `dialog`)
-These tags use the third element of the tuple as a list of children. 
-- `vbox` and `hbox` are shortcuts for `container` with vertical or horizontal orientation.
-- Children are recursively processed using `from_dsl/2`.
-
-### Tabs (`tabs`)
-The `tabs` widget only renders the child corresponding to the `active_tab` property (defaults to index 0). All other children are replaced with `spacer` widgets to maintain the structure without rendering overhead.
-
-### Radiogroup (`radiogroup`)
-The `radiogroup` tag uses the third element of the tuple as the list of options, OR can take `options` in the `Props` list if used as a 2-tuple.
-
-### Leaf Widgets with Primary Values
-Tags like `header`, `text`, `button`, `checkbox`, `radio`, and `status_bar` can take their primary display value (label or text) as the third element of the tuple for brevity.
-"""
+-moduledoc "The `cellium_dsl` module provides a Domain Specific Language (DSL) for defining UI layouts in Cellium.\n\n## How the DSL works\n\nThe DSL uses Erlang tuples to represent widgets and their properties. A UI layout is defined as a recursive structure of these tuples.\n\nThere are three main forms of DSL elements:\n1. **Standard leaf widgets**: `{Tag, Props}`\n   - Example: `{button, [{id, my_button}, {label, \"Click Me\"}]}`\n2. **Widgets with a primary value or containers**: `{Tag, Props, Arg3}`\n   - For containers like `vbox` or `hbox`, `Arg3` is a list of child DSL elements.\n   - For widgets like `button` or `text`, `Arg3` is the primary value (e.g., label string).\n3. **Custom widgets**: `{custom, Module, Props}`\n   - Allows using a custom module that implements a `new(Id)` function.\n\n## Recursive State Handling\n\nThe DSL transformation is state-aware. When calling `from_dsl/2`, you provide a `Model` which may contain a `widget_states` map.\n\nDuring the recursive traversal of the DSL:\n1. An `Id` is determined for each widget (either from `Props` or auto-generated).\n2. The widget is created.\n3. If the `Model` contains state for that `Id`, it is \"injected\" into the widget's internal map using `inject_state/3`. This allows the DSL to preserve UI state across re-renders.\n\n## Sizing and Expansion\n\nThe DSL handles layout properties that control how widgets occupy space:\n- `width`: Sets the fixed width of a widget.\n- `height` or `size`: Sets the fixed height (or primary dimension) of a widget.\n- `expand`: Indicates if a widget should grow to fill available space in its parent container.\n- **Constraints**: Fixed-size widgets should not exceed the available dimensions of their parent container.\n- **Defaults**: If neither a fixed size nor `expand` is specified, the DSL automatically applies a default `{size, 1}`.\n\n## Special Cases\n\nCertain tags have specialized behavior in the DSL:\n### Containers (`vbox`, `hbox`, `box`, `frame`, `dialog`)\nThese tags use the third element of the tuple as a list of children.\n### Tabs (`tabs`)\nThe `tabs` widget only renders the child corresponding to the `active_tab` property.\n### Radiogroup (`radiogroup`)\nThe `radiogroup` tag uses the third element of the tuple as the list of options.\n### Dropdown (`select`)\nThe `select` tag represents a dropdown widget. It can take options as the third element or in the `Props` list.\n### Leaf Widgets with Primary Values\nTags like `header`, `text`, `button`, etc., can take their primary display value as the third element for brevity.".
 -export([from_dsl/1, from_dsl/2]).
 
 from_dsl(Dsl) -> from_dsl(Dsl, #{}).
@@ -114,6 +62,9 @@ create_widget(Tag, Id, Props, Arg3, Model) ->
             Orientation = proplists:get_value(orientation, Props, vertical),
             radiogroup:new(Id, Arg3, Orientation);
 
+        select ->
+            select:new(Id, Arg3);
+
         % Widgets with a primary value (label, text, etc.)
         T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio; T=:=status_bar ->
             Tag:new(Id, Arg3);
@@ -133,6 +84,9 @@ create_widget(Tag, Id, Props) ->
             Options = proplists:get_value(options, Props, []),
             Orientation = proplists:get_value(orientation, Props, vertical),
             radiogroup:new(Id, Options, Orientation);
+        select ->
+            Options = proplists:get_value(options, Props, []),
+            select:new(Id, Options);
         tabs -> tab:new(Id);
         list -> list:new(Id, proplists:get_value(items, Props, []));
         _ ->

@@ -1,5 +1,5 @@
 -module(widgets).
--export([render/1, render/2, render_focused/1, render_focused/2]).
+-export([render/1, render/2, render_overlays/2, render_focused/1, render_focused/2]).
 
 %% @doc Renders a widget into a virtual screen representation.
 %% This is the entry point that initializes an empty buffer.
@@ -59,6 +59,33 @@ render(Widget, Buffer) ->
     case OldClip of
         undefined -> maps:remove(clip, ResultBuffer);
         _ -> ResultBuffer#{clip => OldClip}
+    end.
+
+%% @doc Renders overlays for widgets that need to draw over the top of others.
+%% This is the second pass of the rendering process.
+render_overlays(Widgets, Buffer) when is_list(Widgets) ->
+    lists:foldl(fun(Widget, AccBuffer) ->
+        render_overlays(Widget, AccBuffer)
+    end, Buffer, Widgets);
+
+render_overlays(Widget, Buffer) ->
+    ResultBuffer = case maps:get(widget_type, Widget, none) of
+        none -> Buffer;
+        Mod ->
+            case erlang:function_exported(Mod, render_overlay, 2) of
+                true -> Mod:render_overlay(Widget, Buffer);
+                false -> Buffer
+            end
+    end,
+
+    % Recurse into children regardless of whether this widget has an overlay
+    case maps:get(children, Widget, undefined) of
+        Children when is_list(Children) ->
+            lists:foldl(fun(Child, AccBuffer) ->
+                render_overlays(Child, AccBuffer)
+            end, ResultBuffer, Children);
+        _ ->
+            ResultBuffer
     end.
 
 render_focused(Widget) ->
