@@ -63,14 +63,14 @@ update(Model, Msg) ->
         {key, _, _, _, _, <<"q">>} ->
             cellium:stop(),
             Model;
-        %% Shift + Right Arrow — next tab (7 tabs now)
+        %% Shift + Right Arrow — next tab (8 tabs now)
         {key, true, false, false, false, right_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 1) rem 7};
+            Model#{active_tab => (Active + 1) rem 8};
         %% Shift + Left Arrow — previous tab
         {key, true, false, false, false, left_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 6) rem 7};
+            Model#{active_tab => (Active + 7) rem 8};
         tick ->
             erlang:send_after(100, self(), tick),
             Model#{spinner_frame => maps:get(spinner_frame, Model) + 1};
@@ -100,7 +100,7 @@ render(Model) ->
     {vbox, [{id, main}, {padding, 0}], [
         {tabs,
             [{id, gallery_tabs},
-             {tabs, ["Basic", "Progress", "Input", "List", "Table", "Edit Table", "Radio Group"]},
+             {tabs, ["Basic", "Progress", "Input", "List", "Table", "Edit Table", "Radio Group", "Memory"]},
              {active_tab, ActiveTab},
              {expand, true}],
             [
@@ -110,7 +110,8 @@ render(Model) ->
                 tab_list(),
                 tab_table(),
                 tab_edit_table(),
-                tab_radiogroup(Model)
+                tab_radiogroup(Model),
+                tab_memory()
             ]},
         {status_bar, [{id, sb1}, {color, white}], lists:flatten(StatusText)}
     ]}.
@@ -251,6 +252,21 @@ tab_radiogroup(Model) ->
 
         {spacer, [{size, 1}]},
         {text,   [{id, rg_summary}], Summary},
+        {spacer, [{expand, true}]}
+    ]}.
+
+tab_memory() ->
+    Memory = erlang:memory(),
+    Rows = [ [atom_to_list(K), io_lib:format("~.2f MB", [V / (1024 * 1024)])] || {K, V} <- Memory ],
+    {vbox, [{id, tab_memory}, {expand, true}, {padding, 1}], [
+        {header, [{id, h8}, {color, cyan}], "Memory Usage Stats"},
+        {spacer, [{size, 1}]},
+        {table,  [{id, mem_tbl},
+                  {style, rounded},
+                  {size, 12},
+                  {headers, ["Category", "Usage"]},
+                  {column_widths, [20, 15]},
+                  {rows, Rows}]},
         {spacer, [{expand, true}]}
     ]}.
 
