@@ -39,15 +39,3 @@ do_wrap([Word | Rest], Width, CurrentLine, Lines) ->
         % and start a new line with just the current Word.
         do_wrap(Rest, Width, Word, [CurrentLine | Lines])
     end.
-
-
-read_file_content(Filename) ->
-    case file:read_file(Filename) of
-        {ok, BinaryContent} ->
-            BinaryContent;
-        {error, Reason} ->
-            io:format("Error reading file ~s: ~p~n", [Filename, Reason]),
-            undefined % Or handle the error as needed
-    end.
-
-
