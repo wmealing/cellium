@@ -25,7 +25,7 @@ screen (or its parent). It draws a border and can have a title, similar to a fra
 - `position` (atom): Defaults to `centered`.
 """.
 
--export([new/1, new/3, render/2]).
+-export([new/1, new/3, render/2, render_overlay/2]).
 -include("cellium.hrl").
 
 -doc "Creates a new dialog container with centered position.".
@@ -41,7 +41,25 @@ new(Id, Width, Height) ->
         position => centered
     }.
 
--doc "Renders the dialog using the frame rendering logic.".
+-doc "Renders the dialog. In the first pass, we do nothing to avoid clipping.".
 -spec render(map(), map()) -> map().
-render(Widget, Buffer) ->
-    frame:render(Widget, Buffer).
+render(_Widget, Buffer) ->
+    Buffer.
+
+-doc "Renders the dialog in the overlay pass to draw over the top of other widgets.".
+-spec render_overlay(map(), map()) -> map().
+render_overlay(Widget, Buffer) ->
+    % We use frame:render but we must ensure we don't use the clipped buffer 
+    % from the first pass if we want to draw outside parent bounds.
+    % Since widgets:render_overlays passes the 'global' buffer, this works.
+    ResultBuffer = frame:render(Widget, Buffer),
+    
+    % Clear clip before rendering children to ensure they are visible within the dialog
+    % (frame:render might have set a clip)
+    BufferNoClip = cellium_buffer:clear_clip(ResultBuffer),
+
+    % Dialog is a container, so we must also render its children.
+    Children = maps:get(children, Widget, []),
+    lists:foldl(fun(Child, Acc) ->
+        widgets:render(Child, Acc)
+    end, BufferNoClip, Children).
