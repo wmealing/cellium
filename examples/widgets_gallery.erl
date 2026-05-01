@@ -73,7 +73,10 @@ init(_Args) ->
                 selected_row => 0,
                 selected_col => 0,
                 editing      => false
-            }
+            },
+            bc_nav  => #{crumbs => ["Home", "Settings", "Network"]},
+            bc_file => #{crumbs => ["root", "usr", "local", "bin"], separator => " / "},
+            bc_app  => #{crumbs => ["Dashboard", "Reports", "Q4", "Summary"]}
         }
     },
     erlang:send_after(100, self(), tick),
@@ -84,14 +87,14 @@ update(Model, Msg) ->
         {key, _, _, _, _, <<"q">>} ->
             cellium:stop(),
             Model;
-        %% Shift + Right Arrow — next tab (9 tabs now)
+        %% Shift + Right Arrow — next tab (11 tabs now)
         {key, true, false, false, false, right_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 1) rem 10};
+            Model#{active_tab => (Active + 1) rem 11};
         %% Shift + Left Arrow — previous tab
         {key, true, false, false, false, left_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 9) rem 10};
+            Model#{active_tab => (Active + 10) rem 11};
         tick ->
             erlang:send_after(100, self(), tick),
             Model#{spinner_frame => maps:get(spinner_frame, Model) + 1};
@@ -125,7 +128,7 @@ render(Model) ->
     {vbox, [{id, main}, {padding, 0}], [
         {tabs,
             [{id, gallery_tabs},
-             {tabs, ["Basic", "Progress", "Input", "Dropdown", "List", "Tree", "Table", "Edit Table", "Radio Group", "Memory"]},
+             {tabs, ["Basic", "Progress", "Input", "Dropdown", "List", "Tree", "Table", "Edit Table", "Radio Group", "Memory", "Breadcrumbs"]},
              {active_tab, ActiveTab},
              {expand, true}],
             [
@@ -138,7 +141,8 @@ render(Model) ->
                 tab_table(),
                 tab_edit_table(),
                 tab_radiogroup(Model),
-                tab_memory()
+                tab_memory(),
+                tab_breadcrumbs()
             ]},
         {status_bar, [{id, sb1}, {color, white}], lists:flatten(StatusText)}
     ]}.
@@ -324,6 +328,25 @@ tab_tree() ->
         {frame, [{title, "Simple Tree"}, {expand, true}], [
             {tree, [{id, tree1}, {expand, true}]}
         ]}
+    ]}.
+
+tab_breadcrumbs() ->
+    {vbox, [{id, tab_breadcrumbs}, {expand, true}, {padding, 1}], [
+        {header, [{id, h_bc}, {color, cyan}], "Breadcrumbs Widget"},
+        {spacer, [{size, 1}]},
+
+        {text, [], "Navigation path (default \" > \" separator):"},
+        {breadcrumbs, [{id, bc_nav}, {size, 1}]},
+        {spacer, [{size, 1}]},
+
+        {text, [], "File path (\" / \" separator):"},
+        {breadcrumbs, [{id, bc_file}, {size, 1}]},
+        {spacer, [{size, 1}]},
+
+        {text, [], "Application drill-down:"},
+        {breadcrumbs, [{id, bc_app}, {size, 1}]},
+
+        {spacer, [{expand, true}]}
     ]}.
 
 start() ->

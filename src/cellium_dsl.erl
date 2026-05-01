@@ -73,7 +73,7 @@ is_known_tag(Tag) ->
         vbox, hbox, box, frame, dialog, tabs,
         header, text, button, checkbox, radio, status_bar,
         tree, select, list, progress_bar, toggle, spinner, spacer, gauge, table,
-        radiogroup, stepper, text_input
+        radiogroup, stepper, text_input, breadcrumbs
     ]).
 
 from_dsl(Dsl) -> from_dsl(Dsl, #{}).
@@ -152,7 +152,8 @@ create_widget(Tag, Id, Props) ->
     case Tag of
         T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio;
                T=:=progress_bar; T=:=toggle; T=:=text_input; T=:=spinner;
-               T=:=box; T=:=frame; T=:=spacer; T=:=gauge; T=:=table; T=:=stepper ->
+               T=:=box; T=:=frame; T=:=spacer; T=:=gauge; T=:=table;
+               T=:=stepper; T=:=breadcrumbs ->
             Tag:new(Id);
         radiogroup ->
             Options = proplists:get_value(options, Props, []),
