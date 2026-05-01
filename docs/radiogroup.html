@@ -8,7 +8,7 @@
     <meta name="project" content="cellium v0.1.0">
 
 
-    <title>list — cellium v0.1.0</title>
+    <title>radiogroup — cellium v0.1.0</title>
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
@@ -75,12 +75,12 @@ cellium
 <div id="top-content">
   <div class="heading-with-actions top-heading">
     <h1>
-      <span translate="no">list</span> 
+      <span translate="no">radiogroup</span> 
       <small class="app-vsn" translate="no">(cellium v0.1.0)</small>
 
     </h1>
 
-      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L3" title="View Source" class="icon-action" rel="help">
+      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/radiogroup.erl#L1" title="View Source" class="icon-action" rel="help">
         <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         <span class="sr-only">View Source</span>
       </a>
@@ -89,8 +89,10 @@ cellium
 
 
     <section id="moduledoc">
-<p>List widget module for rendering scrollable lists of items.</p><p>This module provides an interactive list widget that handles keyboard
-events for selection and scrolling.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><p>Basic list:</p><pre><code class="makeup erlang" translate="no"><span class="p" data-group-id="8693174277-1">{</span><span class="ss">list</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8693174277-2">[</span><span class="p" data-group-id="8693174277-3">{</span><span class="ss">id</span><span class="p">,</span><span class="w"> </span><span class="ss">my_list</span><span class="p" data-group-id="8693174277-3">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8693174277-4">{</span><span class="ss">items</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8693174277-5">[</span><span class="s">&quot;Item 1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Item 2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Item 3&quot;</span><span class="p" data-group-id="8693174277-5">]</span><span class="p" data-group-id="8693174277-4">}</span><span class="p" data-group-id="8693174277-2">]</span><span class="p" data-group-id="8693174277-1">}</span></code></pre><h2 id="module-properties" class="section-heading"><a href="#module-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Properties</span></h2><ul><li><code class="inline">items</code> (list of strings): The items to display in the list.</li><li><code class="inline">selected_index</code> (integer): The index of the currently selected item.</li><li><code class="inline">scroll_offset</code> (integer): The index of the first item to display.</li><li><code class="inline">focusable</code> (boolean): Always true for lists.</li><li><code class="inline">focused</code> (boolean): Set by focus manager when the list has focus.</li></ul>
+<p>Radio group widget — a labelled group of mutually exclusive radio buttons.</p><p>Renders a set of named options as radio buttons. Only one option can be
+selected at a time. The group can be laid out horizontally or vertically.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><pre><code class="makeup erlang" translate="no"><span class="nc">radiogroup</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="9483152200-1">(</span><span class="ss">my_group</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="9483152200-2">[</span><span class="ss">opt_a</span><span class="p">,</span><span class="w"> </span><span class="ss">opt_b</span><span class="p">,</span><span class="w"> </span><span class="ss">opt_c</span><span class="p" data-group-id="9483152200-2">]</span><span class="p" data-group-id="9483152200-1">)</span></code></pre><h2 id="module-properties" class="section-heading"><a href="#module-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Properties</span></h2><ul><li><code class="inline">options</code>     — list of atoms used as option identifiers and display labels</li><li><code class="inline">selected</code>    — atom identifying the currently selected option</li><li><code class="inline">orientation</code> — <code class="inline">vertical</code> (default) or <code class="inline">horizontal</code></li><li><code class="inline">focusable</code>   — true by default</li></ul><h2 id="module-display-vertical-opt_b-selected" class="section-heading"><a href="#module-display-vertical-opt_b-selected" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Display (vertical, opt_b selected)</span></h2><pre><code class="makeup erlang" translate="no"><span class="p" data-group-id="3480273998-1">(</span><span class="w"> </span><span class="p" data-group-id="3480273998-1">)</span><span class="w"> </span><span class="nf">opt_a</span><span class="w">
+</span><span class="p" data-group-id="3480273998-2">(</span><span class="o">*</span><span class="p" data-group-id="3480273998-2">)</span><span class="w"> </span><span class="nf">opt_b</span><span class="w">
+</span><span class="p" data-group-id="3480273998-3">(</span><span class="w"> </span><span class="p" data-group-id="3480273998-3">)</span><span class="w"> </span><span class="ss">opt_c</span></code></pre><h2 id="module-display-horizontal" class="section-heading"><a href="#module-display-horizontal" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Display (horizontal)</span></h2><pre><code class="makeup erlang" translate="no"><span class="p" data-group-id="7310493575-1">(</span><span class="w"> </span><span class="p" data-group-id="7310493575-1">)</span><span class="w"> </span><span class="nf">opt_a</span><span class="w">  </span><span class="p" data-group-id="7310493575-2">(</span><span class="o">*</span><span class="p" data-group-id="7310493575-2">)</span><span class="w"> </span><span class="nf">opt_b</span><span class="w">  </span><span class="p" data-group-id="7310493575-3">(</span><span class="w"> </span><span class="p" data-group-id="7310493575-3">)</span><span class="w"> </span><span class="ss">opt_c</span></code></pre><h2 id="module-messages" class="section-heading"><a href="#module-messages" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Messages</span></h2><p>When the user changes the selection the group sends:</p><pre><code class="makeup erlang" translate="no"><span class="p" data-group-id="6539087425-1">{</span><span class="ss">radiogroup_changed</span><span class="p">,</span><span class="w"> </span><span class="n">GroupId</span><span class="p">,</span><span class="w"> </span><span class="n">NewSelectedOption</span><span class="p" data-group-id="6539087425-1">}</span></code></pre>
     </section>
 
 </div>
@@ -109,39 +111,31 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#calculate_scroll_offset/3" data-no-tooltip="" translate="no">calculate_scroll_offset(SelectedIndex, CurrentOffset, Height)</a>
-
-      </div>
-
-    </div>
-
-    <div class="summary-row">
-      <div class="summary-signature">
         <a href="#handle_event/2" data-no-tooltip="" translate="no">handle_event/2</a>
 
       </div>
 
-        <div class="summary-synopsis"><p>Handles keyboard events for the list.</p></div>
+        <div class="summary-synopsis"><p>Moves selection or wraps around on arrow / space / enter key events.</p></div>
 
     </div>
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#new/1" data-no-tooltip="" translate="no">new(Id)</a>
+        <a href="#new/2" data-no-tooltip="" translate="no">new(Id, Options)</a>
 
       </div>
 
-        <div class="summary-synopsis"><p>Creates a new list widget with no items.</p></div>
+        <div class="summary-synopsis"><p>Creates a vertical radiogroup with the given options. First option is selected by default.</p></div>
 
     </div>
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#new/2" data-no-tooltip="" translate="no">new(Id, Items)</a>
+        <a href="#new/3" data-no-tooltip="" translate="no">new(Id, Options, Orientation)</a>
 
       </div>
 
-        <div class="summary-synopsis"><p>Creates a new list widget with the specified items.</p></div>
+        <div class="summary-synopsis"><p>Creates a radiogroup with the given options and orientation (<code class="inline">vertical</code> | <code class="inline">horizontal</code>).</p></div>
 
     </div>
 
@@ -151,7 +145,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-        <div class="summary-synopsis"><p>Renders the list widget.</p></div>
+        <div class="summary-synopsis"><p>Renders the radiogroup in unfocused state.</p></div>
 
     </div>
 
@@ -160,6 +154,8 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
         <a href="#render_focused/2" data-no-tooltip="" translate="no">render_focused(Widget, Buffer)</a>
 
       </div>
+
+        <div class="summary-synopsis"><p>Renders the radiogroup with the selected option highlighted.</p></div>
 
     </div>
 
@@ -176,28 +172,6 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <span class="text">Functions</span>
     </h1>
     <div class="functions-list">
-<section class="detail" id="calculate_scroll_offset/3">
-
-  <div class="detail-header">
-    <a href="#calculate_scroll_offset/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
-      <i class="ri-link-m" aria-hidden="true"></i>
-    </a>
-    <div class="heading-with-actions">
-      <h1 class="signature" translate="no">calculate_scroll_offset(SelectedIndex, CurrentOffset, Height)</h1>
-
-
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L125" class="icon-action" rel="help" aria-label="View Source">
-          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-        </a>
-
-    </div>
-  </div>
-
-  <section class="docstring">
-
-
-  </section>
-</section>
 <section class="detail" id="handle_event/2">
 
   <div class="detail-header">
@@ -208,7 +182,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <h1 class="signature" translate="no">handle_event/2</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L53" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/radiogroup.erl#L77" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -223,35 +197,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-<p>Handles keyboard events for the list.</p><p>Processes arrow keys for selection and scrolling.</p>
-  </section>
-</section>
-<section class="detail" id="new/1">
-
-  <div class="detail-header">
-    <a href="#new/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
-      <i class="ri-link-m" aria-hidden="true"></i>
-    </a>
-    <div class="heading-with-actions">
-      <h1 class="signature" translate="no">new(Id)</h1>
-
-
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L33" class="icon-action" rel="help" aria-label="View Source">
-          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-        </a>
-
-    </div>
-  </div>
-
-  <section class="docstring">
-
-      <div class="specs">
-
-          <pre translate="no"><span class="attribute">-spec</span> new(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
-
-      </div>
-
-<p>Creates a new list widget with no items.</p>
+<p>Moves selection or wraps around on arrow / space / enter key events.</p>
   </section>
 </section>
 <section class="detail" id="new/2">
@@ -261,10 +207,10 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <i class="ri-link-m" aria-hidden="true"></i>
     </a>
     <div class="heading-with-actions">
-      <h1 class="signature" translate="no">new(Id, Items)</h1>
+      <h1 class="signature" translate="no">new(Id, Options)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L38" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/radiogroup.erl#L55" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -275,11 +221,39 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       <div class="specs">
 
-          <pre translate="no"><span class="attribute">-spec</span> new(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), [<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:string/0">string</a>()]) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+          <pre translate="no"><span class="attribute">-spec</span> new(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), [<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:atom/0">atom</a>()]) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
 
       </div>
 
-<p>Creates a new list widget with the specified items.</p>
+<p>Creates a vertical radiogroup with the given options. First option is selected by default.</p>
+  </section>
+</section>
+<section class="detail" id="new/3">
+
+  <div class="detail-header">
+    <a href="#new/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(Id, Options, Orientation)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/radiogroup.erl#L60" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> new(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), [<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:atom/0">atom</a>()], vertical | horizontal) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+<p>Creates a radiogroup with the given options and orientation (<code class="inline">vertical</code> | <code class="inline">horizontal</code>).</p>
   </section>
 </section>
 <section class="detail" id="render/2">
@@ -292,7 +266,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <h1 class="signature" translate="no">render(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L78" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/radiogroup.erl#L98" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -307,7 +281,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-<p>Renders the list widget.</p>
+<p>Renders the radiogroup in unfocused state.</p>
   </section>
 </section>
 <section class="detail" id="render_focused/2">
@@ -320,7 +294,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <h1 class="signature" translate="no">render_focused(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L82" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/radiogroup.erl#L103" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -335,7 +309,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-
+<p>Renders the radiogroup with the selected option highlighted.</p>
   </section>
 </section>
 

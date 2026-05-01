@@ -8,7 +8,7 @@
     <meta name="project" content="cellium v0.1.0">
 
 
-    <title>list — cellium v0.1.0</title>
+    <title>vbox — cellium v0.1.0</title>
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
@@ -75,12 +75,12 @@ cellium
 <div id="top-content">
   <div class="heading-with-actions top-heading">
     <h1>
-      <span translate="no">list</span> 
+      <span translate="no">vbox</span> 
       <small class="app-vsn" translate="no">(cellium v0.1.0)</small>
 
     </h1>
 
-      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L3" title="View Source" class="icon-action" rel="help">
+      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/vbox.erl#L1" title="View Source" class="icon-action" rel="help">
         <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         <span class="sr-only">View Source</span>
       </a>
@@ -89,8 +89,13 @@ cellium
 
 
     <section id="moduledoc">
-<p>List widget module for rendering scrollable lists of items.</p><p>This module provides an interactive list widget that handles keyboard
-events for selection and scrolling.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><p>Basic list:</p><pre><code class="makeup erlang" translate="no"><span class="p" data-group-id="8693174277-1">{</span><span class="ss">list</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8693174277-2">[</span><span class="p" data-group-id="8693174277-3">{</span><span class="ss">id</span><span class="p">,</span><span class="w"> </span><span class="ss">my_list</span><span class="p" data-group-id="8693174277-3">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8693174277-4">{</span><span class="ss">items</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8693174277-5">[</span><span class="s">&quot;Item 1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Item 2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Item 3&quot;</span><span class="p" data-group-id="8693174277-5">]</span><span class="p" data-group-id="8693174277-4">}</span><span class="p" data-group-id="8693174277-2">]</span><span class="p" data-group-id="8693174277-1">}</span></code></pre><h2 id="module-properties" class="section-heading"><a href="#module-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Properties</span></h2><ul><li><code class="inline">items</code> (list of strings): The items to display in the list.</li><li><code class="inline">selected_index</code> (integer): The index of the currently selected item.</li><li><code class="inline">scroll_offset</code> (integer): The index of the first item to display.</li><li><code class="inline">focusable</code> (boolean): Always true for lists.</li><li><code class="inline">focused</code> (boolean): Set by focus manager when the list has focus.</li></ul>
+<p>Vertical box container for stacking widgets vertically.</p><p>vbox is a layout container that arranges its children one after another
+from top to bottom. It handles automatic height distribution among
+expanding and fixed-size children.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><p>DSL:</p><pre><code class="makeup erlang" translate="no"><span class="p" data-group-id="6211241004-1">{</span><span class="ss">vbox</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6211241004-2">[</span><span class="p" data-group-id="6211241004-3">{</span><span class="ss">id</span><span class="p">,</span><span class="w"> </span><span class="ss">main_layout</span><span class="p" data-group-id="6211241004-3">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6211241004-4">{</span><span class="ss">padding</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p" data-group-id="6211241004-4">}</span><span class="p" data-group-id="6211241004-2">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6211241004-5">[</span><span class="w">
+    </span><span class="p" data-group-id="6211241004-6">{</span><span class="ss">header</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6211241004-7">[</span><span class="p" data-group-id="6211241004-7">]</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Title&quot;</span><span class="p" data-group-id="6211241004-6">}</span><span class="p">,</span><span class="w">
+    </span><span class="p" data-group-id="6211241004-8">{</span><span class="ss">text</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6211241004-9">[</span><span class="p" data-group-id="6211241004-9">]</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Content goes here&quot;</span><span class="p" data-group-id="6211241004-8">}</span><span class="p">,</span><span class="w">
+    </span><span class="p" data-group-id="6211241004-10">{</span><span class="ss">button</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6211241004-11">[</span><span class="p" data-group-id="6211241004-12">{</span><span class="ss">id</span><span class="p">,</span><span class="w"> </span><span class="ss">ok_btn</span><span class="p" data-group-id="6211241004-12">}</span><span class="p" data-group-id="6211241004-11">]</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;OK&quot;</span><span class="p" data-group-id="6211241004-10">}</span><span class="w">
+</span><span class="p" data-group-id="6211241004-5">]</span><span class="p" data-group-id="6211241004-1">}</span></code></pre><p>Functional:</p><pre><code class="makeup erlang" translate="no"><span class="nc">vbox</span><span class="p">:</span><span class="nf">new</span><span class="p" data-group-id="8418157247-1">(</span><span class="ss">main_layout</span><span class="p" data-group-id="8418157247-1">)</span></code></pre>
     </section>
 
 </div>
@@ -109,39 +114,21 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#calculate_scroll_offset/3" data-no-tooltip="" translate="no">calculate_scroll_offset(SelectedIndex, CurrentOffset, Height)</a>
-
-      </div>
-
-    </div>
-
-    <div class="summary-row">
-      <div class="summary-signature">
-        <a href="#handle_event/2" data-no-tooltip="" translate="no">handle_event/2</a>
-
-      </div>
-
-        <div class="summary-synopsis"><p>Handles keyboard events for the list.</p></div>
-
-    </div>
-
-    <div class="summary-row">
-      <div class="summary-signature">
         <a href="#new/1" data-no-tooltip="" translate="no">new(Id)</a>
 
       </div>
 
-        <div class="summary-synopsis"><p>Creates a new list widget with no items.</p></div>
+        <div class="summary-synopsis"><p>Creates a new vertical box container.</p></div>
 
     </div>
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#new/2" data-no-tooltip="" translate="no">new(Id, Items)</a>
+        <a href="#new/2" data-no-tooltip="" translate="no">new(Id, Children)</a>
 
       </div>
 
-        <div class="summary-synopsis"><p>Creates a new list widget with the specified items.</p></div>
+        <div class="summary-synopsis"><p>Creates a new vertical box container with children.</p></div>
 
     </div>
 
@@ -151,7 +138,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-        <div class="summary-synopsis"><p>Renders the list widget.</p></div>
+        <div class="summary-synopsis"><p>Delegates rendering to the generic container module.</p></div>
 
     </div>
 
@@ -160,6 +147,8 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
         <a href="#render_focused/2" data-no-tooltip="" translate="no">render_focused(Widget, Buffer)</a>
 
       </div>
+
+        <div class="summary-synopsis"><p>Delegates focused rendering to the generic container module.</p></div>
 
     </div>
 
@@ -176,56 +165,6 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <span class="text">Functions</span>
     </h1>
     <div class="functions-list">
-<section class="detail" id="calculate_scroll_offset/3">
-
-  <div class="detail-header">
-    <a href="#calculate_scroll_offset/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
-      <i class="ri-link-m" aria-hidden="true"></i>
-    </a>
-    <div class="heading-with-actions">
-      <h1 class="signature" translate="no">calculate_scroll_offset(SelectedIndex, CurrentOffset, Height)</h1>
-
-
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L125" class="icon-action" rel="help" aria-label="View Source">
-          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-        </a>
-
-    </div>
-  </div>
-
-  <section class="docstring">
-
-
-  </section>
-</section>
-<section class="detail" id="handle_event/2">
-
-  <div class="detail-header">
-    <a href="#handle_event/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
-      <i class="ri-link-m" aria-hidden="true"></i>
-    </a>
-    <div class="heading-with-actions">
-      <h1 class="signature" translate="no">handle_event/2</h1>
-
-
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L53" class="icon-action" rel="help" aria-label="View Source">
-          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-        </a>
-
-    </div>
-  </div>
-
-  <section class="docstring">
-
-      <div class="specs">
-
-          <pre translate="no"><span class="attribute">-spec</span> handle_event(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
-
-      </div>
-
-<p>Handles keyboard events for the list.</p><p>Processes arrow keys for selection and scrolling.</p>
-  </section>
-</section>
 <section class="detail" id="new/1">
 
   <div class="detail-header">
@@ -236,7 +175,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <h1 class="signature" translate="no">new(Id)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L33" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/vbox.erl#L30" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -251,7 +190,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-<p>Creates a new list widget with no items.</p>
+<p>Creates a new vertical box container.</p>
   </section>
 </section>
 <section class="detail" id="new/2">
@@ -261,10 +200,10 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <i class="ri-link-m" aria-hidden="true"></i>
     </a>
     <div class="heading-with-actions">
-      <h1 class="signature" translate="no">new(Id, Items)</h1>
+      <h1 class="signature" translate="no">new(Id, Children)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L38" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/vbox.erl#L35" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -275,11 +214,11 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       <div class="specs">
 
-          <pre translate="no"><span class="attribute">-spec</span> new(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), [<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:string/0">string</a>()]) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+          <pre translate="no"><span class="attribute">-spec</span> new(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:list/0">list</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
 
       </div>
 
-<p>Creates a new list widget with the specified items.</p>
+<p>Creates a new vertical box container with children.</p>
   </section>
 </section>
 <section class="detail" id="render/2">
@@ -292,7 +231,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <h1 class="signature" translate="no">render(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L78" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/vbox.erl#L41" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -307,7 +246,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-<p>Renders the list widget.</p>
+<p>Delegates rendering to the generic container module.</p>
   </section>
 </section>
 <section class="detail" id="render_focused/2">
@@ -320,7 +259,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <h1 class="signature" translate="no">render_focused(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L82" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/vbox.erl#L46" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -335,7 +274,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-
+<p>Delegates focused rendering to the generic container module.</p>
   </section>
 </section>
 

@@ -8,7 +8,7 @@
     <meta name="project" content="cellium v0.1.0">
 
 
-    <title>list — cellium v0.1.0</title>
+    <title>tree — cellium v0.1.0</title>
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
@@ -75,12 +75,12 @@ cellium
 <div id="top-content">
   <div class="heading-with-actions top-heading">
     <h1>
-      <span translate="no">list</span> 
+      <span translate="no">tree</span> 
       <small class="app-vsn" translate="no">(cellium v0.1.0)</small>
 
     </h1>
 
-      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L3" title="View Source" class="icon-action" rel="help">
+      <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tree.erl#L3" title="View Source" class="icon-action" rel="help">
         <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         <span class="sr-only">View Source</span>
       </a>
@@ -89,8 +89,15 @@ cellium
 
 
     <section id="moduledoc">
-<p>List widget module for rendering scrollable lists of items.</p><p>This module provides an interactive list widget that handles keyboard
-events for selection and scrolling.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><p>Basic list:</p><pre><code class="makeup erlang" translate="no"><span class="p" data-group-id="8693174277-1">{</span><span class="ss">list</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8693174277-2">[</span><span class="p" data-group-id="8693174277-3">{</span><span class="ss">id</span><span class="p">,</span><span class="w"> </span><span class="ss">my_list</span><span class="p" data-group-id="8693174277-3">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8693174277-4">{</span><span class="ss">items</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8693174277-5">[</span><span class="s">&quot;Item 1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Item 2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Item 3&quot;</span><span class="p" data-group-id="8693174277-5">]</span><span class="p" data-group-id="8693174277-4">}</span><span class="p" data-group-id="8693174277-2">]</span><span class="p" data-group-id="8693174277-1">}</span></code></pre><h2 id="module-properties" class="section-heading"><a href="#module-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Properties</span></h2><ul><li><code class="inline">items</code> (list of strings): The items to display in the list.</li><li><code class="inline">selected_index</code> (integer): The index of the currently selected item.</li><li><code class="inline">scroll_offset</code> (integer): The index of the first item to display.</li><li><code class="inline">focusable</code> (boolean): Always true for lists.</li><li><code class="inline">focused</code> (boolean): Set by focus manager when the list has focus.</li></ul>
+<p>Tree widget module for rendering hierarchical data.</p><p>This module provides an interactive tree widget that handles keyboard
+events for navigation, expansion, and selection.</p><h2 id="module-usage" class="section-heading"><a href="#module-usage" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Usage</span></h2><p>Basic tree:</p><pre><code class="makeup erlang" translate="no"><span class="p" data-group-id="6554168725-1">{</span><span class="ss">tree</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6554168725-2">[</span><span class="p" data-group-id="6554168725-3">{</span><span class="ss">id</span><span class="p">,</span><span class="w"> </span><span class="ss">my_tree</span><span class="p" data-group-id="6554168725-3">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6554168725-4">{</span><span class="nb">nodes</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6554168725-5">[</span><span class="w">
+    </span><span class="p" data-group-id="6554168725-6">{</span><span class="s">&quot;Root&quot;</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6554168725-7">[</span><span class="w">
+        </span><span class="p" data-group-id="6554168725-8">{</span><span class="s">&quot;Child 1&quot;</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6554168725-9">[</span><span class="p" data-group-id="6554168725-9">]</span><span class="p" data-group-id="6554168725-8">}</span><span class="p">,</span><span class="w">
+        </span><span class="p" data-group-id="6554168725-10">{</span><span class="s">&quot;Child 2&quot;</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6554168725-11">[</span><span class="w">
+            </span><span class="p" data-group-id="6554168725-12">{</span><span class="s">&quot;Grandchild&quot;</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6554168725-13">[</span><span class="p" data-group-id="6554168725-13">]</span><span class="p" data-group-id="6554168725-12">}</span><span class="w">
+        </span><span class="p" data-group-id="6554168725-11">]</span><span class="p" data-group-id="6554168725-10">}</span><span class="w">
+    </span><span class="p" data-group-id="6554168725-7">]</span><span class="p" data-group-id="6554168725-6">}</span><span class="w">
+</span><span class="p" data-group-id="6554168725-5">]</span><span class="p" data-group-id="6554168725-4">}</span><span class="p" data-group-id="6554168725-2">]</span><span class="p" data-group-id="6554168725-1">}</span></code></pre><h2 id="module-properties" class="section-heading"><a href="#module-properties" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Properties</span></h2><ul><li><code class="inline">nodes</code> (list): The tree structure.</li><li><code class="inline">expanded_ids</code> (list): IDs of nodes that are currently expanded.</li><li><code class="inline">selected_index</code> (integer): The index of the currently selected visible item.</li><li><code class="inline">scroll_offset</code> (integer): The index of the first item to display.</li></ul>
     </section>
 
 </div>
@@ -109,19 +116,11 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#calculate_scroll_offset/3" data-no-tooltip="" translate="no">calculate_scroll_offset(SelectedIndex, CurrentOffset, Height)</a>
-
-      </div>
-
-    </div>
-
-    <div class="summary-row">
-      <div class="summary-signature">
         <a href="#handle_event/2" data-no-tooltip="" translate="no">handle_event/2</a>
 
       </div>
 
-        <div class="summary-synopsis"><p>Handles keyboard events for the list.</p></div>
+        <div class="summary-synopsis"><p>Handles keyboard events for the tree.</p></div>
 
     </div>
 
@@ -131,17 +130,17 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-        <div class="summary-synopsis"><p>Creates a new list widget with no items.</p></div>
+        <div class="summary-synopsis"><p>Creates a new tree widget.</p></div>
 
     </div>
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#new/2" data-no-tooltip="" translate="no">new(Id, Items)</a>
+        <a href="#new/2" data-no-tooltip="" translate="no">new(Id, Nodes)</a>
 
       </div>
 
-        <div class="summary-synopsis"><p>Creates a new list widget with the specified items.</p></div>
+        <div class="summary-synopsis"><p>Creates a new tree widget with the specified nodes.</p></div>
 
     </div>
 
@@ -151,7 +150,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-        <div class="summary-synopsis"><p>Renders the list widget.</p></div>
+        <div class="summary-synopsis"><p>Renders the tree widget.</p></div>
 
     </div>
 
@@ -176,28 +175,6 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <span class="text">Functions</span>
     </h1>
     <div class="functions-list">
-<section class="detail" id="calculate_scroll_offset/3">
-
-  <div class="detail-header">
-    <a href="#calculate_scroll_offset/3" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
-      <i class="ri-link-m" aria-hidden="true"></i>
-    </a>
-    <div class="heading-with-actions">
-      <h1 class="signature" translate="no">calculate_scroll_offset(SelectedIndex, CurrentOffset, Height)</h1>
-
-
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L125" class="icon-action" rel="help" aria-label="View Source">
-          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-        </a>
-
-    </div>
-  </div>
-
-  <section class="docstring">
-
-
-  </section>
-</section>
 <section class="detail" id="handle_event/2">
 
   <div class="detail-header">
@@ -208,7 +185,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <h1 class="signature" translate="no">handle_event/2</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L53" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tree.erl#L58" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -223,7 +200,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-<p>Handles keyboard events for the list.</p><p>Processes arrow keys for selection and scrolling.</p>
+<p>Handles keyboard events for the tree.</p>
   </section>
 </section>
 <section class="detail" id="new/1">
@@ -236,7 +213,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <h1 class="signature" translate="no">new(Id)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L33" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tree.erl#L39" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -251,7 +228,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-<p>Creates a new list widget with no items.</p>
+<p>Creates a new tree widget.</p>
   </section>
 </section>
 <section class="detail" id="new/2">
@@ -261,10 +238,10 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <i class="ri-link-m" aria-hidden="true"></i>
     </a>
     <div class="heading-with-actions">
-      <h1 class="signature" translate="no">new(Id, Items)</h1>
+      <h1 class="signature" translate="no">new(Id, Nodes)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L38" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tree.erl#L44" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -275,11 +252,11 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       <div class="specs">
 
-          <pre translate="no"><span class="attribute">-spec</span> new(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), [<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:string/0">string</a>()]) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+          <pre translate="no"><span class="attribute">-spec</span> new(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:list/0">list</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
 
       </div>
 
-<p>Creates a new list widget with the specified items.</p>
+<p>Creates a new tree widget with the specified nodes.</p>
   </section>
 </section>
 <section class="detail" id="render/2">
@@ -292,7 +269,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <h1 class="signature" translate="no">render(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L78" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tree.erl#L119" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -307,7 +284,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
 
       </div>
 
-<p>Renders the list widget.</p>
+<p>Renders the tree widget.</p>
   </section>
 </section>
 <section class="detail" id="render_focused/2">
@@ -320,7 +297,7 @@ events for selection and scrolling.</p><h2 id="module-usage" class="section-head
       <h1 class="signature" translate="no">render_focused(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/list.erl#L82" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/tree.erl#L123" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 

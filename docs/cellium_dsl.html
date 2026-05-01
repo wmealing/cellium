@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-FBCC5B94.js"></script>
+    <script defer src="dist/sidebar_items-BBC96353.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -88,6 +88,10 @@ cellium
   </div>
 
 
+    <section id="moduledoc">
+<p>The <code class="inline">cellium_dsl</code> module provides a Domain Specific Language (DSL) for defining UI layouts in Cellium.</p><h2 id="module-how-the-dsl-works" class="section-heading"><a href="#module-how-the-dsl-works" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">How the DSL works</span></h2><p>The DSL uses Erlang tuples to represent widgets and their properties. A UI layout is defined as a recursive structure of these tuples.</p><p>There are three main forms of DSL elements:</p><ol><li><strong>Standard leaf widgets</strong>: <code class="inline">{Tag, Props}</code><ul><li>Example: <code class="inline">{button, [{id, my_button}, {label, &quot;Click Me&quot;}]}</code></li></ul></li><li><strong>Widgets with a primary value or containers</strong>: <code class="inline">{Tag, Props, Arg3}</code><ul><li>For containers like <code class="inline">vbox</code> or <code class="inline">hbox</code>, <code class="inline">Arg3</code> is a list of child DSL elements.</li><li>For widgets like <code class="inline">button</code> or <code class="inline">text</code>, <code class="inline">Arg3</code> is the primary value (e.g., label string).</li></ul></li><li><strong>Custom widgets</strong>: <code class="inline">{custom, Module, Props}</code><ul><li>Allows using a custom module that implements a <code class="inline">new(Id)</code> function.</li></ul></li></ol><h2 id="module-recursive-state-handling" class="section-heading"><a href="#module-recursive-state-handling" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Recursive State Handling</span></h2><p>The DSL transformation is state-aware. When calling <a href="#from_dsl/2"><code class="inline">from_dsl/2</code></a>, you provide a <code class="inline">Model</code> which may contain a <code class="inline">widget_states</code> map.</p><p>During the recursive traversal of the DSL:</p><ol><li>An <code class="inline">Id</code> is determined for each widget (either from <code class="inline">Props</code> or auto-generated).</li><li>The widget is created.</li><li>If the <code class="inline">Model</code> contains state for that <code class="inline">Id</code>, it is &quot;injected&quot; into the widget's internal map using <code class="inline">inject_state/3</code>. This allows the DSL to preserve UI state across re-renders.</li></ol><h2 id="module-sizing-and-expansion" class="section-heading"><a href="#module-sizing-and-expansion" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Sizing and Expansion</span></h2><p>The DSL handles layout properties that control how widgets occupy space:</p><ul><li><code class="inline">width</code>: Sets the fixed width of a widget.</li><li><code class="inline">height</code> or <code class="inline">size</code>: Sets the fixed height (or primary dimension) of a widget.</li><li><code class="inline">expand</code>: Indicates if a widget should grow to fill available space in its parent container.</li><li><strong>Constraints</strong>: Fixed-size widgets should not exceed the available dimensions of their parent container.</li><li><strong>Defaults</strong>: If neither a fixed size nor <code class="inline">expand</code> is specified, the DSL automatically applies a default <code class="inline">{size, 1}</code>.</li></ul><h2 id="module-special-cases" class="section-heading"><a href="#module-special-cases" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Special Cases</span></h2><p>Certain tags have specialized behavior in the DSL:</p><h3 id="module-containers-vbox-hbox-box-frame-dialog" class="section-heading"><a href="#module-containers-vbox-hbox-box-frame-dialog" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Containers (<code class="inline">vbox</code>, <code class="inline">hbox</code>, <code class="inline">box</code>, <code class="inline">frame</code>, <code class="inline">dialog</code>)</span></h3><p>These tags use the third element of the tuple as a list of children.</p><h3 id="module-tabs-tabs" class="section-heading"><a href="#module-tabs-tabs" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Tabs (<code class="inline">tabs</code>)</span></h3><p>The <code class="inline">tabs</code> widget only renders the child corresponding to the <code class="inline">active_tab</code> property.</p><h3 id="module-radiogroup-radiogroup" class="section-heading"><a href="#module-radiogroup-radiogroup" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Radiogroup (<code class="inline">radiogroup</code>)</span></h3><p>The <code class="inline">radiogroup</code> tag uses the third element of the tuple as the list of options.</p><h3 id="module-dropdown-select" class="section-heading"><a href="#module-dropdown-select" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Dropdown (<code class="inline">select</code>)</span></h3><p>The <code class="inline">select</code> tag represents a dropdown widget. It can take options as the third element or in the <code class="inline">Props</code> list.</p><h3 id="module-leaf-widgets-with-primary-values" class="section-heading"><a href="#module-leaf-widgets-with-primary-values" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Leaf Widgets with Primary Values</span></h3><p>Tags like <code class="inline">header</code>, <code class="inline">text</code>, <code class="inline">button</code>, etc., can take their primary display value as the third element for brevity.</p>
+    </section>
+
 </div>
 
   <section id="summary" class="details-list">
@@ -112,9 +116,20 @@ cellium
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#from_dsl/2" data-no-tooltip="" translate="no">from_dsl(Other, Model)</a>
+        <a href="#from_dsl/2" data-no-tooltip="" translate="no">from_dsl/2</a>
 
       </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#validate/1" data-no-tooltip="" translate="no">validate(Dsl)</a>
+
+      </div>
+
+        <div class="summary-synopsis"><p>Validates a DSL structure before processing.
+Returns 'ok' or {error, {Reason, Path}}.</p></div>
 
     </div>
 
@@ -141,7 +156,7 @@ cellium
       <h1 class="signature" translate="no">from_dsl(Dsl)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_dsl.erl#L4" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_dsl.erl#L80" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -160,10 +175,10 @@ cellium
       <i class="ri-link-m" aria-hidden="true"></i>
     </a>
     <div class="heading-with-actions">
-      <h1 class="signature" translate="no">from_dsl(Other, Model)</h1>
+      <h1 class="signature" translate="no">from_dsl/2</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_dsl.erl#L7" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_dsl.erl#L83" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -173,6 +188,29 @@ cellium
   <section class="docstring">
 
 
+  </section>
+</section>
+<section class="detail" id="validate/1">
+
+  <div class="detail-header">
+    <a href="#validate/1" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">validate(Dsl)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/cellium_dsl.erl#L9" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+<p>Validates a DSL structure before processing.
+Returns 'ok' or {error, {Reason, Path}}.</p>
   </section>
 </section>
 

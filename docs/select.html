@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-erlang-DQDXQC7W.css" />
 
-    <script defer src="dist/sidebar_items-FBCC5B94.js"></script>
+    <script defer src="dist/sidebar_items-BBC96353.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -88,6 +88,12 @@ cellium
   </div>
 
 
+    <section id="moduledoc">
+<p>A dropdown select widget that displays a list of options over the top of other widgets.</p><p>When closed, it displays the currently selected item. When activated (Enter), it opens
+ a boxed list of options. The user can navigate these options with arrow keys and 
+confirm the selection with Enter.</p>
+    </section>
+
 </div>
 
   <section id="summary" class="details-list">
@@ -104,6 +110,14 @@ cellium
 
     <div class="summary-row">
       <div class="summary-signature">
+        <a href="#handle_event/2" data-no-tooltip="" translate="no">handle_event/2</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
         <a href="#new/1" data-no-tooltip="" translate="no">new(Id)</a>
 
       </div>
@@ -112,7 +126,31 @@ cellium
 
     <div class="summary-row">
       <div class="summary-signature">
+        <a href="#new/2" data-no-tooltip="" translate="no">new(Id, Options)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
         <a href="#render/2" data-no-tooltip="" translate="no">render(Widget, Buffer)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_focused/2" data-no-tooltip="" translate="no">render_focused(Widget, Buffer)</a>
+
+      </div>
+
+    </div>
+
+    <div class="summary-row">
+      <div class="summary-signature">
+        <a href="#render_overlay/2" data-no-tooltip="" translate="no">render_overlay/2</a>
 
       </div>
 
@@ -131,6 +169,34 @@ cellium
       <span class="text">Functions</span>
     </h1>
     <div class="functions-list">
+<section class="detail" id="handle_event/2">
+
+  <div class="detail-header">
+    <a href="#handle_event/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">handle_event/2</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/select.erl#L30" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> handle_event(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+
+  </section>
+</section>
 <section class="detail" id="new/1">
 
   <div class="detail-header">
@@ -141,7 +207,7 @@ cellium
       <h1 class="signature" translate="no">new(Id)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/select.erl#L8" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/select.erl#L16" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -159,6 +225,34 @@ cellium
 
   </section>
 </section>
+<section class="detail" id="new/2">
+
+  <div class="detail-header">
+    <a href="#new/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">new(Id, Options)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/select.erl#L20" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> new(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>(), [<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:term/0">term</a>()]) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+
+  </section>
+</section>
 <section class="detail" id="render/2">
 
   <div class="detail-header">
@@ -169,7 +263,7 @@ cellium
       <h1 class="signature" translate="no">render(Widget, Buffer)</h1>
 
 
-        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/select.erl#L17" class="icon-action" rel="help" aria-label="View Source">
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/select.erl#L46" class="icon-action" rel="help" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -181,6 +275,62 @@ cellium
       <div class="specs">
 
           <pre translate="no"><span class="attribute">-spec</span> render(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="render_focused/2">
+
+  <div class="detail-header">
+    <a href="#render_focused/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_focused(Widget, Buffer)</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/select.erl#L65" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> render_focused(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
+
+      </div>
+
+
+  </section>
+</section>
+<section class="detail" id="render_overlay/2">
+
+  <div class="detail-header">
+    <a href="#render_overlay/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
+      <i class="ri-link-m" aria-hidden="true"></i>
+    </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">render_overlay/2</h1>
+
+
+        <a href="https://github.com/wmealing/cellium/blob/v0.1.0/src/select.erl#L85" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
+  </div>
+
+  <section class="docstring">
+
+      <div class="specs">
+
+          <pre translate="no"><span class="attribute">-spec</span> render_overlay(<a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>(), <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>()) -> <a href="https://www.erlang.org/doc/apps/erts/erlang.html#t:map/0">map</a>().</pre>
 
       </div>
 

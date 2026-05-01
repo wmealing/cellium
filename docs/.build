@@ -13,7 +13,6 @@ cellium_sup.html
 checkbox.html
 container.html
 css.html
-custom_box.html
 dialog.html
 dist/html-DPJLHKSM.js
 dist/html-erlang-DQDXQC7W.css
@@ -22,13 +21,14 @@ dist/lato-latin-700-normal-2XVSBPG4.woff2
 dist/lato-latin-ext-400-normal-N27NCBWW.woff2
 dist/lato-latin-ext-700-normal-Q2L5DVMW.woff2
 dist/remixicon-QPNJX265.woff2
-dist/search_data-D264F85A.js
-dist/sidebar_items-FBCC5B94.js
+dist/search_data-EA6277F7.js
+dist/sidebar_items-BBC96353.js
 focus_manager.html
 frame.html
 gauge.html
 greedy_wrap.html
 grid.html
+hbox.html
 header.html
 index.html
 keyboard_maps.html
@@ -40,6 +40,7 @@ menu.html
 native_terminal.html
 progress_bar.html
 radio.html
+radiogroup.html
 readme.html
 screen.html
 search.html
@@ -56,6 +57,8 @@ terminal_wrapper.html
 text.html
 text_input.html
 toggle.html
+tree.html
+vbox.html
 view.html
 widget.html
 widgets.html
