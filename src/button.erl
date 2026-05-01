@@ -84,7 +84,7 @@ render(Widget, Buffer) ->
                     true -> box_styles:square()
                 end,
             % Draw the frame
-            Buffer1 = table:draw_table(X, Y, Height - 1, FinalFg, FinalBg, BoxStyle, [Width - 2], Buffer),
+            Buffer1 = table:draw_table(X, Y, Height, FinalFg, FinalBg, BoxStyle, [Width - 2], Buffer),
 
             % Print label centered
             TextX = X + (Width - length(Label)) div 2,

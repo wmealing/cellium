@@ -78,6 +78,7 @@ layout_container(Container, FocusedWidgetId) ->
     InnerHeight = max(0, CHeight - PT - PB),
 
     if Children == [] ->
+
             Container;
        true ->
             InnerX = X + PL,
@@ -165,6 +166,7 @@ get_padding(Widget) ->
     Default = case maps:get(widget_type, Widget, undefined) of
         frame -> #{top => 1, right => 1, bottom => 1, left => 1};
         dialog -> #{top => 1, right => 1, bottom => 1, left => 1};
+        box -> #{top => 1, right => 1, bottom => 1, left => 1};
         _ -> #{top => 0, right => 0, bottom => 0, left => 0}
     end,
     Padding = maps:get(padding, Widget, Default),
