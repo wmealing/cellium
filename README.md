@@ -1,8 +1,6 @@
 
 ![Cellium Project Logo](priv/logo.png)
 
-
-
 Cellium is a Terminal User Interface (TUI) framework for Erlang/OTP. It provides a declarative way to build interactive terminal applications using an architecture inspired by the Elm Architecture.
 
 ## Core Architecture
@@ -21,61 +19,23 @@ To create an application, implement the following callbacks:
 - `update(Model, Msg)`: Processes events and returns the updated model.
 - `render(Model)`: Returns the UI structure as a DSL tree.
 
-## Automatic Component State
-
-Cellium simplifies interactive UIs by automatically managing the state of complex widgets (like `text_input`, `list`, `checkbox`, and `gauge`). This "Component Pattern" is inspired by modern frameworks like **React** (Controlled Components) and **Phoenix LiveView** (LiveComponents).
-
-Instead of manually threading every keypress and update:
-1. **Event Routing**: When a widget has focus, the framework automatically routes keyboard events to that widget's internal handler.
-2. **State Storage**: The framework stores the internal state of widgets in a `widget_states` map within your application's Model, keyed by the widget's `id`.
-3. **Automatic Injection**: During rendering, the DSL lookups the stored state by ID and merges it into the widget properties before drawing.
-
-### Example: Stateless Render
-Notice how `text_input` and `list` are defined with only an `id`. The framework "fills in" the text and scroll position automatically from the Model.
-
-```erlang
-render(Model) ->
-    {vbox, [], [
-        {text_input, [{id, my_search_box}, {expand, true}]},
-        {list, [{id, results_list}, {expand, true}]}
-    ]}.
-```
-
-### Initializing State
-You can provide initial values for components in your `init/1` function:
-
-```erlang
-init(_) ->
-    Model = #{
-        widget_states => #{
-            my_search_box => #{text => "Initial search..."},
-            results_list => #{items => ["Apple", "Banana", "Cherry"]}
-        }
-    },
-    {ok, Model}.
-```
-
-### Handling Custom Events
-Interactive widgets emit high-level events to your `update/2` function for application logic:
-*   `button`: Emits `{button_clicked, Id}`
-*   `radio`: Emits `{radio_selected, Id, Group}`
-*   `checkbox/text_input/list`: Their internal state (checked, text, selection) is updated automatically in the Model.
-
 ## Example
 
 ```erlang
 -module(counter).
 -behaviour(cellium).
+-include("cellium.hrl").
 -export([init/1, update/2, render/1, start/0]).
 
 init(_Args) ->
     InitialCount = 0,
-    {ok, #{
+    Model = #{
         count => InitialCount,
         widget_states => #{
             display => #{text => io_lib:format("Count: ~p", [InitialCount])}
         }
-    }}.
+    },
+    {ok, Model}.
 
 update(Model = #{count := Count, widget_states := States}, Msg) ->
     case Msg of
@@ -100,9 +60,9 @@ render(_Model) ->
         {header, [], "Counter Example"},
         {text, [{id, display}]},
         {hbox, [{size, 1}], [
-            {button, [{id, plus_btn}, {size, 5}], "+"},
+            {button, [{id, minus_btn}, {size, 5}], "-"},
             {spacer, [{size, 2}]},
-            {button, [{id, minus_btn}, {size, 5}], "-"}
+            {button, [{id, plus_btn}, {size, 5}], "+"}
         ]},
         {text, [], "Press Tab to focus, Space/Enter to click, 'q' to quit"}
     ]}.
@@ -111,141 +71,107 @@ start() ->
     cellium:start(#{module => ?MODULE}).
 ```
 
+## Automatic Component State
+
+Cellium simplifies interactive UIs by automatically managing the state of complex widgets. This "Component Pattern" is inspired by modern frameworks like **React** (Controlled Components) and **Phoenix LiveView** (LiveComponents).
+
+Instead of manually threading every keypress and update:
+1. **Event Routing**: When a widget has focus, the framework automatically routes keyboard events to that widget's internal handler.
+2. **State Storage**: Internal state is stored in a `widget_states` map within your Model, keyed by the widget's `id`.
+3. **Automatic Injection**: During rendering, the DSL lookups the stored state by ID and merges it into the widget properties.
+
+## Widget Reference
+
+### Core Widgets
+*   `text`: Simple text display.
+*   `button`: Interactive clickable button. Emits `{button_clicked, Id}`.
+*   `text_input`: Multi-line or single-line text editor with cursor management.
+*   `checkbox`: Boolean toggle with label.
+*   `list`: Vertically scrollable list of selectable items.
+
+### Data Visualization
+*   **`tree`**: Hierarchical navigation with support for expansion/collapsing.
+    ```erlang
+    {tree, [{id, my_tree}], [{"Root", [{"Child 1", []}, {"Child 2", []}]}]}
+    ```
+*   **`radiogroup`**: Mutually exclusive selection group. Supports `horizontal` and `vertical` layouts.
+    ```erlang
+    {radiogroup, [{id, rg1}, {orientation, horizontal}], [opt1, opt2, opt3]}
+    ```
+*   **`progress_bar`**: Visual task completion tracker using block characters (`[████░░░░]`).
+    ```erlang
+    {progress_bar, [{id, pb1}, {progress, 0.75}, {width, 20}]}
+    ```
+*   **`gauge`**: Labeled percentage indicator, useful for levels or volume.
+    ```erlang
+    {gauge, [{id, g1}, {label, <<"Vol">>}, {value, 50}, {width, 30}]}
+    ```
+
+### Containers
+*   `box`: Simple rectangular container with a border.
+*   `frame`: Container with a border and an optional title.
+*   `vbox` / `hbox`: Layout containers for vertical and horizontal stacking.
+*   `tabs`: Multi-tab interface for switching between views.
+
 ## Screen Management
 
-Cellium provides a screen management system for applications with multiple views (e.g., search screen, customer form, settings dialog). The `screen` module handles screen lifecycle, transitions, and automatic focus cleanup.
-
-### Screen Lifecycle
-
-Screens have four states:
-- **Created**: Widget tree built but not registered
-- **Shown**: Active, widgets registered with focus manager
-- **Hidden**: Inactive, widgets unregistered but preserved
-- **Destroyed**: Permanently removed
+Cellium provides a screen management system for applications with multiple views. The `screen` module handles lifecycle, transitions, and automatic focus cleanup.
 
 ### Basic Screen Transitions
 
 ```erlang
-% Create screens
 SearchScreen = screen:new(search_screen,
     cellium_dsl:from_dsl({vbox, [], [
         {text_input, [{id, search_box}, {focusable, true}]},
         {list, [{id, results_list}, {focusable, true}]}
     ]})),
 
-CustomerScreen = screen:new(customer_form,
-    cellium_dsl:from_dsl({vbox, [], [
-        {text_input, [{id, name_field}, {focusable, true}]},
-        {button, [{id, save_btn}, {focusable, true}], "Save"}
-    ]})),
-
 % Transition between screens (automatic cleanup)
-NewScreen = screen:transition(SearchScreen, CustomerScreen)
+NewScreen = screen:transition(OldScreen, SearchScreen)
 ```
-
-### Screen Stack
-
-For modal dialogs or nested navigation, use the screen stack:
-
-```erlang
-% Push a dialog (current screen hidden but preserved)
-screen:push(ConfirmDialog),
-% Pop back to previous screen
-screen:pop(),
-
-% Replace current screen entirely
-screen:replace(NewScreen)
-```
-
-### Dynamic Screens with Builders
-
-For screens that need fresh data on each display:
-
-```erlang
-screen:new(
-    customer_form,
-    fun() ->
-        Data = fetch_customer_data(),
-        build_customer_form(Data)
-    end,
-    empty_widget()
-)
-```
-
-The builder function is called each time the screen is shown, ensuring data is current.
 
 ## Layout System
 
-Cellium uses a flexible layout engine that calculates absolute coordinates and dimensions based on container constraints and widget properties.
+Cellium uses a flexible layout engine that calculates absolute coordinates based on container constraints.
 
-### Positioning Modes
-
-- **Relative (Default)**: Widgets are positioned by their parent container (`vbox`, `hbox`, `grid`, etc.) according to the container's orientation and expansion rules.
-- **Absolute**: By setting `{position, absolute}`, a widget bypasses the layout engine. You must manually provide `{x, X}`, `{y, Y}`, `{width, W}`, and `{height, H}`.
-
-### Space Distribution
-
-In relative layout, space is distributed along the container's primary axis (vertical for `vbox`, horizontal for `hbox`):
-
-1.  **Fixed Size**: Use `{size, N}` to request a fixed number of characters in the primary axis.
-2.  **Expansion**: Use `{expand, true}` to request that the widget fill the remaining available space.
-3.  **Automatic Splitting**: If multiple widgets have `{expand, true}`, they split the remaining space equally.
-4.  **Default Behavior**: If neither `size` nor `expand` is specified, a default `{size, 1}` is applied.
-
-### Padding
-
-Padding can be applied to any container or widget to create space between the border and the content:
-
-- **Uniform**: `{padding, 1}` (1 character on all four sides).
-- **Specific**: `{padding, #{top => 1, bottom => 1, left => 2, right => 2}}`.
-
-### Width and Height
-
-While `size` controls the dimension along the container's primary axis, `width` and `height` can be used to explicitly set the dimension along the cross-axis or for absolutely positioned widgets.
+- **Space Distribution**: Use `{size, N}` for fixed height/width, or `{expand, true}` to fill remaining space.
+- **Padding**: Apply `{padding, 1}` to any container to create inner margins. Containers like `box`, `frame`, and `dialog` default to 1-character padding.
+- **Borders**: Automatically switch between single-line (`┌─┐`) and double-line (`╔═╗`) based on focus state.
 
 ## UI Pipeline
 
-1.  **DSL**: The `render/1` function returns a high-level DSL (e.g., `{vbox, Props, Children}`).
-2.  **Processing**: `cellium_dsl` converts the DSL into a tree of internal widget maps.
-3.  **Layout**: The `layout` engine calculates absolute coordinates (x, y) and final dimensions for every widget based on constraints and expansion rules.
-4.  **Styling**: A CSS-like engine (`css`) applies visual properties (colors, borders) from cached stylesheets.
-5.  **Rendering**: The `view` process utilizes the `native_terminal` driver to draw the final representation to the terminal screen.
+1.  **DSL**: `render/1` returns a high-level tuple tree.
+2.  **Processing**: `cellium_dsl` converts tuples into internal widget maps and injects state.
+3.  **Layout**: `layout` engine calculates absolute (x, y) coordinates and dimensions.
+4.  **Styling**: `css` engine applies visual themes.
+5.  **Rendering**: `view` process uses the `native_terminal` driver to draw to the screen.
 
-## Project Structure
+## Development & Testing
 
-- `src/`: Core framework source code, including the layout engine and terminal drivers.
-- `examples/`: Sample applications demonstrating widgets and architectural patterns.
-- `include/`: Common header files and macro definitions.
-- `priv/`: Default stylesheets and theme configuration.
+### Snapshot Testing
+Cellium includes a powerful "Snapshot" testing pattern that allows you to verify widget rendering without a real terminal.
 
-## Build and Run
+1.  **Declaration**: Define the widget in DSL.
+2.  **Rendering**: Pipe the widget into a virtual buffer.
+3.  **Assertion**: Compare the buffer against an "Idealized" ASCII string.
 
-### Prerequisites
+Use the `cellium_test_utils:assert_snapshot/2` and `show_render/2` helpers to see the output during your tests.
 
-- Erlang/OTP 26 or later.
-- rebar3.
-
-### Compilation
+### Build and Run
 
 ```bash
 rebar3 compile
-```
-
-### Running Examples
-
-Use the provided `Makefile` to execute example applications:
-
-```bash
-make run example=counter
 make run example=widgets_gallery
 ```
 
-## Development
+## Project Structure
 
-- **Testing**: `rebar3 eunit`
-- **Logging**: Logs are written to `./logs/cellium-debug` by default. Logging configuration is managed in `src/logging.erl`.
+- `src/`: Core framework source code.
+- `test/`: Snapshot tests and unit tests.
+- `examples/`: Sample applications.
+- `include/`: Common header files.
 
 ### Documentation
 
-- **API docs** [https://wmealing.github.io/cellium/api-reference.html](https://wmealing.github.io/cellium/api-reference.html "API docs")
-- **Occasional discussions** [https://wmealing.github.io/](https://wmealing.github.io/ "Ocassional posts on cellium")
+- **API docs**: [https://wmealing.github.io/cellium/api-reference.html](https://wmealing.github.io/cellium/api-reference.html)
+- **Discussion**: [https://wmealing.github.io/](https://wmealing.github.io/)
