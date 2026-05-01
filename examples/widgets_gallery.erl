@@ -43,6 +43,27 @@ init(_Args) ->
             pb1 => #{progress => 0.3},
             cb1 => #{checked => true},
             cb2 => #{checked => false},
+            tree1 => #{
+                nodes => [
+                    {"A", [{"A1", []}, {"A2", []}]},
+                    {"B", [{"B1", []}]},
+                    {"System", [
+                        {"Library", []},
+                        {"Users", [
+                            {"wmealing", [
+                                {"Projects", []},
+                                {"Downloads", []}
+                            ]}
+                        ]},
+                        {"etc", []}
+                    ]},
+                    {"Applications", [
+                        {"Erlang", []},
+                        {"Rebar3", []}
+                    ]}
+                ],
+                expanded_ids => ["A", "System", "Users"]
+            },
             edit_tbl => #{
                 rows => [
                     ["Alice", "28", "Engineer"],
@@ -63,19 +84,21 @@ update(Model, Msg) ->
         {key, _, _, _, _, <<"q">>} ->
             cellium:stop(),
             Model;
-        %% Shift + Right Arrow — next tab (8 tabs now)
+        %% Shift + Right Arrow — next tab (9 tabs now)
         {key, true, false, false, false, right_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 1) rem 8};
+            Model#{active_tab => (Active + 1) rem 10};
         %% Shift + Left Arrow — previous tab
         {key, true, false, false, false, left_key} ->
             Active = maps:get(active_tab, Model, 0),
-            Model#{active_tab => (Active + 7) rem 8};
+            Model#{active_tab => (Active + 9) rem 10};
         tick ->
             erlang:send_after(100, self(), tick),
             Model#{spinner_frame => maps:get(spinner_frame, Model) + 1};
         {focus_changed, #{to := NewFocusedId}} ->
             Model#{focused_id => NewFocusedId};
+        {key, _, _, _, _, _} = _KeyEvent ->
+            Model;
         {radiogroup_changed, rg_options, Value} ->
             Model#{selected_option => Value};
         {radiogroup_changed, rg_colour, Value} ->
@@ -100,7 +123,7 @@ render(Model) ->
     {vbox, [{id, main}, {padding, 0}], [
         {tabs,
             [{id, gallery_tabs},
-             {tabs, ["Basic", "Progress", "Input", "Dropdown", "List", "Table", "Edit Table", "Radio Group", "Memory"]},
+             {tabs, ["Basic", "Progress", "Input", "Dropdown", "List", "Tree", "Table", "Edit Table", "Radio Group", "Memory"]},
              {active_tab, ActiveTab},
              {expand, true}],
             [
@@ -109,6 +132,7 @@ render(Model) ->
                 tab_input(),
                 tab_dropdown(Model),
                 tab_list(),
+                tab_tree(),
                 tab_table(),
                 tab_edit_table(),
                 tab_radiogroup(Model),
@@ -285,6 +309,15 @@ tab_memory() ->
                   {column_widths, [20, 15]},
                   {rows, Rows}]},
         {spacer, [{expand, true}]}
+    ]}.
+
+tab_tree() ->
+    {vbox, [{id, tab_tree}, {expand, true}, {padding, 1}], [
+        {header, [{id, h_tree}, {color, magenta}], "Tree Widget"},
+        {spacer, [{size, 1}]},
+        {frame, [{title, "Simple Tree"}, {expand, true}], [
+            {tree, [{id, tree1}, {expand, true}]}
+        ]}
     ]}.
 
 start() ->

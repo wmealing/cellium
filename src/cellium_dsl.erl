@@ -66,7 +66,7 @@ create_widget(Tag, Id, Props, Arg3, Model) ->
             select:new(Id, Arg3);
 
         % Widgets with a primary value (label, text, etc.)
-        T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio; T=:=status_bar ->
+        T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio; T=:=status_bar; T=:=tree ->
             Tag:new(Id, Arg3);
         _ ->
             logger:warning("Tag ~p does not support 3rd argument value, ignoring.", [Tag]),
@@ -89,6 +89,7 @@ create_widget(Tag, Id, Props) ->
             select:new(Id, Options);
         tabs -> tab:new(Id);
         list -> list:new(Id, proplists:get_value(items, Props, []));
+        tree -> tree:new(Id, proplists:get_value(nodes, Props, []));
         _ ->
             logger:warning("Unknown widget tag: ~p", [Tag]),
             (widget:new())#{widget_type => spacer}
@@ -115,7 +116,7 @@ apply_props(Widget, [{padding, P} | Rest]) ->
 apply_props(Widget, [{width, W} | Rest]) ->
     apply_props(Widget#{width => W, requested_width => W}, Rest);
 apply_props(Widget, [{height, H} | Rest]) ->
-    apply_props(Widget#{size => H, requested_height => H}, Rest);
+    apply_props(Widget#{height => H, size => H, requested_height => H}, Rest);
 apply_props(Widget, [{size, S} | Rest]) ->
     apply_props(Widget#{size => S, requested_size => S}, Rest);
 apply_props(Widget, [{Key, Val} | Rest]) ->
