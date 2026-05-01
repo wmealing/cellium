@@ -105,6 +105,8 @@ update(Model, Msg) ->
             Model#{rg_colour => Value};
         {radiogroup_changed, rg_size, Value} ->
             Model#{rg_size => Value};
+        {select_changed, gallery_sel, Value} ->
+            Model#{gallery_selected => Value};
         {button_clicked, btn1} ->
             logger:info("Submit clicked!"),
             Model;
