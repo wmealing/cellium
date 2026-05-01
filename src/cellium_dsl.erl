@@ -51,9 +51,14 @@ validate_arg3(Tag, Children, Path) when Tag=:=vbox; Tag=:=hbox; Tag=:=box; Tag=:
                     end, ok, Children);
        true -> {error, {expected_children_list, Path}}
     end;
-validate_arg3(tree, Nodes, Path) ->
-    if is_list(Nodes) -> ok;
-       true -> {error, {expected_nodes_list, Path}}
+validate_arg3(Tag, List, Path) when Tag=:=tree; Tag=:=radiogroup ->
+    if is_list(List) -> ok;
+       true -> 
+           Reason = case Tag of
+               tree -> expected_nodes_list;
+               radiogroup -> expected_options_list
+           end,
+           {error, {Reason, Path}}
     end;
 validate_arg3(Tag, _Value, _Path) when Tag=:=header; Tag=:=text; Tag=:=button; Tag=:=checkbox; Tag=:=radio; Tag=:=status_bar; Tag=:=select ->
     ok;
@@ -68,7 +73,8 @@ is_known_tag(Tag) ->
     lists:member(Tag, [
         vbox, hbox, box, frame, dialog, tabs,
         header, text, button, checkbox, radio, status_bar,
-        tree, select, list, progress_bar, toggle, spinner, spacer, gauge, table
+        tree, select, list, progress_bar, toggle, spinner, spacer, gauge, table,
+        radiogroup, text_input
     ]).
 
 from_dsl(Dsl) -> from_dsl(Dsl, #{}).
