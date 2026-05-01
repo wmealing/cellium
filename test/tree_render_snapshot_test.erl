@@ -38,8 +38,7 @@ collapsed_tree() ->
         "                    \n"
         "                    ",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 20, 5),
-    cellium_test_utils:show_render("Collapsed Tree", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("collapsed Tree", Expected, Actual).
 
 expanded_tree() ->
     focus_manager:remove_all(),
@@ -66,8 +65,7 @@ expanded_tree() ->
         "    Root B          \n"
         "                    ",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 20, 5),
-    cellium_test_utils:show_render("Expanded Tree", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Expanded Tree", Expected, Actual).
 
 nested_expanded_tree() ->
     focus_manager:remove_all(),
@@ -95,5 +93,4 @@ nested_expanded_tree() ->
         "      Child A.2     \n"
         "    Root B          ",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 20, 5),
-    cellium_test_utils:show_render("Nested Expanded Tree", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Nested Expanded Tree", Expected, Actual).

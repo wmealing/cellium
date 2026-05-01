@@ -34,8 +34,7 @@ vertical_radiogroup() ->
         "(*) opt_b \n"
         "( ) opt_c ",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 3),
-    cellium_test_utils:show_render("Vertical Radiogroup", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Vertical Radiogroup", Expected, Actual).
 
 horizontal_radiogroup() ->
     focus_manager:remove_all(),
@@ -54,8 +53,7 @@ horizontal_radiogroup() ->
     
     Expected = "( ) opt_a  (*) opt_b  ",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 22, 1),
-    cellium_test_utils:show_render("Horizontal Radiogroup", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Horizontal Radiogroup", Expected, Actual).
 
 focused_radiogroup() ->
     focus_manager:remove_all(),
@@ -76,5 +74,4 @@ focused_radiogroup() ->
         "(*) opt_a \n"
         "( ) opt_b ",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 2),
-    cellium_test_utils:show_render("Focused Radiogroup", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Focused Radiogroup", Expected, Actual).

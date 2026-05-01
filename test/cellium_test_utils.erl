@@ -3,7 +3,7 @@
   Utility functions for snapshot testing Cellium widgets.
 """.
 
--export([buffer_to_string/5, assert_snapshot/2, show_render/2, setup/0, teardown/1]).
+-export([buffer_to_string/5, assert_snapshot/3, show_render/2, setup/0, teardown/1]).
 -include_lib("eunit/include/eunit.hrl").
 
 -doc """
@@ -19,14 +19,15 @@ buffer_to_string(Buffer, StartX, StartY, Width, Height) ->
     string:join(FlattenedLines, "\n").
 
 -doc """
-  Compares an expected ASCII string against the actual buffer output.
+  Displays the actual output and compares it against the expected ASCII string.
   Prints a descriptive error message on failure.
 """.
-assert_snapshot(Expected, Actual) ->
+assert_snapshot(Title, Expected, Actual) ->
+    show_render(Title, Actual),
     case Expected == Actual of
         true -> ok;
         false ->
-            io:format(user, "~nSNAPSHOT FAILURE:~n", []),
+            io:format(user, "~nSNAPSHOT FAILURE: ~s~n", [Title]),
             io:format(user, "EXPECTED:~n\"~ts\"~n", [unicode:characters_to_binary(Expected)]),
             io:format(user, "ACTUAL:~n\"~ts\"~n", [unicode:characters_to_binary(Actual)]),
             ?assertEqual(Expected, Actual)
@@ -36,6 +37,7 @@ assert_snapshot(Expected, Actual) ->
   Prints the rendered output to the console with a title.
 """.
 show_render(Title, Actual) ->
+    io_lib:format("~ts", [unicode:characters_to_binary(Actual)]), %% Validate unicode
     io:format(user, "~n[ Render: ~s ]~n~ts~n", [Title, unicode:characters_to_binary(Actual)]),
     ok.
 

@@ -28,8 +28,7 @@ progress_0() ->
     % width 10 -> [ + 8 chars + ]
     Expected = "[░░░░░░░░]",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 1),
-    cellium_test_utils:show_render("Progress 0%", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Progress 0%", Expected, Actual).
 
 progress_50() ->
     focus_manager:remove_all(),
@@ -43,8 +42,7 @@ progress_50() ->
     % 0.5 * 8 = 4 filled
     Expected = "[████░░░░]",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 1),
-    cellium_test_utils:show_render("Progress 50%", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Progress 50%", Expected, Actual).
 
 progress_100() ->
     focus_manager:remove_all(),
@@ -57,8 +55,7 @@ progress_100() ->
     
     Expected = "[████████]",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 1),
-    cellium_test_utils:show_render("Progress 100%", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Progress 100%", Expected, Actual).
 
 focused_progress_50() ->
     focus_manager:remove_all(),
@@ -76,5 +73,4 @@ focused_progress_50() ->
     % The characters remain the same.
     Expected = "[████░░░░]",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 1),
-    cellium_test_utils:show_render("Progress 50% Focused", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Progress 50% Focused", Expected, Actual).

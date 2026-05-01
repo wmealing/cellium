@@ -24,7 +24,7 @@ plain_button_h1() ->
     Buffer = button:render(Widget, cellium_buffer:empty()),
     Expected = " Click Me ",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 1),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Plain Button H1", Expected, Actual).
 
 focused_button_h1() ->
     focus_manager:remove_all(),
@@ -36,7 +36,7 @@ focused_button_h1() ->
     Buffer = button:render(LayoutWidget, cellium_buffer:empty()),
     Expected = "[Click Me]",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 1),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Focused Button H1", Expected, Actual).
 
 plain_button_h3() ->
     focus_manager:remove_all(),
@@ -49,7 +49,7 @@ plain_button_h3() ->
         "│  Submit  │\n"
         "└──────────┘",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 12, 3),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Plain Button H3", Expected, Actual).
 
 focused_button_h3() ->
     focus_manager:remove_all(),
@@ -64,4 +64,4 @@ focused_button_h3() ->
         "║  Submit  ║\n"
         "╚══════════╝",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 12, 3),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Focused Button H3", Expected, Actual).

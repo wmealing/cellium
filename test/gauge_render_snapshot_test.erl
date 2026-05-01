@@ -29,8 +29,7 @@ gauge_0() ->
     % Value 0 -> 0 filled
     Expected = "Vol ░░░░░░",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 1),
-    cellium_test_utils:show_render("Gauge 0%", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Gauge 0%", Expected, Actual).
 
 gauge_50() ->
     focus_manager:remove_all(),
@@ -44,8 +43,7 @@ gauge_50() ->
     % 6 * 0.5 = 3 filled
     Expected = "Vol ███░░░",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 1),
-    cellium_test_utils:show_render("Gauge 50%", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Gauge 50%", Expected, Actual).
 
 gauge_100() ->
     focus_manager:remove_all(),
@@ -58,8 +56,7 @@ gauge_100() ->
     
     Expected = "Vol ██████",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 1),
-    cellium_test_utils:show_render("Gauge 100%", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Guage 100%", Expected, Actual).
 
 focused_gauge_50() ->
     focus_manager:remove_all(),
@@ -75,5 +72,4 @@ focused_gauge_50() ->
     
     Expected = "Vol ███░░░",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 1),
-    cellium_test_utils:show_render("Gauge 50% Focused", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Focused guage 50%", Expected, Actual).

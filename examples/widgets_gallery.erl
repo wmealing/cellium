@@ -166,6 +166,10 @@ tab_basic(Model) ->
         ]},
 
         {spacer, [{size, 1}]},
+        {text, [], "Stepper Control:"},
+        {stepper, [{id, st1}]},
+
+        {spacer, [{size, 1}]},
 
         {hbox, [{id, row2}, {size, 1}], [
             {button, [{id, btn1}, {color, green}, {size, 12}], "Submit"},

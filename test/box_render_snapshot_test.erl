@@ -28,7 +28,7 @@ empty_box() ->
         "│   │\n"
         "└───┘",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 5, 3),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Empty Box", Expected, Actual).
 
 focused_box() ->
     focus_manager:remove_all(),
@@ -44,7 +44,7 @@ focused_box() ->
         "║   ║\n"
         "╚═══╝",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 5, 3),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Focused Box", Expected, Actual).
 
 box_child_focused() ->
     focus_manager:remove_all(),
@@ -64,4 +64,4 @@ box_child_focused() ->
         "║[Ok]    ║\n"
         "╚════════╝",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 10, 3),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("Box Child Focused", Expected, Actual).

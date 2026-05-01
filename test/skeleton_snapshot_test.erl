@@ -40,8 +40,7 @@ basic_render() ->
         "│   │\n"
         "└───┘",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 5, 3),
-    cellium_test_utils:show_render("Skeleton Basic", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("SKELETON BASIC", Expected, Actual).
 
 focused_render() ->
     focus_manager:remove_all(),
@@ -62,4 +61,4 @@ focused_render() ->
         "╚═══╝",
     Actual = cellium_test_utils:buffer_to_string(Buffer, 0, 0, 5, 3),
     cellium_test_utils:show_render("Skeleton Focused", Actual),
-    cellium_test_utils:assert_snapshot(Expected, Actual).
+    cellium_test_utils:assert_snapshot("SKELETON Focused", Expected, Actual).

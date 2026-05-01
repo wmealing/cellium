@@ -68,13 +68,12 @@ validate_arg3(_Tag, _Arg, Path) ->
 validate_props([], _Path) -> ok;
 validate_props([{K, _V} | Rest], Path) when is_atom(K) -> validate_props(Rest, Path);
 validate_props([P | _], Path) -> {error, {invalid_property, {P, Path}}}.
-
 is_known_tag(Tag) ->
     lists:member(Tag, [
         vbox, hbox, box, frame, dialog, tabs,
         header, text, button, checkbox, radio, status_bar,
         tree, select, list, progress_bar, toggle, spinner, spacer, gauge, table,
-        radiogroup, text_input
+        radiogroup, stepper, text_input
     ]).
 
 from_dsl(Dsl) -> from_dsl(Dsl, #{}).
@@ -141,7 +140,7 @@ create_widget(Tag, Id, Props, Arg3, Model) ->
             select:new(Id, Arg3);
 
         % Widgets with a primary value (label, text, etc.)
-        T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio; T=:=status_bar; T=:=tree ->
+        T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio; T=:=status_bar; T=:=tree; T=:=stepper ->
             Tag:new(Id, Arg3);
         _ ->
             logger:warning("Tag ~p does not support 3rd argument value, ignoring.", [Tag]),
@@ -153,7 +152,7 @@ create_widget(Tag, Id, Props) ->
     case Tag of
         T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio;
                T=:=progress_bar; T=:=toggle; T=:=text_input; T=:=spinner;
-               T=:=box; T=:=frame; T=:=spacer; T=:=gauge; T=:=table ->
+               T=:=box; T=:=frame; T=:=spacer; T=:=gauge; T=:=table; T=:=stepper ->
             Tag:new(Id);
         radiogroup ->
             Options = proplists:get_value(options, Props, []),
