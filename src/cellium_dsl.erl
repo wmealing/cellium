@@ -1,6 +1,75 @@
 -module(cellium_dsl).
 -moduledoc "The `cellium_dsl` module provides a Domain Specific Language (DSL) for defining UI layouts in Cellium.\n\n## How the DSL works\n\nThe DSL uses Erlang tuples to represent widgets and their properties. A UI layout is defined as a recursive structure of these tuples.\n\nThere are three main forms of DSL elements:\n1. **Standard leaf widgets**: `{Tag, Props}`\n   - Example: `{button, [{id, my_button}, {label, \"Click Me\"}]}`\n2. **Widgets with a primary value or containers**: `{Tag, Props, Arg3}`\n   - For containers like `vbox` or `hbox`, `Arg3` is a list of child DSL elements.\n   - For widgets like `button` or `text`, `Arg3` is the primary value (e.g., label string).\n3. **Custom widgets**: `{custom, Module, Props}`\n   - Allows using a custom module that implements a `new(Id)` function.\n\n## Recursive State Handling\n\nThe DSL transformation is state-aware. When calling `from_dsl/2`, you provide a `Model` which may contain a `widget_states` map.\n\nDuring the recursive traversal of the DSL:\n1. An `Id` is determined for each widget (either from `Props` or auto-generated).\n2. The widget is created.\n3. If the `Model` contains state for that `Id`, it is \"injected\" into the widget's internal map using `inject_state/3`. This allows the DSL to preserve UI state across re-renders.\n\n## Sizing and Expansion\n\nThe DSL handles layout properties that control how widgets occupy space:\n- `width`: Sets the fixed width of a widget.\n- `height` or `size`: Sets the fixed height (or primary dimension) of a widget.\n- `expand`: Indicates if a widget should grow to fill available space in its parent container.\n- **Constraints**: Fixed-size widgets should not exceed the available dimensions of their parent container.\n- **Defaults**: If neither a fixed size nor `expand` is specified, the DSL automatically applies a default `{size, 1}`.\n\n## Special Cases\n\nCertain tags have specialized behavior in the DSL:\n### Containers (`vbox`, `hbox`, `box`, `frame`, `dialog`)\nThese tags use the third element of the tuple as a list of children.\n### Tabs (`tabs`)\nThe `tabs` widget only renders the child corresponding to the `active_tab` property.\n### Radiogroup (`radiogroup`)\nThe `radiogroup` tag uses the third element of the tuple as the list of options.\n### Dropdown (`select`)\nThe `select` tag represents a dropdown widget. It can take options as the third element or in the `Props` list.\n### Leaf Widgets with Primary Values\nTags like `header`, `text`, `button`, etc., can take their primary display value as the third element for brevity.".
--export([from_dsl/1, from_dsl/2]).
+-export([from_dsl/1, from_dsl/2, validate/1]).
+
+-doc """
+Validates a DSL structure before processing.
+Returns 'ok' or {error, {Reason, Path}}.
+""".
+validate(Dsl) ->
+    validate_recursive(Dsl, []).
+
+validate_recursive({custom, Module, Props}, Path) ->
+    case is_atom(Module) andalso is_list(Props) of
+        true -> validate_props(Props, [custom | Path]);
+        false -> {error, {invalid_custom, Path}}
+    end;
+
+validate_recursive({Tag, Props, Arg3}, Path) ->
+    CurrentPath = [Tag | Path],
+    case is_atom(Tag) andalso is_known_tag(Tag) of
+        true ->
+            case is_list(Props) of
+                true ->
+                    case validate_arg3(Tag, Arg3, CurrentPath) of
+                        ok -> validate_props(Props, CurrentPath);
+                        Error -> Error
+                    end;
+                false -> {error, {invalid_props, CurrentPath}}
+            end;
+        false -> {error, {unknown_tag, CurrentPath}}
+    end;
+
+validate_recursive({Tag, Props}, Path) ->
+    CurrentPath = [Tag | Path],
+    case is_atom(Tag) andalso is_known_tag(Tag) of
+        true ->
+            case is_list(Props) of
+                true -> validate_props(Props, CurrentPath);
+                false -> {error, {invalid_props, CurrentPath}}
+            end;
+        false -> {error, {unknown_tag, CurrentPath}}
+    end;
+
+validate_recursive(Other, Path) ->
+    {error, {invalid_dsl_format, {Other, Path}}}.
+
+validate_arg3(Tag, Children, Path) when Tag=:=vbox; Tag=:=hbox; Tag=:=box; Tag=:=frame; Tag=:=dialog; Tag=:=tabs ->
+    if is_list(Children) ->
+        lists:foldl(fun(C, ok) -> validate_recursive(C, Path);
+                       (_, Err) -> Err
+                    end, ok, Children);
+       true -> {error, {expected_children_list, Path}}
+    end;
+validate_arg3(tree, Nodes, Path) ->
+    if is_list(Nodes) -> ok;
+       true -> {error, {expected_nodes_list, Path}}
+    end;
+validate_arg3(Tag, _Value, _Path) when Tag=:=header; Tag=:=text; Tag=:=button; Tag=:=checkbox; Tag=:=radio; Tag=:=status_bar; Tag=:=select ->
+    ok;
+validate_arg3(_Tag, _Arg, Path) ->
+    {error, {unexpected_3rd_argument, Path}}.
+
+validate_props([], _Path) -> ok;
+validate_props([{K, _V} | Rest], Path) when is_atom(K) -> validate_props(Rest, Path);
+validate_props([P | _], Path) -> {error, {invalid_property, {P, Path}}}.
+
+is_known_tag(Tag) ->
+    lists:member(Tag, [
+        vbox, hbox, box, frame, dialog, tabs,
+        header, text, button, checkbox, radio, status_bar,
+        tree, select, list, progress_bar, toggle, spinner, spacer, gauge, table
+    ]).
 
 from_dsl(Dsl) -> from_dsl(Dsl, #{}).
 
@@ -38,8 +107,8 @@ create_widget(Tag, Id, Props, Arg3, Model) ->
         % Containers with children
         T when T=:=vbox; T=:=hbox; T=:=box; T=:=frame; T=:=dialog ->
             W = case T of
-                vbox -> container:new(Id, vertical);
-                hbox -> container:new(Id, horizontal);
+                vbox -> vbox:new(Id);
+                hbox -> hbox:new(Id);
                 _    -> Tag:new(Id)
             end,
             IsContainer = (T =/= vbox andalso T =/= hbox),

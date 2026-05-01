@@ -41,12 +41,21 @@ render_caller(Module, Model) ->
         focus_manager:remove_all(),
 
         Layout = Module:render(Model),
-        ProcessedLayout = case is_tuple(Layout) of
-            true -> cellium_dsl:from_dsl(Layout, Model);
-            false -> Layout
-        end,
-        view:set_root_widget(ProcessedLayout),
-        ok
+        
+        % Validate DSL before processing
+        case cellium_dsl:validate(Layout) of
+            ok ->
+                ProcessedLayout = case is_tuple(Layout) of
+                    true -> cellium_dsl:from_dsl(Layout, Model);
+                    false -> Layout
+                end,
+                view:set_root_widget(ProcessedLayout),
+                ok;
+            {error, {ValReason, Path}} ->
+                logger:error("DSL Validation Error: ~p at path ~p", [ValReason, Path]),
+                logger:error("Faulty DSL: ~p", [Layout]),
+                ok
+        end
     catch
         Exception:Reason:Stacktrace ->
             logger:error("Error in render: ~p:~p~nStacktrace: ~p", [Exception, Reason, Stacktrace]),
