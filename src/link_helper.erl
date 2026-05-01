@@ -2,8 +2,7 @@
 -export([make_link/2]).
 
 make_link(Url, Label) ->
-    %% \e]8;; is the start
-    %% \e\\ is the terminator (ST)
-    Prefix = "\e]8;;" ++ Url ++ "\e\\",
-    Suffix = "\e]8;;\e\\",
-    Prefix ++ Label ++ Suffix.
+    %% \033 is the octal code for Escape
+    OSC = "\033]8;;",
+    ST  = "\033\\",
+    OSC ++ Url ++ ST ++ Label ++ OSC ++ ST.
