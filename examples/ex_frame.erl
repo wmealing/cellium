@@ -1,4 +1,4 @@
--module(frame_example).
+-module(ex_frame).
 
 -export([start/0]).
 -export([init/1, update/2, render/1]).

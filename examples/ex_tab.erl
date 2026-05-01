@@ -1,4 +1,4 @@
--module(tab_example).
+-module(ex_tab).
 
 -export([start/0]).
 -export([init/1, update/2, render/1]).

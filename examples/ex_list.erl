@@ -1,4 +1,4 @@
--module(list_example).
+-module(ex_list).
 
 -export([start/0]).
 -export([init/1, update/2, render/1]).

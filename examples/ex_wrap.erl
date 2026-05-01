@@ -1,4 +1,4 @@
--module(wrap_demo).
+-module(ex_wrap).
 
 -behavior(cellium).
 -include("cellium.hrl").
