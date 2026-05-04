@@ -64,7 +64,7 @@ update(Model, Msg) ->
 
 render(Model) ->
     TreeState = maps:get(tree_state, Model),
-    
+
     {vbox, [{expand, true}], [
         {header, [{color, yellow}], " Tree Widget Example"},
         {vbox, [{padding, 1}, {expand, true}], [

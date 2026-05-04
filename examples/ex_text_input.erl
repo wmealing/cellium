@@ -23,7 +23,7 @@ render(_) ->
         
         {spacer, [{size, 1}]},
         
-        {frame, [{id, f1}, {title, "User Information"}, {height, 12}, {color, cyan}], [
+        {frame, [{id, f1}, {title, "User Information"}, {height, 8}, {color, cyan}], [
             {text, [], "Name (Single line):"},
             {text_input, [{id, name_input}, {height, 1}]},
             

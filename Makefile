@@ -28,5 +28,5 @@ run: compile
 
 run2: compile
 	@echo "Starting example: $(example)"
-	@erl -noshell -noinput -sname cellium_dev2 -setcookie cellium_cookie -config config/sys.config $(LIB_EBIN) $(EXTRAS_EBIN) -eval "$(example):start()."
+	@erl_call -noshell -noinput -sname cellium_dev2 -setcookie cellium_cookie -config config/sys.config $(LIB_EBIN) $(EXTRAS_EBIN) -eval "$(example):start()."
 
