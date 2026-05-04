@@ -40,6 +40,11 @@ stack_layout_test() ->
     ?assertEqual(100, maps:get(width, C1)),
     ?assertEqual(40, maps:get(height, C1)),
     
+    ?assertEqual(0, maps:get(x, C2)),
+    ?assertEqual(0, maps:get(y, C2)),
+    ?assertEqual(100, maps:get(width, C2)),
+    ?assertEqual(40, maps:get(height, C2)).
+
 stack_render_test() ->
     ?TERMINAL:term_init(),
     Dsl = {stack, [{id, my_stack}, {x, 0}, {y, 0}, {width, 10}, {height, 1}], [
@@ -55,7 +60,7 @@ stack_render_test() ->
     % "layer 2" should be in the buffer.
     
     % Let's check a few characters
-    {C1, _, _, _, _} = cellium_buffer:get_cell(0, 0, Buffer),
+    {C1, _, _} = cellium_buffer:get_cell(0, 0, Buffer),
     ?assertEqual($l, C1),
-    {C7, _, _, _, _} = cellium_buffer:get_cell(6, 0, Buffer),
+    {C7, _, _} = cellium_buffer:get_cell(6, 0, Buffer),
     ?assertEqual($2, C7).
