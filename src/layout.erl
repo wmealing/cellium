@@ -85,7 +85,7 @@ layout_container(Container, FocusedWidgetId) ->
             InnerY = Y + PT,
 
             RealizedChildren = 
-                if WidgetType == tab orelse WidgetType == dialog ->
+                if WidgetType == tab orelse WidgetType == dialog orelse WidgetType == stack ->
                     layout_stacked_children(Children, InnerX, InnerY, InnerWidth, InnerHeight, FocusedWidgetId);
                 true ->
                     Orientation = maps:get(orientation, Container, horizontal),

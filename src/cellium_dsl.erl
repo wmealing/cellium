@@ -44,7 +44,7 @@ validate_recursive({Tag, Props}, Path) ->
 validate_recursive(Other, Path) ->
     {error, {invalid_dsl_format, {Other, Path}}}.
 
-validate_arg3(Tag, Children, Path) when Tag=:=vbox; Tag=:=hbox; Tag=:=box; Tag=:=frame; Tag=:=dialog; Tag=:=tabs ->
+validate_arg3(Tag, Children, Path) when Tag=:=vbox; Tag=:=hbox; Tag=:=box; Tag=:=frame; Tag=:=dialog; Tag=:=tabs; Tag=:=stack ->
     if is_list(Children) ->
         lists:foldl(fun(C, ok) -> validate_recursive(C, Path);
                        (_, Err) -> Err
@@ -70,7 +70,7 @@ validate_props([{K, _V} | Rest], Path) when is_atom(K) -> validate_props(Rest, P
 validate_props([P | _], Path) -> {error, {invalid_property, {P, Path}}}.
 is_known_tag(Tag) ->
     lists:member(Tag, [
-        vbox, hbox, box, frame, dialog, tabs,
+        vbox, hbox, box, frame, dialog, tabs, stack,
         header, text, button, checkbox, radio, status_bar,
         tree, select, list, progress_bar, toggle, spinner, spacer, gauge, table,
         radiogroup, stepper, text_input, breadcrumbs
@@ -110,7 +110,7 @@ finalize_widget(Widget, Id, Props, Model) ->
 create_widget(Tag, Id, Props, Arg3, Model) ->
     case Tag of
         % Containers with children
-        T when T=:=vbox; T=:=hbox; T=:=box; T=:=frame; T=:=dialog ->
+        T when T=:=vbox; T=:=hbox; T=:=box; T=:=frame; T=:=dialog; T=:=stack ->
             W = case T of
                 vbox -> vbox:new(Id);
                 hbox -> hbox:new(Id);
@@ -152,7 +152,7 @@ create_widget(Tag, Id, Props) ->
     case Tag of
         T when T=:=header; T=:=text; T=:=button; T=:=checkbox; T=:=radio;
                T=:=progress_bar; T=:=toggle; T=:=text_input; T=:=spinner;
-               T=:=box; T=:=frame; T=:=spacer; T=:=gauge; T=:=table;
+               T=:=box; T=:=frame; T=:=stack; T=:=spacer; T=:=gauge; T=:=table;
                T=:=stepper; T=:=breadcrumbs ->
             Tag:new(Id);
         radiogroup ->
