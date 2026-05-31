@@ -53,9 +53,25 @@ do_set_cell(X, Y, Char, Fg, Bg, Buffer) ->
 -doc "Puts a string into the buffer starting at X, Y, respecting clip if set.".
 put_string(X, Y, Fg, Bg, Str, Buffer) ->
     Chars = [ to_char(C) || C <- to_char_list(Str) ],
-    lists:foldl(fun({C, Offset}, Acc) ->
-        set_cell(X + Offset, Y, C, Fg, Bg, Acc)
-    end, Buffer, lists:zip(Chars, lists:seq(0, length(Chars) - 1))).
+    {_, FinalBuffer} = lists:foldl(fun(C, {Offset, Acc}) ->
+        NewAcc = set_cell(X + Offset, Y, C, Fg, Bg, Acc),
+        {Offset + char_display_width(C), NewAcc}
+    end, {0, Buffer}, Chars),
+    FinalBuffer.
+
+char_display_width(C) when C >= 16#1100, C =< 16#115F -> 2;  % Hangul Jamo
+char_display_width(C) when C >= 16#2329, C =< 16#232A -> 2;  % Angle brackets
+char_display_width(C) when C >= 16#2600, C =< 16#27BF -> 2;  % Misc symbols & emoji (⚡ etc)
+char_display_width(C) when C >= 16#2E80, C =< 16#303E -> 2;  % CJK Radicals
+char_display_width(C) when C >= 16#3040, C =< 16#33FF -> 2;  % CJK / Japanese
+char_display_width(C) when C >= 16#3400, C =< 16#4DBF -> 2;  % CJK Ext A
+char_display_width(C) when C >= 16#4E00, C =< 16#A4CF -> 2;  % CJK Unified
+char_display_width(C) when C >= 16#AC00, C =< 16#D7AF -> 2;  % Hangul Syllables
+char_display_width(C) when C >= 16#F900, C =< 16#FAFF -> 2;  % CJK Compat
+char_display_width(C) when C >= 16#FE10, C =< 16#FE6F -> 2;  % CJK Compat Forms
+char_display_width(C) when C >= 16#FF01, C =< 16#FF60 -> 2;  % Fullwidth
+char_display_width(C) when C >= 16#1F300, C =< 16#1FAFF -> 2; % Emoji
+char_display_width(_) -> 1.
 
 -doc "Gets a cell from the buffer. Returns space if empty.".
 get_cell(X, Y, Buffer) ->
